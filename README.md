@@ -139,3 +139,5 @@ Devices are embedded inside Projects because they are tightly coupled with them,
 ```
 ### Entity-Relationship Diagram (ERD)
 
+
+
