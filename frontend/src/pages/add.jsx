@@ -11,14 +11,6 @@ const projects = [
   { name: "Farm Land Measurement", createdOn: "Jan 15, 2025", lastModified: "Feb 10, 2025", status: "Completed" },
 ];
 
-const getStatusStyle = (status) => {
-  switch (status) {
-    case "In Progress": return "text-blue-500 bg-blue-100 px-2 py-1 rounded";
-    case "Pending": return "text-orange-500 bg-orange-100 px-2 py-1 rounded";
-    case "Completed": return "text-gray-500 bg-gray-200 px-2 py-1 rounded";
-    default: return "";
-  }
-};
 
 const ProjectsPage = () => {
   return (
