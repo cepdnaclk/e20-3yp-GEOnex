@@ -10,24 +10,6 @@ const projects = [
   { name: "Farm Land Measurement", createdOn: "Jan 15, 2025", lastModified: "Feb 10, 2025", status: "Completed" },
   { name: "Farm Land Measurement", createdOn: "Jan 15, 2025", lastModified: "Feb 10, 2025", status: "Completed" },
 ];
-
-
-const ProjectsPage = () => {
-  return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-md p-6 flex flex-col justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">GEO<span className="text-gray-500">nex</span></h1>
-          <nav className="mt-6 space-y-4">
-            <a href="#" className="flex items-center space-x-2 text-gray-700 hover:text-black"><span>🏠</span> Home</a>
-            <a href="#" className="flex items-center space-x-2 text-gray-700 hover:text-black"><span>📍</span> Devices</a>
-            <a href="#" className="flex items-center space-x-2 font-bold text-black"><span>📖</span> Projects</a>
-            <a href="#" className="flex items-center space-x-2 text-gray-700 hover:text-black"><span>⚙️</span> Settings</a>
-          </nav>
-        </div>
-        <button className="text-red-600 border border-red-600 p-2 rounded w-full hover:bg-red-600 hover:text-white">Log out</button>
-      </div>
       
       {/* Main Content */}
       <div className="flex-1 p-10">
