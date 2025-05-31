@@ -300,7 +300,7 @@ const MapSection = () => {
         <button
           className="bg-black p-2 md:p-3 rounded-full shadow-md w-8 h-8 md:w-12 md:h-12 flex items-center justify-center "
           onClick={() => {
-            navigate(`/takenpoints/${projectId}`);
+            navigate(`/projects/takenpoints/${projectId}`);
           }}
         >
           <img

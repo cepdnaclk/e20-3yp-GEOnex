@@ -10,7 +10,7 @@ export default function ConnectedDevices() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const { userData } = useContext(Context);
+  const { userData, navigate } = useContext(Context);
 
   // Mock user ID (in real app, this would come from auth context)
   const userId = userData.userId;
@@ -21,6 +21,10 @@ export default function ConnectedDevices() {
   }, []);
 
   const handleDeleteDevice = async (deviceId, userId) => {
+    const ok = window.confirm(
+      "Remove this device from your account?\nThis action cannot be undone."
+    );
+    if (!ok) return;
     setError("");
     setSuccess("");
     try {
@@ -375,10 +379,12 @@ export default function ConnectedDevices() {
             ) : (
               devices.map((device) => (
                 <div
+                  onClick={() => navigate(`/devices/${device._id}`)}
                   key={device._id}
                   className="flex flex-nowrap items-center justify-between 
                   bg-white p-3 rounded-lg shadow-sm border border-gray-100 min-w-[700px]
-                  dark:bg-gray-800 dark:border-gray-700"
+                  dark:bg-gray-800 dark:border-gray-700
+                  hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                 >
                   <div className="flex flex-col w-[15%]">
                     <span className="text-sm font-medium">{device.Name}</span>
@@ -416,9 +422,12 @@ export default function ConnectedDevices() {
 
                   <div className="flex justify-center flex-shrink-0 w-[10%]">
                     <button
-                      onClick={() => handleDeleteDevice(device._id, userId)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteDevice(device._id, userId);
+                      }}
                       disabled={connectingDevice}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 hover:scale-110 transition"
                       aria-label={`Delete device ${device.DeviceCode}`}
                     >
                       <svg

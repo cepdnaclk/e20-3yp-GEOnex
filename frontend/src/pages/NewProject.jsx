@@ -90,7 +90,7 @@ const NewProject = () => {
       const newProjectId = response.data._id;
       if (newProjectId) {
         // Navigate to the survey page with the new project's id in the URL
-        navigate(`/pointsurvey/${newProjectId}`);
+        navigate(`/projects/pointsurvey/${newProjectId}`);
       } else {
         toast.error("Project created, but no project id returned.");
       }

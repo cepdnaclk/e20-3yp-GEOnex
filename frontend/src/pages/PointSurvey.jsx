@@ -52,7 +52,7 @@ const PointSurvey = () => {
             className="flex items-center gap-1 text-sm md:text-base lg:text-lg
              px-4 md:px-10 py-2 bg-black hover:bg-gray-800 text-white rounded-xl dark:bg-indigo-600 dark:hover:bg-indigo-500"
             onClick={() => {
-              navigate(`/takenpoints/${projectId}`);
+              navigate(`/projects/takenpoints/${projectId}`);
             }}
           >
             Proceed <span>→</span>

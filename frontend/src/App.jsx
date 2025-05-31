@@ -23,10 +23,9 @@ import "leaflet/dist/leaflet.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Context } from "../src/context/Context";
 import Notifications from "./pages/Notifications";
-
+import DeviceDetails from "./pages/DeviceDetails";
 
 const App = () => {
-
   return (
     <div>
       <ToastContainer />
@@ -38,20 +37,20 @@ const App = () => {
 
             <Route path="/devices" element={<Devices />} />
 
+            <Route path="/devices/:deviceId" element={<DeviceDetails />} />
+
             <Route path="/projects" element={<Projects />} />
 
             <Route path="/settings" element={<Settings />} />
 
-            <Route path="/:userId/newproject" element={<NewProject />} />
+            <Route path="/projects/:userId/newproject" element={<NewProject />} />
 
-            <Route path="/pointsurvey/:projectId" element={<PointSurvey />} />
+            <Route path="/projects/pointsurvey/:projectId" element={<PointSurvey />} />
 
-            <Route path="/projectdetails" element={<ProjectDetails />} />
+            <Route path="/projects/takenpoints/:projectId" element={<TakenPoints />} />
 
-            <Route path="/takenpoints/:projectId" element={<TakenPoints />} />
-
-            <Route path="/project/:projectId" element={<ProjectDetails />} />
-            <Route path="/notifications" element={<Notifications/>} />
+            <Route path="/projects/:projectId" element={<ProjectDetails />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route
               path="/devices/register-device/:userId"
               element={<RegisterNewDevice />}

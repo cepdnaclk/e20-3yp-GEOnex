@@ -99,7 +99,7 @@ const TakenPoints = () => {
               bg-black hover:bg-gray-800 text-white rounded-xl
               dark:bg-indigo-600 dark:hover:bg-indigo-500"
               onClick={() => {
-                navigate(`/project/${projectId}`);
+                navigate(`/projects/${projectId}`);
               }}
             >
               Save Changes

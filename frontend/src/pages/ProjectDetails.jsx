@@ -197,7 +197,7 @@ const ProjectDetails = () => {
             bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
             dark:bg-gray-700 dark:hover:bg-gray-600"
             onClick={() => {
-              navigate(`/pointsurvey/${projectId}`);
+              navigate(`/projects/pointsurvey/${projectId}`);
             }}
           >
             <img
@@ -221,7 +221,7 @@ const ProjectDetails = () => {
             bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
             dark:bg-gray-700 dark:hover:bg-gray-600 "
             onClick={() => {
-              navigate(`/takenpoints/${projectId}`);
+              navigate(`/projects/takenpoints/${projectId}`);
             }}
           >
             <img

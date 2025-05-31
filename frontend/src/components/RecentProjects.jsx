@@ -62,7 +62,7 @@ const RecentProjects = ({userId}) => {
               return (
                 <tr
                   key={index}
-                  onClick={() => navigate(`/project/${project._id}`)}
+                  onClick={() => navigate(`/projects/${project._id}`)}
                   className="cursor-pointer text-xs md:text-sm lg:text-base 
                   bg-[rgba(197,197,198,1)]  hover:bg-[rgba(180,180,180,1)] 
                   transition-colors duration-200 rounded-lg shadow-sm
