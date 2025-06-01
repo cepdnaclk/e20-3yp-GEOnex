@@ -75,7 +75,8 @@ const register = async(req,res)=>{
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: 'Welcome to GEOnex',
-            text:`Welcome to GEOnex. Your account has been created with email id: ${email}`
+            //text:`Welcome to GEOnex. Your account has been created with email id: ${email}`
+            html:WELCOME_EMAIL.replace("{{email}}",user.email)
         }
 
         await transporter.sendMail(mailOptions);
@@ -166,7 +167,8 @@ const sendVerifyOtp = async(req,res)=>{
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Account Verification OTP',
-            text:`Your OTP is ${otp}.`
+            //text:`Your OTP is ${otp}.`
+            html:EMAIL_VERIFY_TEMPLATE.replace("{{otp}}",otp).replace("{{email}}",user.email)
         };
 
         await transporter.sendMail(mailOptions);
@@ -264,8 +266,9 @@ const sendResetOtp = async (req,res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Password Reset OTP',
-            text:`Your OTP for resting your password is ${otp}.
-            Use this OTP to proceed with resetting your password.`
+            //text:`Your OTP for resting your password is ${otp}.
+            // Use this OTP to proceed with resetting your password.`
+            html:PASSWORD_RESET_TEMPLATE.replace("{{otp}}",otp).replace("{{email}}",user.email)
         };
         await transporter.sendMail(mailOptions);
 
