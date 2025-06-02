@@ -1,44 +1,68 @@
-const request = require('supertest');
-//const app = require('../../../../server'); // Your Express app
-const mongoose = require('mongoose');
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const transporter=require('../../../config/nodemailer.js');
+const jwt = require('jsonwebtoken');
+const transporter = require('../../../config/nodemailer.js');
+const { register } = require('../controllers/authController');
+const { WELCOME_EMAIL,EMAIL_VERIFY_TEMPLATE} = require('../../../config/emailTemplate');
 
-jest.mock('../models/User'); // Mocking DB model
-jest.mock('bcryptjs', () => ({
-  hash: jest.fn(() => 'hashed_password'),
-  compare: jest.fn(() => true),
-}));
-jest.mock('jsonwebtoken', () => ({
-  sign: jest.fn(() => 'mock_token'),
-}));
+// 🧪 Mock external dependencies
+jest.mock('../models/User');
+jest.mock('bcryptjs');
+jest.mock('jsonwebtoken');
 jest.mock('../../../config/nodemailer.js', () => ({
   sendMail: jest.fn(() => Promise.resolve('Email sent')),
 }));
+jest.mock('../../../config/emailTemplate', () => ({
+  WELCOME_EMAIL: '<p>Welcome {{email}}</p>',
+  EMAIL_VERIFY_TEMPLATE: '<p>Your OTP is {{otp}} for {{email}}</p>',
+  PASSWORD_RESET_TEMPLATE: '<p>Your OTP is {{otp}} for {{email}}</p>',
+}));
 
-// UNIT TEST: REGISTER
-const { register} = require('../controllers/authController');
 
-describe('Unit Test: Register', () => {
+describe('Unit Test: register', () => {
+  let req, res;
+
+  beforeEach(() => {
+    req = {
+      body: {
+        name: 'Test User',
+        email: 'test@email.com',
+        password: '123456',
+      },
+    };
+
+    res = {
+      json: jest.fn(),
+      cookie: jest.fn(),
+    };
+
+    jest.clearAllMocks();
+  });
+
   it('should return error if missing details', async () => {
-    const req = { body: {} };
-    const res = { json: jest.fn() };
+    req.body = {}; // Missing all required fields
 
     await register(req, res);
+
     expect(res.json).toHaveBeenCalledWith({
       success: false,
       message: 'Missing Details',
     });
   });
 
-  it('should return error if user already registered', async () => {
-  // Simulate that a user with the given email already exists
-    User.findOne.mockResolvedValue({ email: 'test@email.com' });
+  it('should return error if password is too short', async () => {
+    req.body.password = '123'; // Too short
 
-    const req = { body: { name: 'Test', email: 'test@email.com', password: '1234' } };
-    const res = { json: jest.fn() };
+    await register(req, res);
+
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Password must be at least 6 characters long.',
+    });
+  });
+
+  it('should return error if user already exists', async () => {
+    User.findOne.mockResolvedValue({ email: req.body.email }); // Simulate existing user
 
     await register(req, res);
 
@@ -48,23 +72,54 @@ describe('Unit Test: Register', () => {
     });
   });
 
-  it('should register a user successfully', async () => {
-    User.findOne.mockResolvedValue(null);
-    const saveMock = jest.fn();
-    User.mockImplementation(() => ({
-      save: saveMock,
-      _id: '1234',
-    }));
+  it('should register user and send welcome email', async () => {
+    // Mocks
+    User.findOne.mockResolvedValue(null); // No existing user
+    bcrypt.hash.mockResolvedValue('hashed_password'); // Password hashing
+    jwt.sign.mockReturnValue('mock_token'); // JWT token
 
-    const req = {
-      body: { name: 'Test', email: 'test@email.com', password: '1234' },
+    const saveMock = jest.fn().mockResolvedValue();
+    const mockUser = {
+      save: saveMock,
+      _id: 'user123',
+      email: req.body.email,
     };
-    const res = {
-      json: jest.fn(),
-      cookie: jest.fn(),
-    };
+
+    User.mockImplementation(() => mockUser);
 
     await register(req, res);
+
+    // Check hashing
+    expect(bcrypt.hash).toHaveBeenCalledWith(req.body.password, 10);
+
+    // Check JWT
+    expect(jwt.sign).toHaveBeenCalledWith(
+      { id: 'user123' },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // Check cookie setting
+    expect(res.cookie).toHaveBeenCalledWith(
+      'token',
+      'mock_token',
+      expect.objectContaining({
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: expect.any(String),
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+    );
+
+    // Check email sending
+    expect(transporter.sendMail).toHaveBeenCalledWith({
+      from: process.env.SENDER_EMAIL,
+      to: req.body.email,
+      subject: 'Welcome to GEOnex',
+      html: expect.stringContaining(req.body.email),
+    });
+
+    // Final response
     expect(res.json).toHaveBeenCalledWith({ success: true });
   });
 });
@@ -214,42 +269,23 @@ describe('Unit Test: logout', () => {
 const {sendVerifyOtp} = require('../controllers/authController');
 
 describe('Unit Test: sendVerifyOtp', () => {
-  let req, res, mockUser;
+  let req, res;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-
-    req = { userId: '123' };
-    res = { json: jest.fn() };
-
-    mockUser = {
-      isAccountVerified: false,
-      email: 'test@email.com',
-      save: jest.fn(),
+    req = {
+      userId: 'mockUserId',
+    };
+    res = {
+      json: jest.fn(),
     };
 
-    User.findById.mockResolvedValue(mockUser);
+    jest.clearAllMocks();
   });
 
-  it('should return success if OTP is sent', async () => {
-    await sendVerifyOtp(req, res);
-
-    expect(User.findById).toHaveBeenCalledWith('123');
-    expect(mockUser.verifyOtp).toBeDefined();
-    expect(mockUser.verifyOtpExpireAt).toBeGreaterThan(Date.now());
-    expect(mockUser.save).toHaveBeenCalled();
-    expect(transporter.sendMail).toHaveBeenCalledWith(expect.objectContaining({
-      to: 'test@email.com',
-      subject: 'Account Verification OTP',
-    }));
-    expect(res.json).toHaveBeenCalledWith({
-      success: true,
-      message: 'Verification OTP sent to the email',
+  it('should return error if user is already verified', async () => {
+    User.findById.mockResolvedValue({
+      isAccountVerified: true,
     });
-  });
-
-  it('should return error if account already verified', async () => {
-    mockUser.isAccountVerified = true;
 
     await sendVerifyOtp(req, res);
 
@@ -259,7 +295,35 @@ describe('Unit Test: sendVerifyOtp', () => {
     });
   });
 
-  it('should return error on exception', async () => {
+  it('should generate OTP, update user and send email', async () => {
+    const saveMock = jest.fn();
+    const mockUser = {
+      email: 'test@email.com',
+      isAccountVerified: false,
+      save: saveMock,
+    };
+
+    User.findById.mockResolvedValue(mockUser);
+
+    await sendVerifyOtp(req, res);
+
+    expect(mockUser.verifyOtp).toMatch(/^\d{6}$/);
+    expect(mockUser.verifyOtpExpireAt).toBeGreaterThan(Date.now());
+
+    expect(transporter.sendMail).toHaveBeenCalledWith({
+      from: process.env.SENDER_EMAIL,
+      to: 'test@email.com',
+      subject: 'Account Verification OTP',
+      html: expect.stringContaining(mockUser.email),
+    });
+
+    expect(res.json).toHaveBeenCalledWith({
+      success: true,
+      message: 'Verification OTP sent to the email',
+    });
+  });
+
+  it('should return error if exception is thrown', async () => {
     User.findById.mockRejectedValue(new Error('DB error'));
 
     await sendVerifyOtp(req, res);
@@ -270,7 +334,6 @@ describe('Unit Test: sendVerifyOtp', () => {
     });
   });
 });
-
 
 //UNIT TEST-VERIFY EMAIL
 
@@ -444,32 +507,21 @@ describe('Unit Test: isAuthenticated', () => {
 const { sendResetOtp } = require('../controllers/authController');
 
 describe('Unit Test: sendResetOtp', () => {
-  let req, res, mockUser;
+  let req, res;
+
+  beforeAll(() => {
+    process.env.SENDER_EMAIL = 'noreply@geonex.com';
+  });
 
   beforeEach(() => {
-    req = {
-      body: {
-        email: 'test@email.com',
-      },
-    };
-    res = {
-      json: jest.fn(),
-    };
-
-    mockUser = {
-      email: 'test@email.com',
-      save: jest.fn(),
-    };
-
-    User.findOne.mockReset();
-    transporter.sendMail.mockClear();
+    req = { body: { email: 'test@email.com' } };
+    res = { json: jest.fn() };
+    jest.clearAllMocks();
   });
 
   it('should return error if email is missing', async () => {
-    req.body.email = '';
-
+    req.body = {}; // No email
     await sendResetOtp(req, res);
-
     expect(res.json).toHaveBeenCalledWith({
       success: false,
       message: 'Email is required',
@@ -477,29 +529,37 @@ describe('Unit Test: sendResetOtp', () => {
   });
 
   it('should return error if user not found', async () => {
-    User.findOne.mockResolvedValue(null);
-
+    User.findOne.mockResolvedValue(null); // No user found
     await sendResetOtp(req, res);
-
-    expect(User.findOne).toHaveBeenCalledWith({ email: 'test@email.com' });
     expect(res.json).toHaveBeenCalledWith({
       success: false,
       message: 'User not found',
     });
   });
 
-  it('should send OTP successfully', async () => {
+  it('should generate OTP, update user and send email', async () => {
+    const saveMock = jest.fn().mockResolvedValue();
+    const mockUser = {
+      email: req.body.email,
+      save: saveMock,
+    };
+
     User.findOne.mockResolvedValue(mockUser);
 
     await sendResetOtp(req, res);
 
-    expect(mockUser.resetOtp).toBeDefined();
+    // Assert OTP format
+    expect(mockUser.resetOtp).toMatch(/^\d{6}$/);
     expect(mockUser.resetOtpExpiredAt).toBeGreaterThan(Date.now());
-    expect(mockUser.save).toHaveBeenCalled();
-    expect(transporter.sendMail).toHaveBeenCalledWith(expect.objectContaining({
-      to: 'test@email.com',
+
+    // Assert mail sent
+    expect(transporter.sendMail).toHaveBeenCalledWith({
+      from: process.env.SENDER_EMAIL,
+      to: req.body.email,
       subject: 'Password Reset OTP',
-    }));
+      html: expect.stringContaining(req.body.email),
+    });
+
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       message: 'OTP send to your email',
