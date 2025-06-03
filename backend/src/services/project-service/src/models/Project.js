@@ -15,6 +15,5 @@ const projectSchema = new mongoose.Schema({
     Points: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }]
   });
 
-
-  const Project = mongoose.model("Project", projectSchema);
-  module.exports = Project;
+const Project = mongoose.models.Project || mongoose.model("Project", projectSchema);
+module.exports = Project;
