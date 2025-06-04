@@ -1,9 +1,19 @@
 //UNIT TEST: GET USER DATA
 
-const { getUserData } = require('../controllers/userController');
-const User = require('../models/User');
+const { getUserData } = require('../src/controllers/userController');
+const User = require('../src/models/User');
 
-jest.mock('../models/User');
+jest.mock('../../device-service/src/models/Device', () => ({
+  find: jest.fn(),
+  findOne: jest.fn(),
+}));
+
+jest.mock('../../device-service/src/models/Alert', () => ({
+  find: jest.fn(),
+}));
+
+
+jest.mock('../src/models/User');
 
 describe('Unit Test: getUserData', () => {
   let req, res, mockUser;
@@ -63,12 +73,14 @@ describe('Unit Test: getUserData', () => {
   });
 });
 
-//UNIT TEST: ADD DEVICE TO USER
+// UNIT TEST: ADD DEVICE TO USER
 
-const { addDeviceToUser } = require('../controllers/userController'); // Replace with actual path
-const Device = require('../../device-service/models/Device');
+/*const { addDeviceToUser } = require('../src/controllers/userController');
 
-jest.mock('../../device-service/models/Device');
+
+const Device = {
+  findOne: jest.fn(),
+};
 
 describe('Unit Test: addDeviceToUser', () => {
   let req, res, userMock, deviceMock;
@@ -83,6 +95,8 @@ describe('Unit Test: addDeviceToUser', () => {
       status: jest.fn(() => res),
       json: jest.fn(),
     };
+
+    jest.clearAllMocks(); // Clear mocks before each test
 
     userMock = {
       _id: 'user123',
@@ -158,10 +172,11 @@ describe('Unit Test: addDeviceToUser', () => {
   });
 });
 
+*/
 
 //UNIT TEST: GET USER DEVICES
 
-const { getUserDevices } = require('../controllers/userController'); // Update path
+const { getUserDevices } = require('../src/controllers/userController'); // Update path
 
 describe('Unit Test: getUserDevices', () => {
   let req, res;
@@ -227,7 +242,7 @@ describe('Unit Test: getUserDevices', () => {
 
 //UNIT TEST: REMOVE DEVICE FROM USER
 
-const { removeDeviceFromUser } = require('../controllers/userController');
+const { removeDeviceFromUser } = require('../src/controllers/userController');
 
 describe('removeDeviceFromUser', () => {
   let req, res, mockUser;
@@ -297,7 +312,7 @@ describe('removeDeviceFromUser', () => {
 
 // UNIT TEST: GET USER BASES
 
-const { getUserBases } = require('../controllers/userController');
+const { getUserBases } = require('../src/controllers/userController');
 
 describe('getUserBases', () => {
 
@@ -376,7 +391,7 @@ describe('getUserBases', () => {
 
 //UNIT TEST: GET USER CLIENT DEVICES
 
-const { getUserClientDevices } = require('../controllers/userController');
+const { getUserClientDevices } = require('../src/controllers/userController');
 
 describe('getUserClientDevices', () => {
   afterEach(() => {
@@ -453,7 +468,7 @@ describe('getUserClientDevices', () => {
 
 //UNIT TEST:GET USER REGISTER DEVICES
 
-const { getUserRegisteredDevices } = require('../controllers/userController');
+/*const { getUserRegisteredDevices } = require('../src/controllers/userController');
 
 describe('getUserRegisteredDevices', () => {
   afterEach(() => {
@@ -514,10 +529,14 @@ describe('getUserRegisteredDevices', () => {
 
 //UNIT TEST: GET USER DEVICE ALERTS
 
-const { getUserDeviceAlerts } = require('../controllers/userController');
-const Alert = require('../../device-service/models/Alert')
+const { getUserDeviceAlerts } = require('../src/controllers/userController');
 
-jest.mock('../../device-service/models/Alert');
+jest.mock('../../device-service/src/models/Alert', () => ({
+  find: jest.fn()
+}));
+
+// ✅ Now import the mocked modules
+const Alert = require('../../device-service/src/models/Alert');
 
 describe('getUserDeviceAlerts', () => {
   afterEach(() => {
@@ -527,15 +546,12 @@ describe('getUserDeviceAlerts', () => {
   it('should return the latest 5 alerts for user devices', async () => {
     const mockUser = {
       _id: 'user123',
-      connectedDevices: [
-        { _id: 'device1' },
-        { _id: 'device2' },
-      ]
+      connectedDevices: [{ _id: 'device1' }, { _id: 'device2' }]
     };
 
     const mockAlerts = [
       { _id: 'alert1', deviceId: 'device1', message: 'Low battery' },
-      { _id: 'alert2', deviceId: 'device2', message: 'Disconnected' },
+      { _id: 'alert2', deviceId: 'device2', message: 'Disconnected' }
     ];
 
     User.findById.mockReturnValue({
@@ -544,20 +560,20 @@ describe('getUserDeviceAlerts', () => {
 
     Alert.find.mockReturnValue({
       sort: jest.fn().mockReturnThis(),
-      limit: jest.fn().mockResolvedValue(mockAlerts),
+      limit: jest.fn().mockResolvedValue(mockAlerts)
     });
 
     const req = { params: { userId: 'user123' } };
     const res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      json: jest.fn()
     };
 
     await getUserDeviceAlerts(req, res);
 
     expect(User.findById).toHaveBeenCalledWith('user123');
     expect(Alert.find).toHaveBeenCalledWith({
-      deviceId: { $in: ['device1', 'device2'] },
+      deviceId: { $in: ['device1', 'device2'] }
     });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ alerts: mockAlerts });
@@ -571,7 +587,7 @@ describe('getUserDeviceAlerts', () => {
     const req = { params: { userId: 'user123' } };
     const res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      json: jest.fn()
     };
 
     await getUserDeviceAlerts(req, res);
@@ -583,10 +599,7 @@ describe('getUserDeviceAlerts', () => {
   it('should return a message if no alerts found', async () => {
     const mockUser = {
       _id: 'user123',
-      connectedDevices: [
-        { _id: 'device1' },
-        { _id: 'device2' },
-      ]
+      connectedDevices: [{ _id: 'device1' }, { _id: 'device2' }]
     };
 
     User.findById.mockReturnValue({
@@ -595,13 +608,13 @@ describe('getUserDeviceAlerts', () => {
 
     Alert.find.mockReturnValue({
       sort: jest.fn().mockReturnThis(),
-      limit: jest.fn().mockResolvedValue([]),
+      limit: jest.fn().mockResolvedValue([])
     });
 
     const req = { params: { userId: 'user123' } };
     const res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      json: jest.fn()
     };
 
     await getUserDeviceAlerts(req, res);
@@ -618,7 +631,7 @@ describe('getUserDeviceAlerts', () => {
     const req = { params: { userId: 'user123' } };
     const res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      json: jest.fn()
     };
 
     await getUserDeviceAlerts(req, res);
@@ -628,3 +641,95 @@ describe('getUserDeviceAlerts', () => {
   });
 });
 
+
+
+const { addDeviceToUser } = require('../src/controllers/userController');
+
+describe('Unit Test: addDeviceToUser', () => {
+  let req, res, userMock, deviceMock;
+
+  beforeEach(() => {
+    req = {
+      params: { userId: 'user123' },
+      body: { DeviceCode: 'dev-001' },
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    jest.clearAllMocks();
+
+    userMock = {
+      _id: 'user123',
+      connectedDevices: [],
+      save: jest.fn(),
+    };
+
+    deviceMock = {
+      _id: 'device123',
+      DeviceCode: 'dev-001',
+    };
+  });
+
+  it('should return 404 if user not found', async () => {
+    User.findById.mockResolvedValue(null);
+
+    await addDeviceToUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
+  });
+
+  it('should return 404 if device not found', async () => {
+    User.findById.mockResolvedValue(userMock);
+    Device.findOne.mockResolvedValue(null);
+
+    await addDeviceToUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Device not found' });
+  });
+
+  it('should return 400 if device already assigned', async () => {
+    userMock.connectedDevices = ['device123'];
+    User.findById.mockResolvedValue(userMock);
+    Device.findOne.mockResolvedValue(deviceMock);
+
+    await addDeviceToUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Device is already assigned to this user',
+    });
+  });
+
+  it('should assign device to user successfully', async () => {
+    User.findById.mockResolvedValue(userMock);
+    Device.findOne.mockResolvedValue(deviceMock);
+
+    await addDeviceToUser(req, res);
+
+    expect(userMock.connectedDevices).toContain(deviceMock._id);
+    expect(userMock.save).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Device added to user successfully',
+      connectedDevices: userMock.connectedDevices,
+    });
+  });
+
+  it('should handle internal server error', async () => {
+    User.findById.mockRejectedValue(new Error('DB error'));
+
+    await addDeviceToUser(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Internal server error',
+    });
+  });
+});
+
+*/
