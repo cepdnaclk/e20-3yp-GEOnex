@@ -2,7 +2,7 @@ const fs = require("fs").promises;
 const {ObjectId} = require('mongodb');
 const { getDb } = require("../config/db");
 
-const { exportToTxt, exportToPng, exportToDxf, exportToPdf } = require("../utils/export");
+const { exportToTxt,  exportToDxf, exportToPdf } = require("../utils/export");
 
 
 // Validation middleware for projectId
@@ -93,59 +93,59 @@ const exportTxt = async (req, res) => {
 
 
 
-const exportPng= async (req, res) => {
-  let filePath = null;
+// const exportPng= async (req, res) => {
+//   let filePath = null;
   
-  try {
-    const { projectId} = req.params;
-    if (!ObjectId.isValid(projectId)) {
-      return res.status(400).json({ error: "Invalid Project ID" });
-    }
+//   try {
+//     const { projectId} = req.params;
+//     if (!ObjectId.isValid(projectId)) {
+//       return res.status(400).json({ error: "Invalid Project ID" });
+//     }
 
-    const db = getDb();
-    const cursor = await db.collection('points').find({ 
-      ProjectId: new ObjectId(projectId) 
-    });
-    const points = await cursor.toArray();
+//     const db = getDb();
+//     const cursor = await db.collection('points').find({ 
+//       ProjectId: new ObjectId(projectId) 
+//     });
+//     const points = await cursor.toArray();
     
-    if (!points || points.length === 0) {
-      return res.status(404).json({ 
-        message: "No points found for the specified user",
-        projectId 
-      });
-    }
+//     if (!points || points.length === 0) {
+//       return res.status(404).json({ 
+//         message: "No points found for the specified user",
+//         projectId 
+//       });
+//     }
     
-    const filename = `points-${projectId}-${Date.now()}.png`;
-    filePath = await exportToPng(points, filename);
+//     const filename = `points-${projectId}-${Date.now()}.png`;
+//     filePath = await exportToPng(points, filename);
     
-    if (!filePath || !(await fs.access(filePath).then(() => true).catch(() => false))) {
-      throw new Error("Failed to generate PNG file");
-    }
+//     if (!filePath || !(await fs.access(filePath).then(() => true).catch(() => false))) {
+//       throw new Error("Failed to generate PNG file");
+//     }
     
-    // Set proper headers
-    res.setHeader('Content-Type', 'image/png');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+//     // Set proper headers
+//     res.setHeader('Content-Type', 'image/png');
+//     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     
-    // Send file and cleanup after response
-    res.download(filePath, filename, (err) => {
-      if (err) {
-        console.error("Error sending PNG file:", err);
-      }
-      // Cleanup temp file
-      cleanupFile(filePath);
-    });
+//     // Send file and cleanup after response
+//     res.download(filePath, filename, (err) => {
+//       if (err) {
+//         console.error("Error sending PNG file:", err);
+//       }
+//       // Cleanup temp file
+//       cleanupFile(filePath);
+//     });
     
-  } catch (err) {
-    console.error("PNG export error:", err);
-    if (filePath) {
-      cleanupFile(filePath);
-    }
-    res.status(500).json({ 
-      message: "Error generating PNG export", 
-      error: process.env.NODE_ENV === 'development' ? err.message : "Internal server error"
-    });
-  }
-}
+//   } catch (err) {
+//     console.error("PNG export error:", err);
+//     if (filePath) {
+//       cleanupFile(filePath);
+//     }
+//     res.status(500).json({ 
+//       message: "Error generating PNG export", 
+//       error: process.env.NODE_ENV === 'development' ? err.message : "Internal server error"
+//     });
+//   }
+// }
 
 
 const exportDxf =  async (req, res) => {
@@ -259,7 +259,7 @@ const exportPdf = async (req, res) => {
 
 module.exports = {
   exportTxt,
-  exportPng,
+  // exportPng,
   exportDxf,
   exportPdf,
   validateProjectId,
