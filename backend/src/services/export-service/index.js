@@ -5,20 +5,18 @@ require("dotenv").config();
 const {connectDb} = require('./src/config/db');
 
 const exportRoutes = require('./src/routes/exportRoutes');
+const cors = require('cors');
 
+
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 app.use('/api/export',exportRoutes);
 
+
 connectDb();
-
-
-const cors = require('cors');
-
-// Allow all origins with credentials
-app.use(cors({
-  origin: true,  // allows all origins
-  credentials: true // allow cookies/auth headers
-}));
 
 const PORT = process.env.SERVER_PORT || 5006;
 app.listen(PORT, () => {
