@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 // }));
 
 app.use(cors({
-  origin: true, // Allow all origins temporarily
+  origin: true, 
   credentials: true
 }));
 
