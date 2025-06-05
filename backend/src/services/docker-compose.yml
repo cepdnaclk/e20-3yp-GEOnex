@@ -101,25 +101,22 @@ services:
       retries: 3
       start_period: 30s
 
-  # export-service:
-  #   build: ./export-service
-  #   container_name: export-service
-  #   ports:
-  #     - "5006:5006"
-  #   env_file:
-  #     - ./export-service/.env
-  #   networks:
-  #     - microservices-network
-  #   volumes:
-  #     - .:/app          # Mount code
-  #     - /app/node_modules  # Prevent host node_modules from being mounted
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:5006/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 30s
+  export-service:
+    build: ./export-service
+    container_name: export-service
+    ports:
+      - "5006:5006"
+    env_file:
+      - ./export-service/.env
+    networks:
+      - microservices-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   mqtt-service:
     build: ./mqtt-service
