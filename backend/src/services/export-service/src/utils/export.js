@@ -1,7 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { createCanvas } = require("canvas"); 
-
 
 const utm = require("utm");
 
@@ -54,86 +52,86 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
   return R * c;
 };
 
-const exportToPng = (points, filename) => {
-  if (!points || points.length === 0) throw new Error("No points to export");
+// const exportToPng = (points, filename) => {
+//   if (!points || points.length === 0) throw new Error("No points to export");
 
-  const canvasSize = 800;
-  const padding = 60;
-  const canvas = createCanvas(canvasSize, canvasSize);
-  const ctx = canvas.getContext("2d");
+//   const canvasSize = 800;
+//   const padding = 60;
+//   const canvas = createCanvas(canvasSize, canvasSize);
+//   const ctx = canvas.getContext("2d");
 
-  // Background
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, canvasSize, canvasSize);
+//   // Background
+//   ctx.fillStyle = "#fff";
+//   ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-  // Get bounds
-  const lats = points.map(p => p.Latitude);
-  const lngs = points.map(p => p.Longitude);
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-  const minLng = Math.min(...lngs);
-  const maxLng = Math.max(...lngs);
+//   // Get bounds
+//   const lats = points.map(p => p.Latitude);
+//   const lngs = points.map(p => p.Longitude);
+//   const minLat = Math.min(...lats);
+//   const maxLat = Math.max(...lats);
+//   const minLng = Math.min(...lngs);
+//   const maxLng = Math.max(...lngs);
 
-  const scaleX = (canvasSize - 2 * padding) / (maxLng - minLng || 1);
-  const scaleY = (canvasSize - 2 * padding) / (maxLat - minLat || 1);
+//   const scaleX = (canvasSize - 2 * padding) / (maxLng - minLng || 1);
+//   const scaleY = (canvasSize - 2 * padding) / (maxLat - minLat || 1);
 
-  // Normalize coords
-  const normalize = (lat, lng) => ({
-    x: padding + (lng - minLng) * scaleX,
-    y: canvasSize - (padding + (lat - minLat) * scaleY),
-  });
+//   // Normalize coords
+//   const normalize = (lat, lng) => ({
+//     x: padding + (lng - minLng) * scaleX,
+//     y: canvasSize - (padding + (lat - minLat) * scaleY),
+//   });
 
-  // Draw lines & distances
-  ctx.strokeStyle = "#0077cc";
-  ctx.fillStyle = "#000";
-  ctx.lineWidth = 2;
-  ctx.font = "14px Arial";
+//   // Draw lines & distances
+//   ctx.strokeStyle = "#0077cc";
+//   ctx.fillStyle = "#000";
+//   ctx.lineWidth = 2;
+//   ctx.font = "14px Arial";
 
-  for (let i = 0; i < points.length; i++) {
-    const curr = points[i];
-    const next = points[(i + 1) % points.length]; // loop if polygon
+//   for (let i = 0; i < points.length; i++) {
+//     const curr = points[i];
+//     const next = points[(i + 1) % points.length]; // loop if polygon
 
-    const p1 = normalize(curr.Latitude, curr.Longitude);
-    const p2 = normalize(next.Latitude, next.Longitude);
+//     const p1 = normalize(curr.Latitude, curr.Longitude);
+//     const p2 = normalize(next.Latitude, next.Longitude);
 
-    // Draw line
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.stroke();
+//     // Draw line
+//     ctx.beginPath();
+//     ctx.moveTo(p1.x, p1.y);
+//     ctx.lineTo(p2.x, p2.y);
+//     ctx.stroke();
 
-    // Distance label
-    const dist = calculateDistance(curr.Latitude, curr.Longitude, next.Latitude, next.Longitude);
-    const midX = (p1.x + p2.x) / 2;
-    const midY = (p1.y + p2.y) / 2;
-    ctx.fillText(`${dist.toFixed(1)} m`, midX + 5, midY - 5);
-  }
+//     // Distance label
+//     const dist = calculateDistance(curr.Latitude, curr.Longitude, next.Latitude, next.Longitude);
+//     const midX = (p1.x + p2.x) / 2;
+//     const midY = (p1.y + p2.y) / 2;
+//     ctx.fillText(`${dist.toFixed(1)} m`, midX + 5, midY - 5);
+//   }
 
-  // Draw points
-  ctx.fillStyle = "#ff0000";
-  points.forEach(p => {
-    const { x, y } = normalize(p.Latitude, p.Longitude);
-    ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.fillText(p.Name || '', x + 6, y - 6);
-  });
+//   // Draw points
+//   ctx.fillStyle = "#ff0000";
+//   points.forEach(p => {
+//     const { x, y } = normalize(p.Latitude, p.Longitude);
+//     ctx.beginPath();
+//     ctx.arc(x, y, 5, 0, 2 * Math.PI);
+//     ctx.fill();
+//     ctx.fillText(p.Name || '', x + 6, y - 6);
+//   });
 
-  // Axes
-  ctx.strokeStyle = "#ccc";
-  ctx.beginPath();
-  ctx.moveTo(padding, canvasSize - padding);
-  ctx.lineTo(canvasSize - padding, canvasSize - padding);
-  ctx.lineTo(canvasSize - padding, padding);
-  ctx.stroke();
+//   // Axes
+//   ctx.strokeStyle = "#ccc";
+//   ctx.beginPath();
+//   ctx.moveTo(padding, canvasSize - padding);
+//   ctx.lineTo(canvasSize - padding, canvasSize - padding);
+//   ctx.lineTo(canvasSize - padding, padding);
+//   ctx.stroke();
 
-  // Save PNG
-  const filePath = path.join(__dirname, "../exports", filename);
-  fs.writeFileSync(filePath, canvas.toBuffer("image/png"));
-  return filePath;
-};
+//   // Save PNG
+//   const filePath = path.join(__dirname, "../exports", filename);
+//   fs.writeFileSync(filePath, canvas.toBuffer("image/png"));
+//   return filePath;
+// };
 
-module.exports = { exportToPng };
+// module.exports = { exportToPng };
 
 
 
@@ -288,4 +286,4 @@ const exportToPdf = (points, filename) => {
   });
 };
 
-module.exports = { exportToTxt, exportToPng, exportToDxf , exportToPdf };
+module.exports = { exportToTxt, exportToDxf , exportToPdf };
