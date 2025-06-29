@@ -13,7 +13,7 @@
 #include "pin_manager.h"
 #include "battery_manager.h"
 #include "wifi_strength.h"
-
+#include "mqtt_callback.h"
 
 IMUManager mpu(SDA, SCL);
 
@@ -102,6 +102,7 @@ void loop()
   publishData(DEVICE_ID, "OK", lat, lon, satellites, time, 0.0, 0.0, batteryPercentage, wifiquality);
 
   mqttLoop();
+  checkBaseTimeout();
 
   checkButtonPresses();
 

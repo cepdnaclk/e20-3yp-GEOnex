@@ -153,7 +153,7 @@ void publishBaseFix(float latitude, float longitude)
     char jsonBuffer[256];
     serializeJson(jsonDoc, jsonBuffer);
 
-    if (client.publish(MQTT_TOPIC_DATA_LIVE, jsonBuffer))
+    if (client.publish(MQTT_TOPIC_DATA_FIXED, jsonBuffer))
     {
         Serial.println("[INFO]  GPS Base Clibration data published successfully");
         handleMQTTLED();

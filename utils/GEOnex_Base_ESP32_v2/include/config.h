@@ -16,11 +16,11 @@
 // #define WIFI_SSID "Eng-Student"
 // #define WIFI_PASS "3nG5tuDt"
 
-#define WIFI_SSID "Malinga' internet"
-#define WIFI_PASS "tgfb6053"
+// #define WIFI_SSID "Malinga' internet"
+// #define WIFI_PASS "tgfb6053"
 
-// #define WIFI_SSID "Lord of the Ping"
-// #define WIFI_PASS "GS200123"
+#define WIFI_SSID "Lord of the Ping"
+#define WIFI_PASS "GS200123"
 
 // MQTT Broker
 #define MQTT_HOST "a1qulasp0wzg24-ats.iot.eu-north-1.amazonaws.com"
@@ -34,6 +34,7 @@
 // #define MQTT_TOPIC_DATA_LIVE "GEOnex/siteSurvey/data/" DEVICE_ID "/gps/live"
 // #define MQTT_TOPIC_DATA_LIVE "esp8266/pub"
 #define MQTT_TOPIC_DATA_LIVE "tracking/r/live/base123/data"
+#define MQTT_TOPIC_DATA_FIXED "fixing/b/live/base123/data"
 
 // Hardware Pins
 #define GPS_RX 16

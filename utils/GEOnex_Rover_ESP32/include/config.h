@@ -35,6 +35,9 @@
 // #define MQTT_TOPIC_DATA_LIVE "esp8266/pub"
 #define MQTT_TOPIC_DATA_LIVE "tracking/r/live/device123/data"
 
+#define MQTT_TOPIC_SUB_LIVE "tracking/r/live/base123/data"
+#define MQTT_TOPIC_SUB_FIXED "fixing/b/live/base123/data"
+
 // Hardware Pins
 #define GPS_RX 16
 #define GPS_TX 17

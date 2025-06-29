@@ -7,6 +7,7 @@
 #include "env.h"
 #include <WiFiClientSecure.h>
 #include "config.h"
+#include "mqtt_callback.h"
 
 WiFiClientSecure net;
 PubSubClient client(net);
@@ -43,6 +44,10 @@ void connectMQTT()
 
     // Connect MQTT client to AWS IoT Core
     client.setServer(MQTT_HOST, MQTT_PORT);
+
+    // ✅ Set the MQTT message callback here
+    client.setCallback(mqttCallback);
+    
     Serial.println("[PROCESS]   Connecting to AWS IoT...");
 
     // Attempt to connect to AWS IoT Core
@@ -58,6 +63,10 @@ void connectMQTT()
         Serial.println("[ERROR] AWS IoT Timeout!");
         return;
     }
+
+    // Subscribe to desired topics to get data from the base
+    client.subscribe(MQTT_TOPIC_SUB_LIVE);
+    client.subscribe(MQTT_TOPIC_SUB_FIXED);
 
     // Subscribe to MQTT topic
     client.subscribe(MQTT_TOPIC_COMMAND);
