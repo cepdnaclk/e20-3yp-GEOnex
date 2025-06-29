@@ -14,6 +14,7 @@
 #include "battery_manager.h"
 #include "wifi_strength.h"
 #include "mqtt_callback.h"
+#include "gps_correction.h"
 
 IMUManager mpu(SDA, SCL);
 
@@ -71,10 +72,14 @@ void loop()
     float roll = mpu.getRoll();
     correctGPSCoordinates(lat, lon, pitch, roll, POLE_HEIGHT);
 
-    Serial.print("[Test]  Corrected GPS: ");
+    Serial.print("[Test] MPU Corrected GPS: ");
     Serial.print(lat, 6);
     Serial.print(", ");
     Serial.println(lon, 6);
+
+    updateRoverLive(lat, lon, time); // ✅ Trigger correction
+
+    GpsPosition corrected = getCorrectedRoverPosition();
   }
   else
   {

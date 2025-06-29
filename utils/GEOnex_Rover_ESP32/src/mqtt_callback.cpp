@@ -1,6 +1,7 @@
 #include "mqtt_callback.h"
 #include <ArduinoJson.h>
 #include "config.h"
+#include "gps_correction.h"
 
 unsigned long lastBaseDataTime = 0;
 unsigned long lastFixDataTime = 0;
@@ -16,8 +17,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
 
     Serial.print("[RECEIVED] Topic: ");
     Serial.println(topic);
-    Serial.print("Payload: ");
-    Serial.println(incoming);
+    // Serial.print("Payload: ");
+    // Serial.println(incoming);
 
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, incoming);
@@ -38,13 +39,18 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
         float lat = doc["latitude"];
         float lon = doc["longitude"];
         int sats = doc["Satellites"];
+        String time = doc["timestamp"];
 
         Serial.print("[Live Base Data] Lat: ");
         Serial.print(lat, 6);
         Serial.print(", Lon: ");
         Serial.print(lon, 6);
         Serial.print(", Sats: ");
-        Serial.println(sats);
+        Serial.print(sats);
+        Serial.print(", Time: ");
+        Serial.println(time);
+
+        updateBaseLive(lat, lon, time); // ✅ Feed live base
     }
     else if (topicStr == MQTT_TOPIC_SUB_FIXED)
     {
@@ -57,6 +63,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
         Serial.print(fixedLat, 6);
         Serial.print(", Lon: ");
         Serial.println(fixedLon, 6);
+
+        updateBaseFixed(fixedLat, fixedLon); // ✅ One-time init
     }
 }
 
