@@ -15,12 +15,21 @@
 #include "wifi_strength.h"
 #include "mqtt_callback.h"
 #include "gps_correction.h"
+#include "gnss_config.h"
 
 IMUManager mpu(SDA, SCL);
+
+// GNSS configuration
+GNSSConfig gnss;
 
 void setup()
 {
   Serial.begin(SERIAL_BAUD_RATE);
+  //Serial1.begin(GNSS_BAUD_RATE);
+
+  // Enable GNSS systems: GPS + Galileo + BeiDou +  GLONASS
+  //gnss.enableGNSS(Serial1);
+  //delay(2000); // Allow GPS to process config
 
   // Configures pin modes for LEDs and buttons
   setupPins();
@@ -38,6 +47,10 @@ void setup()
   initBatteryMonitor();
 
   Serial.println("[INFO]  ESP32 Setup complete");
+
+  // Set known fixed base location manually
+  // Comment this line to use the auto base fixed location
+  setManualBaseFixed(6.1042425, 80.222473);
 }
 
 void loop()
