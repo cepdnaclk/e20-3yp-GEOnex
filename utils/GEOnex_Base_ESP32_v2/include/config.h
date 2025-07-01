@@ -59,7 +59,7 @@
 
 // Delay Settings
 #define POWERUP_DELAY 5000         // Delay for power-up (in milliseconds)
-#define MAIN_LOOP_DELAY 2000        // Delay for main loop (in milliseconds)
+#define MAIN_LOOP_DELAY 500        // Delay for main loop (in milliseconds)
 #define WIFI_RETRY_DELAY 1000       // Delay for WiFi connection retries (in milliseconds)
 #define MQTT_RETRY_DELAY 1000       // Delay for MQTT connection retries (in milliseconds)
 #define GPS_UPDATE_DELAY 2000       // Delay between GPS updates (in milliseconds)
@@ -78,6 +78,7 @@
 
 //Base Calibration
 #define BUFFER_SIZE 10
+#define AVERAGE_SAMPLES 5
 
 //GPS time Settings
 #define UTCOFFSETHOURS 5

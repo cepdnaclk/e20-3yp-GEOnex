@@ -8,9 +8,10 @@ struct GpsPosition
     bool valid;
 };
 
+void setManualBaseFixed(float lat, float lon);
 void updateBaseFixed(float lat, float lon);
 void updateBaseLive(float lat, float lon, String timestamp);
 void updateRoverLive(float lat, float lon, String timestramp);
-GpsPosition getCorrectedRoverPosition(); // ✅ Add this
+GpsPosition getCorrectedRoverPosition();
 
 #endif
