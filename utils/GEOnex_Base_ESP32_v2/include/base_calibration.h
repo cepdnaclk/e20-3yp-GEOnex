@@ -3,6 +3,14 @@
 
 #include "base_corrections.h"
 
+// Structure to store base fixed position data
+struct FIXEDData
+{
+    double latitude;
+    double longitude;
+    bool isValid;
+};
+
 FIXEDData computePrecisePosition();
 
 #endif

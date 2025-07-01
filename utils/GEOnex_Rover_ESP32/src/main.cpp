@@ -25,11 +25,11 @@ GNSSConfig gnss;
 void setup()
 {
   Serial.begin(SERIAL_BAUD_RATE);
-  //Serial1.begin(GNSS_BAUD_RATE);
+  // Serial1.begin(GNSS_BAUD_RATE);
 
-  // Enable GNSS systems: GPS + Galileo + BeiDou +  GLONASS
-  //gnss.enableGNSS(Serial1);
-  //delay(2000); // Allow GPS to process config
+  // // Enable GNSS systems: GPS + Galileo + BeiDou +  GLONASS
+  // gnss.enableGNSS(Serial1);
+  // delay(2000); // Allow GPS to process config
 
   // Configures pin modes for LEDs and buttons
   setupPins();

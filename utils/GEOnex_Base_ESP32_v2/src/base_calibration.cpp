@@ -6,6 +6,7 @@
 #include "config.h"
 #include "gps_manager.h"
 #include "base_corrections.h"
+#include "base_calibration.h"
 
 // Create GPS module instance
 
