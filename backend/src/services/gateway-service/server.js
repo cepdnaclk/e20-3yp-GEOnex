@@ -174,7 +174,11 @@ app.all('/api/user/*', (req, res) => forwardRequest(req, res, 'auth'));
 // Other service routes
 app.all('/api/devices/*', (req, res) => forwardRequest(req, res, 'devices'));
 app.all('/api/projects/*', (req, res) => forwardRequest(req, res, 'projects'));
+
 app.all('/api/points/*', (req, res) => forwardRequest(req, res, 'points'));
+
+app.all('/api/points', (req, res) => forwardRequest(req, res, 'points'));
+
 app.all('/api/export/*', (req, res) => forwardRequest(req, res, 'export'));
 app.all('/api/notifications/*', (req, res) => forwardRequest(req, res, 'notifications'));
 
