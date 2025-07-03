@@ -13,7 +13,6 @@ const Loading = () => {
 
       {/* animated Loading… */}
       <p className="flex items-end gap-1 mt-1 md:mt-3 text-base sm:text-xl text-white/80">
-        Loading
         {/* three dots with staggered bounce */}
         <span className="animate-bounce [animation-delay:0s]">.</span>
         <span className="animate-bounce [animation-delay:.15s]">.</span>

@@ -7,18 +7,37 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PageTopic from "../components/PageTopic";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 // Extend dayjs with relativeTime
 dayjs.extend(relativeTime);
 
 const ProjectDetails = () => {
-  const { navigate, backendUrl, removeProject} = useContext(Context);
+  const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections} = useContext(Context);
   const { projectId } = useParams();
-  const [project, setProject] = useState(null);
+  
 
   const [exportFormat, setExportFormat] = useState("dwg");
   const [isExporting, setIsExporting] = useState(false);
   const [exportStatus, setExportStatus] = useState(null);
+
+  const [newSection, setNewSection] = useState("");
+
+  const handleAddSection = () => {
+    const trimmed = newSection.trim();
+    if (trimmed === "") return;
+
+    if (project.Sections.includes(trimmed)) {
+      toast.error("Section already exists");
+    } else {
+      setProject({
+        ...project,
+        Sections: [...project.Sections, trimmed],
+      });
+      updateProjectSections(projectId, [...project.Sections, trimmed]);
+      setNewSection("");
+    }
+  };
 
   const handleDelete = async () => {
     const ok = window.confirm(
@@ -32,22 +51,7 @@ const ProjectDetails = () => {
   };
 
   useEffect(() => {
-    // Fetch project details from backend using projectId from the URL.
-    const fetchProject = async () => {
-      try {
-        const response = await axios.get(
-          `${backendUrl}/api/projects/${projectId}`
-        );
-        if (response.data.success) {
-          setProject(response.data.project);
-        } else {
-          toast.error(response.data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching project details:", error);
-      }
-    };
-    fetchProject();
+    fetchProject(projectId);
   }, [projectId]);
 
   // Handle export format selection
@@ -107,7 +111,7 @@ const handleExport = async () => {
 
 
 
-  if (!project) return <div>Loading...</div>;
+  if (!project) return <div><LoadingSpinner size={10}/></div>;
 
   return (
     <div>
@@ -328,6 +332,7 @@ const handleExport = async () => {
             </span>
           </div>
 
+
           <div className="flex justify-between items-center">
             <span className="font-semibold text-sm md:text-base">
               Survey Time
@@ -349,6 +354,45 @@ const handleExport = async () => {
 
           
         </div>
+ <div className="bg-white p-5 rounded-lg flex flex-col gap-5 h-max">
+      <h2 className="text-base md:text-lg font-semibold pb-5">Sections</h2>
+
+      <div className="flex flex-wrap gap-2">
+        {project.Sections && project.Sections.length > 0 ? (
+          project.Sections.map((section, idx) => (
+            <span
+              key={idx}
+              className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-1 rounded-full text-xs md:text-sm"
+            >
+              {section}
+            </span>
+          ))
+        ) : (
+          <span className="text-gray-500">No sections available</span>
+        )}
+      </div>
+
+      {/* Input + Button to add new section */}
+      <div className="mt-4 flex gap-2">
+        <input
+          type="text"
+          placeholder="Add new section"
+          className="flex-1 p-2 border rounded-lg text-sm md:text-base"
+          style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
+          value={newSection}
+          onChange={(e) => setNewSection(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleAddSection();
+          }}
+        />
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm md:text-base"
+          onClick={handleAddSection}
+        >
+          Add
+        </button>
+      </div>
+    </div>
 
 
       </div>

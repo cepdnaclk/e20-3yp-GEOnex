@@ -101,5 +101,37 @@ const deleteProject = async (req, res) => {
 };
 
 
+// Add a new section to a project
+const modifySectionToProject = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;  
+    const { sectionName } = req.body;
 
-module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject};
+    try {
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Add the new section to the project's Sections array
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $addToSet: { Sections: sectionName } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to add section' });
+        }
+
+        res.json({ success: true, message: 'Section added successfully', projectId });
+    } catch (error) {
+        console.error("Error modifying section to project:", error);
+        res.status(500).json({ message: 'Error modifying section to project', error: error.message });
+    }
+    
+}
+
+
+
+module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject};

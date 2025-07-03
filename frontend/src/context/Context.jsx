@@ -22,12 +22,16 @@ const ContextProvider = (props) => {
   const wsUrl = env === "production" ? wsUrl_Pro : wsUrl_Dev;
 
 
+  const [project, setProject] = useState(null);
+
+
 
   const [rovers, setRovers] = useState([]);
   const [base, setBase] = useState();
 
   const [projects, setProjects] = useState([]);
   const [points, setPoints] = useState([]);
+
   const [loadingPoints, setLoadingPoints] = useState(false);
 
   const [isLoggedin, setIsLoggedin] = useState(false);
@@ -189,6 +193,44 @@ const ContextProvider = (props) => {
   }
 };
 
+
+// get project data
+const fetchProject = async (projectId) => {
+      try {
+        const response = await axios.get(
+          `${backendUrl}/api/projects/${projectId}`
+        );
+        if (response.data.success) {
+          setProject(response.data.project);
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching project details:", error);
+      }
+    };
+
+  const updateProjectSections = async (projectId, sections) => {
+    try {
+      const newSection = sections[sections.length - 1];
+      const response = await axios.put(
+        `${backendUrl}/api/projects/sections/${projectId}`,
+        { sectionName: newSection }
+      );
+      if (response.data.success) {
+        setProject((prevProject) => ({
+          ...prevProject,
+          Sections: sections,
+        }));
+        toast.success("Project sections updated successfully");
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating project sections:", error);
+      toast.error("Failed to update project sections");
+    }
+  };
 
 
   // devices
@@ -369,7 +411,11 @@ const fetchSettings = async () => {
     resetSettings,
     logout,
     wsUrl,
-    isLoading
+    isLoading,
+    fetchProject,
+    setProject,
+    project,
+    updateProjectSections,
   };
 
   return <Context.Provider value={value}>{props.children}</Context.Provider>;

@@ -97,6 +97,39 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
         </div>
 
         <div className="mt-4 px-4">
+            <label className="block text-sm md:text-base text-gray-700">
+              Select a section
+            </label>
+            <select
+              className="w-full mt-1 p-1 border rounded-xl text-sm md:text-base"
+              style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
+              value={selectedSection || ""}
+              onChange={(e) => setSelectedSection(e.target.value)}
+            >
+              <option value="">Select a section...</option>
+              {projectSections && projectSections.length > 0 &&
+                projectSections.map((section, idx) => (
+            <option key={idx} value={section}>
+              {section}
+            </option>
+                ))}
+            </select>
+            <button
+              className="mt-2 w-full bg-blue-500 text-white p-1 rounded-xl text-sm md:text-base"
+              type="button"
+              onClick={() => {
+                const newSection = prompt("Enter new section name:");
+                if (newSection && !projectSections.includes(newSection)) {
+            setProjectSections([...projectSections, newSection]);
+            setSelectedSection(newSection);
+                }
+              }}
+            >
+              + Add New Section
+            </button>
+          </div>
+
+        <div className="mt-4 px-4">
           <label className="block text-sm md:text-base text-gray-700">
             Select Client Device
           </label>
