@@ -1,0 +1,116 @@
+import ssl
+import time
+import json
+import paho.mqtt.client as mqtt
+from dotenv import load_dotenv
+import os
+import random
+
+# Load environment variables
+load_dotenv()
+
+# === AWS IoT Core Configuration ===
+thing_name = os.getenv("THING_NAME_Base")
+endpoint = os.getenv("AWS_IOT_ENDPOINT")
+port = int(os.getenv("AWS_IOT_PORT", "8883"))  # Default to 8883 if not set
+topic = os.getenv("TOPIC_Base")
+
+# === Certificate Paths ===
+ca_path = os.getenv("CA_PATH")
+cert_path = os.getenv("CERT_PATH")
+key_path = os.getenv("KEY_PATH")
+
+# === Validate required environment variables ===
+required_vars = [thing_name, endpoint, topic, ca_path, cert_path, key_path]
+if not all(required_vars):
+    print("Error: Missing required environment variables")
+    exit(1)
+
+# === Static Base Station GPS Position ===
+base_lat = float(os.getenv("BASE_LAT", "7.2906"))  # Default to Kandy
+base_lon = float(os.getenv("BASE_LON", "80.6337"))
+
+def get_base_data():
+    return {
+        "device": thing_name,
+        "status" : "active",
+        "latitude" : round(random.uniform(base_lat - 0.00001, base_lat + 0.00001), 6),
+        "longitude" : round(random.uniform(base_lon - 0.00001, base_lon + 0.00001), 6),
+        "satellites" : random.randint(5, 12),
+        "timestamp" : time.strftime("%Y-%m-%d %H:%M:%S"),
+        "battery" : random.randint(50, 100),
+        "wifi" : random.randint(60, 100),
+    }
+
+
+# === MQTT Setup ===
+client = mqtt.Client(client_id=thing_name)
+client.tls_set(ca_certs=ca_path,
+               certfile=cert_path,
+               keyfile=key_path,
+               tls_version=ssl.PROTOCOL_TLSv1_2)
+
+# === Callback Functions ===
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print(f"[CONNECTED] Successfully connected to AWS IoT Core")
+        print(f"[INFO] Publishing to topic: {topic}")
+    else:
+        print(f"[FAILED TO CONNECT] Error code: {rc}")
+        return
+
+def on_publish(client, userdata, mid):
+    print(f"[PUBLISHED] Message ID: {mid}")
+
+def on_disconnect(client, userdata, rc):
+    print(f"[DISCONNECTED] Reason code: {rc}")
+
+def on_log(client, userdata, level, buf):
+    print(f"[LOG] {buf}")
+
+# === Set Callbacks ===
+client.on_connect = on_connect
+client.on_publish = on_publish
+client.on_disconnect = on_disconnect
+client.on_log = on_log
+
+# === Main Publishing Loop ===
+def main():
+    try:
+        print(f"[CONNECTING] Connecting to {endpoint}:{port}")
+        client.connect(endpoint, port, 60)
+        
+        # Start the network loop in a separate thread
+        client.loop_start()
+        
+        # Wait for connection
+        time.sleep(2)
+        
+        # Publishing loop for base station data
+        while True:
+            if client.is_connected():
+                payload = get_base_data()
+                result = client.publish(topic, json.dumps(payload), qos=1)
+                
+                if result.rc == mqtt.MQTT_ERR_SUCCESS:
+                    print(f"[PAYLOAD] {payload}")
+                else:
+                    print(f"[PUBLISH ERROR] Failed to publish: {result.rc}")
+                
+                time.sleep(10)  # Wait 10 seconds before next transmission
+            else:
+                print("[ERROR] Not connected, attempting to reconnect...")
+                client.reconnect()
+                time.sleep(5)
+                
+    except KeyboardInterrupt:
+        print("\n[SHUTDOWN] Shutting down base station...")
+    except Exception as e:
+        print(f"[ERROR] {e}")
+    finally:
+        client.loop_stop()
+        client.disconnect()
+        print("[INFO] Base station disconnected")
+
+if __name__ == "__main__":
+    main()
