@@ -13,7 +13,10 @@ const projectSchema = new mongoose.Schema({
   Sections: { type: [String], default: ["default"] },
   BaseStation: { type: mongoose.Schema.Types.ObjectId, ref: "Device", required: true },
   ClientDevices: [{ type: mongoose.Schema.Types.ObjectId, ref: "Device", required: true }],
-  Points: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }]
+  Points: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }],
+  baseMode: { type: String, default: "auto" },
+  baseLatitude: { type: Number, default: null },
+  baseLongitude: { type: Number, default: null },
 });
 
 

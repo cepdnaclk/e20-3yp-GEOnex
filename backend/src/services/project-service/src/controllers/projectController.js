@@ -164,4 +164,63 @@ const deleteSectionfromProject = async (req, res) => {
 }
 
 
-module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject, deleteSectionfromProject};
+
+const modifyBaseMode = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;
+    const { baseMode } = req.body;
+    try {
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Update the baseMode field
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $set: { baseMode } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to update base mode' });
+        }
+
+        res.json({ success: true, message: 'Base mode updated successfully', projectId });
+    } catch (error) {
+        console.error("Error modifying base mode:", error);
+        res.status(500).json({ message: 'Error modifying base mode', error: error.message });
+    }
+}
+
+
+const modifyBaseLocation = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;
+    const { baseLatitude, baseLongitude } = req.body;
+
+    try {
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Update the baseLatitude and baseLongitude fields
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $set: { baseLatitude, baseLongitude } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to update base location' });
+        }
+
+        res.json({ success: true, message: 'Base location updated successfully', projectId });
+    } catch (error) {
+        console.error("Error modifying base location:", error);
+        res.status(500).json({ message: 'Error modifying base location', error: error.message });
+    }
+}
+
+module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject, deleteSectionfromProject, modifyBaseMode, modifyBaseLocation};

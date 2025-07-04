@@ -232,6 +232,51 @@ const fetchProject = async (projectId) => {
     }
   };
 
+  const updateProjectBaseMode = async (projectId, baseMode) => {
+    try {
+      const response = await axios.put(
+        `${backendUrl}/api/projects/basemode/${projectId}`,
+        { baseMode :baseMode}
+      );
+      if (response.data.success) {
+        setProject((prevProject) => ({
+          ...prevProject,
+          BaseMode: baseMode,
+        }));
+        toast.success("Project base mode updated successfully");
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating project base mode:", error);
+      toast.error("Failed to update project base mode");
+    }
+  };
+
+
+  const updateProjectBaseLocations = async (projectId, baseLatitude, baseLongitude) => {
+    try {
+      const response = await axios.put(
+        `${backendUrl}/api/projects/baselocation/${projectId}`,
+        { baseLatitude: baseLatitude, 
+          baseLongitude: baseLongitude }
+      );
+      if (response.data.success) {
+        setProject((prevProject) => ({
+          ...prevProject,
+          BaseLatitude: baseLatitude,
+          BaseLongitude: baseLongitude,
+        }));
+        toast.success("Project base locations updated successfully");
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating project base locations:", error);
+      toast.error("Failed to update project base locations");
+    }
+  };
+
   const removeProjectSection = async (projectId, section) => {
     try { 
       await axios.delete(
@@ -432,6 +477,8 @@ const fetchSettings = async () => {
     project,
     updateProjectSections,
     removeProjectSection,
+    updateProjectBaseMode,
+    updateProjectBaseLocations
   };
 
   return <Context.Provider value={value}>{props.children}</Context.Provider>;

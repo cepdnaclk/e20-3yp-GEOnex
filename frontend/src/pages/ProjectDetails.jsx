@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PageTopic from "../components/PageTopic";
 import LoadingSpinner from "../components/LoadingSpinner";
+import PositioningMode from "../components/PositioningMode";
 
 // Extend dayjs with relativeTime
 dayjs.extend(relativeTime);
@@ -15,6 +16,7 @@ dayjs.extend(relativeTime);
 const ProjectDetails = () => {
   const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections, removeProjectSection} = useContext(Context);
   const { projectId } = useParams();
+  
   
 
   const [exportFormat, setExportFormat] = useState("dwg");
@@ -289,14 +291,9 @@ const handleExport = async () => {
 
 
 
-        {/* assigned devices */}
-
-        <div className=" bg-white p-5 rounded-lg flex flex-col gap-2 h-max ">
-          <h2 className="text-base md:text-lg font-semibold pb-2">Devices</h2>
-
-          
-        </div>
-
+        {/* assigned Configs */}
+        
+        <PositioningMode />
       </div>
 
       <div className="flex flex-col gap-4">
