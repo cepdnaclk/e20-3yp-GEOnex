@@ -97,7 +97,7 @@ def main():
                 else:
                     print(f"[PUBLISH ERROR] Failed to publish: {result.rc}")
                 
-                time.sleep(12)  # Wait 10 seconds before next transmission
+                time.sleep(1)  # Wait 10 seconds before next transmission
             else:
                 print("[ERROR] Not connected, attempting to reconnect...")
                 client.reconnect()

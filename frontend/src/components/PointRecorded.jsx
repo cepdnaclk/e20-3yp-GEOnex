@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../context/Context";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { use } from "react";
 
 const PointRecorded = ({ sensorData, baseData, projectId }) => {
   const { backendUrl, setShowPointRecorded, fetchPoints, points, project } = useContext(Context);
@@ -12,6 +13,51 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
   const [isTakePoint, setIsTakePoint] = useState(false);
   const [selectedSection, setSelectedSection] = useState("");
   const [projectSections, setProjectSections] = useState(project?.Sections || []);
+
+
+
+  const [correctedLatitude, setCorrectedLatitude] = useState(null);
+  const [correctedLongitude, setCorrectedLongitude] = useState(null);
+
+  useEffect(() => {
+
+    // compare time delta of baseData and clientDevice
+    if (baseData?.timestamp && clientDevice?.timestamp) {
+      const baseTime = new Date(baseData.timestamp).getTime();
+      const clientTime = new Date(clientDevice.timestamp).getTime();
+      const timeDeltaSeconds = Math.abs((clientTime - baseTime) / 1000);
+      console.log(`Base timestamp: ${baseData.timestamp}`);
+      console.log(`Client timestamp: ${clientDevice.timestamp}`);
+      console.log(`Time delta between base and client device: ${timeDeltaSeconds} seconds`);
+      // assign accuracy based on time delta
+      if (timeDeltaSeconds > 10) {
+        clientDevice.accuracy = "Low";
+      } else if (timeDeltaSeconds > 5) {
+        clientDevice.accuracy = "Medium";
+      } else {
+        clientDevice.accuracy = "High";
+      }
+    }
+
+    if (
+      project?.baseMode === "known" &&
+      clientDevice &&
+      typeof clientDevice.latitude === "number" &&
+      typeof clientDevice.longitude === "number" &&
+      baseData &&
+      typeof baseData.latitude === "number" &&
+      typeof baseData.longitude === "number"
+    ) {
+      const deltaLat = project.baseLatitude - baseData.baseLatitude;
+      const deltaLng = project.baseLongitude - baseData.baseLongitude;
+
+      setCorrectedLatitude(clientDevice.latitude + deltaLat);
+      setCorrectedLongitude(clientDevice.longitude + deltaLng);
+    } else {
+      setCorrectedLatitude(null);
+      setCorrectedLongitude(null);
+    }
+  }, [project, clientDevice, baseData]);
 
   useEffect(() => {
     if (sensorData && sensorData.length > 0) {
@@ -98,13 +144,23 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       w-full md:w-[280px] 
       text-center"
       >
-        {/* Title */}
-        <h2 className="sm:text-lg md:text-xl font-bold">Record a Point</h2>
-        <p className="text-green-500 text-sm  md:text-base font-semibold mt-1">
-          Accuracy: {clientDevice?.accuracy || "N/A"}
-        </p>
+        {/* /* Title  */}
+          <h2 className="sm:text-lg md:text-xl font-bold">Record a Point</h2>
+          <p
+            className={`text-sm md:text-base font-semibold mt-1 ${
+              clientDevice?.accuracy === "Low"
+                ? "text-red-500"
+                : clientDevice?.accuracy === "Medium"
+                ? "text-yellow-500"
+                : clientDevice?.accuracy === "High"
+                ? "text-green-500"
+                : "text-gray-500"
+            }`}
+          >
+            Accuracy: {clientDevice?.accuracy || "N/A"}
+          </p>
 
-        {/* Divider */}
+          {/* Divider */}
         <div className="border-t border-black my-3"></div>
 
         <div className="mt-4 px-4">
@@ -189,7 +245,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
           </button>
 
           <button
-            className="border border-black p-1 rounded-xl text-sm md:text-base mb-2"
+            className=" p-1 rounded-xl text-sm md:text-base mb-2"
             style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
             onClick={() => setShowPointRecorded(false)}
             disabled={loading}

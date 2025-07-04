@@ -23,7 +23,7 @@ const pointSchema = new mongoose.Schema({
         required: true 
     },
     Accuracy: { 
-        type: Number, 
+        type: String, 
         default: null 
     },
     Timestamp: { 
