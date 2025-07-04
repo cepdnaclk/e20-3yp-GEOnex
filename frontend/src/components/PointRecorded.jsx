@@ -54,8 +54,8 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       setCorrectedLatitude(clientDevice.latitude + deltaLat);
       setCorrectedLongitude(clientDevice.longitude + deltaLng);
     } else {
-      setCorrectedLatitude(null);
-      setCorrectedLongitude(null);
+      setCorrectedLatitude(clientDevice?.latitude || null);
+      setCorrectedLongitude(clientDevice?.longitude || null);
     }
   }, [project, clientDevice, baseData]);
 
@@ -111,8 +111,8 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       ProjectId: projectId,
       Name: pointName,
       Type: "recorded",
-      Latitude: clientDevice.latitude,
-      Longitude: clientDevice.longitude,
+      Latitude: correctedLatitude,
+      Longitude: correctedLongitude,
       Accuracy: clientDevice.accuracy || null,
       Timestamp: new Date().toISOString(),
       Device: clientDevice.Name || null,
