@@ -269,7 +269,7 @@ const handleExport = async () => {
         <PositioningMode />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 max-w-2xl  ">
          {/* Overview Section (Right) */}
         <ProjectOverview/>
 
