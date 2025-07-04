@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { use } from "react";
 
 const PointRecorded = ({ sensorData, baseData, projectId }) => {
-  const { backendUrl, setShowPointRecorded, fetchPoints, points, project } = useContext(Context);
+  const { backendUrl, setShowPointRecorded, fetchPoints, points, project, updateProjectSections } = useContext(Context);
 
   const [pointName, setPointName] = useState("New Point");
   const [loading, setLoading] = useState(false);
@@ -82,6 +82,9 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     }
   }, [projectSections, selectedSection]);
 
+    
+
+
   const handleSectionChange = (e) => {
     const value = e.target.value;
 
@@ -91,6 +94,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
         const updated = [...projectSections, newSection];
         setProjectSections(updated);
         setSelectedSection(newSection);
+        updateProjectSections(project._id, newSection);
       }
     } else {
       setSelectedSection(value);
@@ -98,6 +102,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
   };
 
   const handleSave = async () => {
+    ///////////////////////////////////
     // Ensure sensor data is available
     if (!clientDevice.latitude || !clientDevice.longitude) {
       toast.error("No sensor data available to record a point.");
@@ -105,7 +110,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     }
     setLoading(true);
 
-    // Do correction for lan, lat here : Kind a logic thing
+    
 
     const payload = {
       ProjectId: projectId,
