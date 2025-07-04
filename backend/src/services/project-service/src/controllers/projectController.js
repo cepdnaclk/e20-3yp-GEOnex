@@ -133,5 +133,35 @@ const modifySectionToProject = async (req, res) => {
 }
 
 
+const deleteSectionfromProject = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;  
+    const { sectionName } = req.body;
 
-module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject};
+    try {
+        console.log("Incoming DELETE request body:", req.body);
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Remove the section from the project's Sections array
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $pull: { Sections: sectionName } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to remove section' });
+        }
+
+        res.json({ success: true, message: 'Section removed successfully', projectId });
+    } catch (error) {
+        console.error("Error deleting section from project:", error);
+        res.status(500).json({ message: 'Error deleting section from project', error: error.message });
+    }
+}
+
+
+module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject, deleteSectionfromProject};

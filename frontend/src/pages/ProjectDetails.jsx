@@ -13,7 +13,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 dayjs.extend(relativeTime);
 
 const ProjectDetails = () => {
-  const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections} = useContext(Context);
+  const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections, removeProjectSection} = useContext(Context);
   const { projectId } = useParams();
   
 
@@ -48,6 +48,21 @@ const ProjectDetails = () => {
 
     await removeProject(projectId);
     navigate(-1); // Go back
+  };
+
+  const removeSection = async (projectId, section) => {
+    try {
+
+      await removeProjectSection(projectId, section);
+
+      if (response.data.success) {  
+        toast.success("Section removed successfully");
+      } else {
+        toast.error("Failed to remove section");
+      }
+    } catch (error) {
+      console.error("Error removing section:", error);
+    }
   };
 
   useEffect(() => {
@@ -276,8 +291,8 @@ const handleExport = async () => {
 
         {/* assigned devices */}
 
-        <div className=" bg-white p-5 rounded-lg flex flex-col gap-5 h-max ">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Devices</h2>
+        <div className=" bg-white p-5 rounded-lg flex flex-col gap-2 h-max ">
+          <h2 className="text-base md:text-lg font-semibold pb-2">Devices</h2>
 
           
         </div>
@@ -286,8 +301,8 @@ const handleExport = async () => {
 
       <div className="flex flex-col gap-4">
          {/* Overview Section (Right) */}
-        <div className=" bg-white p-5 rounded-lg flex flex-col gap-5 h-max ">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Overview</h2>
+        <div className=" bg-white p-5 rounded-lg flex flex-col gap-3 h-max ">
+          <h2 className="text-base md:text-lg font-semibold pb-2">Overview</h2>
 
           <div className="flex justify-between items-center">
             <span className="font-semibold text-sm md:text-base">
@@ -347,32 +362,50 @@ const handleExport = async () => {
         </div>
 
 
-        {/* assigned survayers */}
+        {/* /* assigned survayers */} 
 
-        <div className=" bg-white p-5 rounded-lg flex flex-col gap-5 h-max ">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Surveyers</h2>
+          <div className=" bg-white p-5 rounded-lg flex flex-col gap-2 h-max ">
+            <h2 className="text-base md:text-lg font-semibold pb-2">Surveyers</h2>
 
-          
-        </div>
- <div className="bg-white p-5 rounded-lg flex flex-col gap-5 h-max">
-      <h2 className="text-base md:text-lg font-semibold pb-5">Sections</h2>
+            {/* Sections Manage */}
+          </div>
+         <div className="bg-white p-5 rounded-lg flex flex-col gap-2 h-max">
+              <h2 className="text-base md:text-lg font-semibold pb-2">Sections</h2>
 
-      <div className="flex flex-wrap gap-2">
-        {project.Sections && project.Sections.length > 0 ? (
-          project.Sections.map((section, idx) => (
-            <span
-              key={idx}
-              className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-1 rounded-full text-xs md:text-sm"
-            >
-              {section}
-            </span>
-          ))
-        ) : (
-          <span className="text-gray-500">No sections available</span>
-        )}
-      </div>
+              <div className="flex flex-wrap gap-2">
+          {project.Sections && project.Sections.length > 0 ? (
+            project.Sections.map((section, idx) => (
+              <span
+                key={idx}
+                className="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-1 rounded-full text-xs md:text-sm"
+              >
+                {section}
+                {section !== "default" && (
+  <button
+    className="ml-2 text-gray-900 hover:text-red-500 focus:outline-none text-lg"
+    title="Remove section"
+    onClick={() => {
+      const updatedSections = project.Sections.filter((_, i) => i !== idx);
+      setProject({
+        ...project,
+        Sections: updatedSections,
+      });
+      const removedSection = project.Sections[idx];
+      removeSection(projectId, removedSection);
+    }}
+  >
+    &times;
+  </button>
+)}
 
-      {/* Input + Button to add new section */}
+              </span>
+            ))
+          ) : (
+            <span className="text-gray-500">No sections available</span>
+          )}
+              </div>
+
+              {/* Input + Button to add new section */}
       <div className="mt-4 flex gap-2">
         <input
           type="text"
@@ -386,7 +419,8 @@ const handleExport = async () => {
           }}
         />
         <button
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm md:text-base"
+          className="bg-black hover:bg-gray-900 text-white px-8 py-1.5 rounded-xl text-sm md:text-base
+              disabled:bg-gray-400 dark:bg-indigo-600 dark:hover:bg-indigo-500"
           onClick={handleAddSection}
         >
           Add

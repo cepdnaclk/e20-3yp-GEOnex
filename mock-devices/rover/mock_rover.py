@@ -108,12 +108,12 @@ def main():
                     print(f"[PUBLISH ERROR] Failed to publish: {result.rc}")
                 
                 change_gps();   # to mock changeing the device locations
-                time.sleep(10)  # Wait 10 seconds before next move
+                time.sleep(8)  # Wait 10 seconds before next move
                 
             else:
                 print("[ERROR] Not connected, attempting to reconnect...")
                 client.reconnect()
-                time.sleep(5)
+                time.sleep()
                 
     except KeyboardInterrupt:
         print("\n[SHUTDOWN] Shutting down...")

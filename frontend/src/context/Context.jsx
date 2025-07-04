@@ -232,6 +232,21 @@ const fetchProject = async (projectId) => {
     }
   };
 
+  const removeProjectSection = async (projectId, section) => {
+    try { 
+      await axios.delete(
+  `${backendUrl}/api/projects/sections/${projectId}`,
+  {
+    data: { sectionName: section }, 
+  }
+);
+    }
+    catch (error) {
+      console.error("Error removing project section:", error);
+      toast.error("Failed to remove project section");
+    }
+  };
+
 
   // devices
   const fetchUserDevices = async () => {
@@ -416,6 +431,7 @@ const fetchSettings = async () => {
     setProject,
     project,
     updateProjectSections,
+    removeProjectSection,
   };
 
   return <Context.Provider value={value}>{props.children}</Context.Provider>;

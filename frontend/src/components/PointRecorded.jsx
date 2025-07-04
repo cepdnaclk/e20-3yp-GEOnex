@@ -4,12 +4,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const PointRecorded = ({ sensorData, baseData, projectId }) => {
-  const { backendUrl, setShowPointRecorded, fetchPoints, points } = useContext(Context);
+  const { backendUrl, setShowPointRecorded, fetchPoints, points, project } = useContext(Context);
 
   const [pointName, setPointName] = useState("New Point");
   const [loading, setLoading] = useState(false);
   const [clientDevice, setClientDevice] = useState();
   const [isTakePoint, setIsTakePoint] = useState(false);
+  const [selectedSection, setSelectedSection] = useState("");
+  const [projectSections, setProjectSections] = useState(project?.Sections || []);
 
   useEffect(() => {
     if (sensorData && sensorData.length > 0) {
@@ -27,6 +29,27 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       setPointName(`Point ${points.length + 1}`);
     }
   }, [points]);
+
+  useEffect(() => {
+    if (projectSections.length > 0 && !selectedSection) {
+      setSelectedSection(projectSections[0]);
+    }
+  }, [projectSections, selectedSection]);
+
+  const handleSectionChange = (e) => {
+    const value = e.target.value;
+
+    if (value === "__add_new__") {
+      const newSection = prompt("Enter new section name:");
+      if (newSection && !projectSections.includes(newSection)) {
+        const updated = [...projectSections, newSection];
+        setProjectSections(updated);
+        setSelectedSection(newSection);
+      }
+    } else {
+      setSelectedSection(value);
+    }
+  };
 
   const handleSave = async () => {
     // Ensure sensor data is available
@@ -47,6 +70,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       Accuracy: clientDevice.accuracy || null,
       Timestamp: new Date().toISOString(),
       Device: clientDevice.Name || null,
+      Section: selectedSection || "default",
     };
 
     try {
@@ -96,38 +120,27 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
           />
         </div>
 
-        <div className="mt-4 px-4">
-            <label className="block text-sm md:text-base text-gray-700">
-              Select a section
-            </label>
-            <select
-              className="w-full mt-1 p-1 border rounded-xl text-sm md:text-base"
-              style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
-              value={selectedSection || ""}
-              onChange={(e) => setSelectedSection(e.target.value)}
-            >
-              <option value="">Select a section...</option>
-              {projectSections && projectSections.length > 0 &&
-                projectSections.map((section, idx) => (
-            <option key={idx} value={section}>
-              {section}
-            </option>
-                ))}
-            </select>
-            <button
-              className="mt-2 w-full bg-blue-500 text-white p-1 rounded-xl text-sm md:text-base"
-              type="button"
-              onClick={() => {
-                const newSection = prompt("Enter new section name:");
-                if (newSection && !projectSections.includes(newSection)) {
-            setProjectSections([...projectSections, newSection]);
-            setSelectedSection(newSection);
-                }
-              }}
-            >
-              + Add New Section
-            </button>
-          </div>
+        {/* Section Selection */}
+            <div className="mt-4 px-4">
+        <label className="block text-sm md:text-base text-gray-700">
+        Select a section
+        </label>
+        <select
+        className="w-full mt-1 p-1 border rounded-xl text-sm md:text-base"
+        style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
+        value={selectedSection || ""}
+        onChange={handleSectionChange}
+        >
+        <option value="">Select a section...</option>
+        {projectSections.map((section, idx) => (
+          <option key={idx} value={section}>
+            {section}
+          </option>
+        ))}
+        <option value="__add_new__"> Add new section...</option>
+        </select>
+        </div>
+
 
         <div className="mt-4 px-4">
           <label className="block text-sm md:text-base text-gray-700">

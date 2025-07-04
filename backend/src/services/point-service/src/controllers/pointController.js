@@ -23,6 +23,7 @@ const createPoint = async (req, res) => {
             Accuracy: Accuracy || null,
             Timestamp: Timestamp || null,
             Device: Device || null,
+            Section: req.body.Section || "default" 
         });
 
         // Save the new point to the database

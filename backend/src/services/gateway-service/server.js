@@ -106,7 +106,7 @@ async function forwardRequest(req, res, serviceName, preserveApiPath = true) {
     };
 
     // Add body for POST/PUT/PATCH requests
-    if (['POST', 'PUT', 'PATCH'].includes(req.method.toUpperCase())) {
+    if (['POST', 'PUT', 'PATCH','DELETE'].includes(req.method.toUpperCase())) {
       config.data = req.body;
     }
 
