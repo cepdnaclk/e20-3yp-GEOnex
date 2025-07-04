@@ -31,7 +31,7 @@ const PositioningMode = () => {
     
     return (
         <div className="bg-white p-5 rounded-lg flex flex-col gap-4 h-max ">
-            <h2 className="text-base md:text-lg font-semibold pb-2">Positioning Mode</h2>
+            <h2 className="text-base md:text-lg font-semibold pb-2 border-b ">Positioning Mode</h2>
 
             {/* iOS-style Toggle Button */}
             <div className="bg-gray-100 p-2 rounded-full flex w-fit m-auto">
