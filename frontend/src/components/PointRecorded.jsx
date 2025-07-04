@@ -2,14 +2,62 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../context/Context";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { use } from "react";
 
 const PointRecorded = ({ sensorData, baseData, projectId }) => {
-  const { backendUrl, setShowPointRecorded, fetchPoints, points } = useContext(Context);
+  const { backendUrl, setShowPointRecorded, fetchPoints, points, project, updateProjectSections } = useContext(Context);
 
   const [pointName, setPointName] = useState("New Point");
   const [loading, setLoading] = useState(false);
   const [clientDevice, setClientDevice] = useState();
   const [isTakePoint, setIsTakePoint] = useState(false);
+  const [selectedSection, setSelectedSection] = useState("");
+  const [projectSections, setProjectSections] = useState(project?.Sections || []);
+
+
+
+  const [correctedLatitude, setCorrectedLatitude] = useState(null);
+  const [correctedLongitude, setCorrectedLongitude] = useState(null);
+
+  useEffect(() => {
+
+    // compare time delta of baseData and clientDevice
+    if (baseData?.timestamp && clientDevice?.timestamp) {
+      const baseTime = new Date(baseData.timestamp).getTime();
+      const clientTime = new Date(clientDevice.timestamp).getTime();
+      const timeDeltaSeconds = Math.abs((clientTime - baseTime) / 1000);
+      console.log(`Base timestamp: ${baseData.timestamp}`);
+      console.log(`Client timestamp: ${clientDevice.timestamp}`);
+      console.log(`Time delta between base and client device: ${timeDeltaSeconds} seconds`);
+      // assign accuracy based on time delta
+      if (timeDeltaSeconds > 10) {
+        clientDevice.accuracy = "Low";
+      } else if (timeDeltaSeconds > 5) {
+        clientDevice.accuracy = "Medium";
+      } else {
+        clientDevice.accuracy = "High";
+      }
+    }
+
+    if (
+      project?.baseMode === "known" &&
+      clientDevice &&
+      typeof clientDevice.latitude === "number" &&
+      typeof clientDevice.longitude === "number" &&
+      baseData &&
+      typeof baseData.latitude === "number" &&
+      typeof baseData.longitude === "number"
+    ) {
+      const deltaLat = project.baseLatitude - baseData.baseLatitude;
+      const deltaLng = project.baseLongitude - baseData.baseLongitude;
+
+      setCorrectedLatitude(clientDevice.latitude + deltaLat);
+      setCorrectedLongitude(clientDevice.longitude + deltaLng);
+    } else {
+      setCorrectedLatitude(clientDevice?.latitude || null);
+      setCorrectedLongitude(clientDevice?.longitude || null);
+    }
+  }, [project, clientDevice, baseData]);
 
   useEffect(() => {
     if (sensorData && sensorData.length > 0) {
@@ -28,7 +76,33 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     }
   }, [points]);
 
+  useEffect(() => {
+    if (projectSections.length > 0 && !selectedSection) {
+      setSelectedSection(projectSections[0]);
+    }
+  }, [projectSections, selectedSection]);
+
+    
+
+
+  const handleSectionChange = (e) => {
+    const value = e.target.value;
+
+    if (value === "__add_new__") {
+      const newSection = prompt("Enter new section name:");
+      if (newSection && !projectSections.includes(newSection)) {
+        const updated = [...projectSections, newSection];
+        setProjectSections(updated);
+        setSelectedSection(newSection);
+        updateProjectSections(project._id, newSection);
+      }
+    } else {
+      setSelectedSection(value);
+    }
+  };
+
   const handleSave = async () => {
+    ///////////////////////////////////
     // Ensure sensor data is available
     if (!clientDevice.latitude || !clientDevice.longitude) {
       toast.error("No sensor data available to record a point.");
@@ -36,17 +110,18 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     }
     setLoading(true);
 
-    // Do correction for lan, lat here : Kind a logic thing
+    
 
     const payload = {
       ProjectId: projectId,
       Name: pointName,
       Type: "recorded",
-      Latitude: clientDevice.latitude,
-      Longitude: clientDevice.longitude,
+      Latitude: correctedLatitude,
+      Longitude: correctedLongitude,
       Accuracy: clientDevice.accuracy || null,
       Timestamp: new Date().toISOString(),
       Device: clientDevice.Name || null,
+      Section: selectedSection || "default",
     };
 
     try {
@@ -74,13 +149,23 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       w-full md:w-[280px] 
       text-center"
       >
-        {/* Title */}
-        <h2 className="sm:text-lg md:text-xl font-bold">Record a Point</h2>
-        <p className="text-green-500 text-sm  md:text-base font-semibold mt-1">
-          Accuracy: {clientDevice?.accuracy || "N/A"}
-        </p>
+        {/* /* Title  */}
+          <h2 className="sm:text-lg md:text-xl font-bold">Record a Point</h2>
+          <p
+            className={`text-sm md:text-base font-semibold mt-1 ${
+              clientDevice?.accuracy === "Low"
+                ? "text-red-500"
+                : clientDevice?.accuracy === "Medium"
+                ? "text-yellow-500"
+                : clientDevice?.accuracy === "High"
+                ? "text-green-500"
+                : "text-gray-500"
+            }`}
+          >
+            Accuracy: {clientDevice?.accuracy || "N/A"}
+          </p>
 
-        {/* Divider */}
+          {/* Divider */}
         <div className="border-t border-black my-3"></div>
 
         <div className="mt-4 px-4">
@@ -95,6 +180,28 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
             style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
           />
         </div>
+
+        {/* Section Selection */}
+            <div className="mt-4 px-4">
+        <label className="block text-sm md:text-base text-gray-700">
+        Select a section
+        </label>
+        <select
+        className="w-full mt-1 p-1 border rounded-xl text-sm md:text-base"
+        style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
+        value={selectedSection || ""}
+        onChange={handleSectionChange}
+        >
+        <option value="">Select a section...</option>
+        {projectSections.map((section, idx) => (
+          <option key={idx} value={section}>
+            {section}
+          </option>
+        ))}
+        <option value="__add_new__"> Add new section...</option>
+        </select>
+        </div>
+
 
         <div className="mt-4 px-4">
           <label className="block text-sm md:text-base text-gray-700">
@@ -143,7 +250,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
           </button>
 
           <button
-            className="border border-black p-1 rounded-xl text-sm md:text-base mb-2"
+            className=" p-1 rounded-xl text-sm md:text-base mb-2"
             style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
             onClick={() => setShowPointRecorded(false)}
             disabled={loading}

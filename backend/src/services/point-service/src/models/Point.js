@@ -23,7 +23,7 @@ const pointSchema = new mongoose.Schema({
         required: true 
     },
     Accuracy: { 
-        type: Number, 
+        type: String, 
         default: null 
     },
     Timestamp: { 
@@ -38,6 +38,10 @@ const pointSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: "devices", 
         required: false 
+    },
+    Section: {
+        type: String,
+        default: "default"
     }
 
     

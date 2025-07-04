@@ -7,19 +7,26 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PageTopic from "../components/PageTopic";
+import LoadingSpinner from "../components/LoadingSpinner";
+import PositioningMode from "../components/PositioningMode";
+import ProjectOverview from "../components/ProjectOverview";
+import SectionsOverview from "../components/SectionsOverview";
 
 // Extend dayjs with relativeTime
 dayjs.extend(relativeTime);
 
 const ProjectDetails = () => {
-  const { navigate, backendUrl, removeProject} = useContext(Context);
+  const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections, removeProjectSection} = useContext(Context);
   const { projectId } = useParams();
-  const [project, setProject] = useState(null);
+  
 
   const [exportFormat, setExportFormat] = useState("dwg");
   const [isExporting, setIsExporting] = useState(false);
   const [exportStatus, setExportStatus] = useState(null);
 
+  
+
+  
   const handleDelete = async () => {
     const ok = window.confirm(
       `Delete project “${project.Name}”?\nThis action cannot be undone.`
@@ -31,23 +38,10 @@ const ProjectDetails = () => {
     navigate(-1); // Go back
   };
 
+  
+
   useEffect(() => {
-    // Fetch project details from backend using projectId from the URL.
-    const fetchProject = async () => {
-      try {
-        const response = await axios.get(
-          `${backendUrl}/api/projects/${projectId}`
-        );
-        if (response.data.success) {
-          setProject(response.data.project);
-        } else {
-          toast.error(response.data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching project details:", error);
-      }
-    };
-    fetchProject();
+    fetchProject(projectId);
   }, [projectId]);
 
   // Handle export format selection
@@ -107,7 +101,7 @@ const handleExport = async () => {
 
 
 
-  if (!project) return <div>Loading...</div>;
+  if (!project) return <div><LoadingSpinner size={10}/></div>;
 
   return (
     <div>
@@ -270,94 +264,25 @@ const handleExport = async () => {
 
 
 
-        {/* assigned devices */}
-
-        <div className=" bg-white p-5 rounded-lg flex flex-col gap-5 h-max ">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Devices</h2>
-
-          
-        </div>
-
+        {/* assigned Configs */}
+        
+        <PositioningMode />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 max-w-2xl  ">
          {/* Overview Section (Right) */}
-        <div className=" bg-white p-5 rounded-lg flex flex-col gap-5 h-max ">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Overview</h2>
+        <ProjectOverview/>
 
-          <div className="flex justify-between items-center">
-            <span className="font-semibold text-sm md:text-base">
-              Created On
-            </span>
-            <span
-              className=" px-3 py-1 rounded-xl text-xs md:text-sm w-32 text-center
-              bg-[rgba(232,232,232,1)] dark:bg-gray-700 dark:text-gray-100 "
-            >
-              {dayjs(project.Created_On).format("MMM D, YYYY")}
-            </span>
+        {/* /* assigned survayers */} 
+
+          <div className=" bg-white p-5 rounded-lg flex flex-col gap-2 h-max ">
+            <h2 className="text-base md:text-lg font-semibold pb-2">Surveyers</h2>
+
+            {/* Sections Manage */}
           </div>
-
-          <div className="flex justify-between items-center">
-            <span className="font-semibold text-sm md:text-base">
-              Last Modified
-            </span>
-            <span
-              className="px-3 py-1 rounded-xl text-xs md:text-sm w-32 text-center
-              bg-[rgba(232,232,232,1)] dark:bg-gray-700 dark:text-gray-100"
-            >
-              {dayjs(project.Last_Modified).fromNow()}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <span className="font-semibold text-sm md:text-base">Status</span>
-            <span className="bg-blue-600 text-white px-3 py-1 rounded-xl text-xs md:text-sm w-32 text-center">
-              {project.Status}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <span className="font-semibold text-sm md:text-base">
-              Number of Points
-            </span>
-            <span
-              className="px-3 py-1 rounded-xl text-xs md:text-sm w-32 text-center
-              bg-[rgba(232,232,232,1)] dark:bg-gray-700 dark:text-gray-100"
-            >
-              {project.Total_Points || 0}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <span className="font-semibold text-sm md:text-base">
-              Survey Time
-            </span>
-            <span
-              className="px-3 py-1 rounded-xl text-xs md:text-sm w-32 text-center
-              bg-[rgba(232,232,232,1)] dark:bg-gray-700 dark:text-gray-100"
-            >
-              {project.Survey_Time || "N/A"}
-            </span>
-          </div>
-        </div>
-
-
-        {/* assigned survayers */}
-
-        <div className=" bg-white p-5 rounded-lg flex flex-col gap-5 h-max ">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Surveyers</h2>
-
-          
-        </div>
-
+         <SectionsOverview/>
 
       </div>
-       
-           
-
-       
-        
-        
       </div>
       
     </div>

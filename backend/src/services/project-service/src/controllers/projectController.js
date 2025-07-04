@@ -101,5 +101,126 @@ const deleteProject = async (req, res) => {
 };
 
 
+// Add a new section to a project
+const modifySectionToProject = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;  
+    const { sectionName } = req.body;
 
-module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject};
+    try {
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Add the new section to the project's Sections array
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $addToSet: { Sections: sectionName } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to add section' });
+        }
+
+        res.json({ success: true, message: 'Section added successfully', projectId });
+    } catch (error) {
+        console.error("Error modifying section to project:", error);
+        res.status(500).json({ message: 'Error modifying section to project', error: error.message });
+    }
+    
+}
+
+
+const deleteSectionfromProject = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;  
+    const { sectionName } = req.body;
+
+    try {
+        console.log("Incoming DELETE request body:", req.body);
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Remove the section from the project's Sections array
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $pull: { Sections: sectionName } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to remove section' });
+        }
+
+        res.json({ success: true, message: 'Section removed successfully', projectId });
+    } catch (error) {
+        console.error("Error deleting section from project:", error);
+        res.status(500).json({ message: 'Error deleting section from project', error: error.message });
+    }
+}
+
+
+
+const modifyBaseMode = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;
+    const { baseMode } = req.body;
+    try {
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Update the baseMode field
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $set: { baseMode } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to update base mode' });
+        }
+
+        res.json({ success: true, message: 'Base mode updated successfully', projectId });
+    } catch (error) {
+        console.error("Error modifying base mode:", error);
+        res.status(500).json({ message: 'Error modifying base mode', error: error.message });
+    }
+}
+
+
+const modifyBaseLocation = async (req, res) => {
+    const db = getDb();
+    const projectId = req.params.id;
+    const { baseLatitude, baseLongitude } = req.body;
+
+    try {
+        // Check if the project exists
+        const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        // Update the baseLatitude and baseLongitude fields
+        const result = await db.collection('projects').updateOne(
+            { _id: new ObjectId(projectId) },
+            { $set: { baseLatitude, baseLongitude } } 
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(400).json({ message: 'Failed to update base location' });
+        }
+
+        res.json({ success: true, message: 'Base location updated successfully', projectId });
+    } catch (error) {
+        console.error("Error modifying base location:", error);
+        res.status(500).json({ message: 'Error modifying base location', error: error.message });
+    }
+}
+
+module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject, deleteSectionfromProject, modifyBaseMode, modifyBaseLocation};

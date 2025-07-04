@@ -18,7 +18,7 @@ const RenamePointPopup = ({ existingName, onRename, onDiscard }) => {
       text-center"
     >
       {/* Title */}
-      <h2 className="sm:text-lg md:text-xl font-bold">Rename the Point</h2>
+      <h2 className="sm:text-lg md:text-xl font-bold">Modify the Point</h2>
 
       {/* Divider */}
       <div className="border-t border-black my-3"></div>
@@ -42,11 +42,11 @@ const RenamePointPopup = ({ existingName, onRename, onDiscard }) => {
           className="bg-black text-white p-2 rounded-xl text-sm md:text-base"
           onClick={handleRenameClick}
         >
-          Rename
+          Save Changes
         </button>
 
         <button
-          className="border border-black p-1 rounded-xl text-sm md:text-base mb-2"
+          className=" p-1 rounded-xl text-sm md:text-base mb-2"
           style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
           onClick={onDiscard}
         >
