@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import RenamePointPopup from "../components/RenamePointPopup";
 import PageTopic from "../components/PageTopic";
+import { Trash2 } from 'lucide-react';
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const TakenPoints = () => {
   const {
@@ -109,29 +111,7 @@ const TakenPoints = () => {
 
         <div className="p-4 col-span-1 md:col-span-2 ">
           {loadingPoints ? (
-            <div className="flex flex-col items-center justify-center py-10">
-              <svg
-                className="animate-spin h-8 w-8 text-indigo-600 mb-3"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
-              </svg>
-              <span className="text-lg text-gray-700 dark:text-gray-200">Loading points...</span>
-            </div>
+            <LoadingSpinner size={10} />
           ) : (
             <div className="overflow-x-auto">
               <table
@@ -172,7 +152,7 @@ const TakenPoints = () => {
                       <td className="px-6 py-4 rounded-l-lg">{point.Name}</td>
                       <td className="px-6 py-4">{point.Latitude}</td>
                       <td className="px-6 py-4">{point.Longitude}</td>
-                      <td className="px-8 py-4">N/A</td>
+                      <td className="px-8 py-4">{point.Accuracy? point.Accuracy: "N/A"}</td>
                       <td className="px-6 py-4">
                         {point.Section || "default"}
                       </td>
@@ -187,16 +167,15 @@ const TakenPoints = () => {
                         px-2 py-1 rounded-lg"
                             onClick={() => handleRenamePoint(point._id)}
                           >
-                            Rename
+                            Modify
                           </button>
                           <button
-                            className="flex-1 text-white text-xs md:text-sm 
-                          bg-red-500 hover:bg-red-600 
-                          px-2 py-1 rounded-lg"
+                            className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
                             onClick={() => handleDeletePoint(point._id)}
-                          >
-                            Delete
-                          </button>
+                            title="Delete"
+                            >
+                            <Trash2 size={16} />
+                            </button>
                         </div>
                       </td>
                     </tr>
