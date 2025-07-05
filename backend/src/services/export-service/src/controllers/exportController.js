@@ -213,6 +213,10 @@ const exportDxf =  async (req, res) => {
   }
 }
 
+
+// PDF export function
+// This function generates a PDF report of points associated with a project
+
 const exportPdf = async (req, res) => {
   let filePath = null;
   
@@ -227,6 +231,14 @@ const exportPdf = async (req, res) => {
       ProjectId: new ObjectId(projectId) 
     });
     const points = await cursor.toArray();
+
+    const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+        projectId
+      });
+    }
     
     if (!points || points.length === 0) {
       return res.status(404).json({ 
@@ -235,15 +247,16 @@ const exportPdf = async (req, res) => {
       });
     }
     
-    const filename = `points-${projectId}-${Date.now()}.pdf`;
-    filePath = await exportToPdf(points, filename);
+    const safeProjectName = project.Name.trim().replace(/\s+/g, '-');
+    const filename = `points-${safeProjectName}-${Date.now()}.txt`;
+    filePath = await exportToPdf(points, filename,project);
     
     if (!filePath || !(await fs.access(filePath).then(() => true).catch(() => false))) {
       throw new Error("Failed to generate PDF file");
     }
     
     // Set proper headers
-    res.setHeader('Content-Type', 'application/dxf');
+    res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     
     // Send file and cleanup after response
