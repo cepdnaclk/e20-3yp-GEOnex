@@ -50,6 +50,16 @@ const exportTxt = async (req, res) => {
     const cursor = await db.collection('points').find({ 
       ProjectId: new ObjectId(projectId) 
     });
+
+    // fetch project name
+    const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+        projectId
+      });
+    }
+
     const points = await cursor.toArray();
     
     if (!points || points.length === 0) {
@@ -59,8 +69,9 @@ const exportTxt = async (req, res) => {
       });
     }
     
-    const filename = `points-${projectId}-${Date.now()}.txt`;
-    filePath = await exportToTxt(points, filename);
+    const safeProjectName = project.Name.trim().replace(/\s+/g, '-');
+    const filename = `points-${safeProjectName}-${Date.now()}.txt`;
+    filePath = await exportToTxt(points, filename,safeProjectName);
     
     if (!filePath || !(await fs.access(filePath).then(() => true).catch(() => false))) {
       throw new Error("Failed to generate TXT file");
@@ -72,7 +83,7 @@ const exportTxt = async (req, res) => {
     
     // Send file and cleanup after response
     res.download(filePath, filename, (err) => {
-      if (err) {
+      if (err) {   
         console.error("Error sending TXT file:", err);
       }
       // Cleanup temp file
