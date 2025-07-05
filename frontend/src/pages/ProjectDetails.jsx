@@ -53,9 +53,8 @@ const ProjectDetails = () => {
 const handleExport = async () => {
   try {
     setIsExporting(true);
-    setExportStatus({ type: 'info', message: `Preparing ${exportFormat} file...` });
+    setExportStatus({ type: 'info', message: `Preparing ${exportFormat?.toUpperCase()} file...` });
 
-    // Call backend to export file (adjust URL based on format and project ID)
     const response = await fetch(`${backendUrl}/api/export/${exportFormat}/${projectId}`, {
       method: 'GET',
     });
@@ -63,26 +62,30 @@ const handleExport = async () => {
     console.log("Export response:", response);
 
     if (!response.ok) {
-      throw new Error(`Failed to export: ${response.statusText}`);
+      throw new Error(`Failed to export: ${response.status} ${response.statusText}`);
     }
 
-    // Get file blob and suggested filename
+    // Get file blob
     const blob = await response.blob();
-    const contentDisposition = response.headers.get("Content-Disposition");
-    let filename = `project-points.${exportFormat}`;
 
-    if (contentDisposition && contentDisposition.includes("filename=")) {
-      filename = contentDisposition
-        .split("filename=")[1]
-        .replaceAll('"', '')
-        .trim();
+    // Extract filename from Content-Disposition header
+    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = `project-points.${exportFormat?.toLowerCase() || 'txt'}`;
+
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      if (match && match[1]) {
+        filename = decodeURIComponent(match[1].replace(/['"]/g, '').trim());
+      }
     }
 
-    // Create a download link and trigger download
+    // Create a temporary download link
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.download = filename;
+    link.style.display = "none";
+
     document.body.appendChild(link);
     link.click();
 
@@ -90,14 +93,16 @@ const handleExport = async () => {
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
 
-    setExportStatus({ type: 'success', message: `Successfully exported as ${exportFormat}` });
+    setExportStatus({ type: 'success', message: `Successfully exported as ${exportFormat.toUpperCase()}` });
+
   } catch (error) {
     console.error("Export failed:", error);
-    setExportStatus({ type: 'error', message: `Failed to export as ${exportFormat}` });
+    setExportStatus({ type: 'error', message: `Export failed: ${error.message}` });
   } finally {
     setIsExporting(false);
   }
 };
+
 
 
 
