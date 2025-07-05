@@ -2,7 +2,10 @@ const fs = require("fs").promises;
 const {ObjectId} = require('mongodb');
 const { getDb } = require("../config/db");
 
-const { exportToTxt,  exportToDxf, exportToPdf, exportToCsv } = require("../utils/export");
+const { exportToPdf} = require("../utils/exportPDF");
+const { exportToCsv } = require("../utils/exportCsv");
+const { exportToTxt} = require("../utils/exportTxt");
+const { exportToDxf } = require("../utils/exportDxf");
 
 
 // Validation middleware for projectId
@@ -115,7 +118,7 @@ const exportCsv = async (req, res) => {
     const cursor = await db.collection('points').find({
       ProjectId: new ObjectId(projectId)
     });
-    
+
     const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
     if (!project) {
       return res.status(404).json({
