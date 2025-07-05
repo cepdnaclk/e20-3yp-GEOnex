@@ -82,6 +82,29 @@ const updateProject = async (req, res) => {
     }
 };
 
+const updateProjectStatus = async (req, res) => {
+    const db = getDb();
+    const id = Number(req.params.id);
+    const { Status } = req.body;
+
+    try {
+        const result = await db.collection('projects').updateOne(
+            { Project_Id: id }, 
+            { $set: { Status} } 
+        );
+
+        if (result.matchedCount === 0) { 
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        res.json({ message: 'Project updated successfully' });
+    } catch (error) {
+        console.error("Error updating project:", error);
+        res.status(500).json({ message: 'Error updating project', error });
+    }
+ 
+}
+
 const deleteProject = async (req, res) => {
     const id = req.params.id;  
     const db = getDb();
@@ -223,4 +246,4 @@ const modifyBaseLocation = async (req, res) => {
     }
 }
 
-module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject, deleteSectionfromProject, modifyBaseMode, modifyBaseLocation};
+module.exports = {createProject, getProjects, getProjectById, updateProject, deleteProject, modifySectionToProject, deleteSectionfromProject, modifyBaseMode, modifyBaseLocation, updateProjectStatus};
