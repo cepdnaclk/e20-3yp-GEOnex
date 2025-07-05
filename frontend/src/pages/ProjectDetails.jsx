@@ -20,7 +20,7 @@ const ProjectDetails = () => {
   const { projectId } = useParams();
   
 
-  const [exportFormat, setExportFormat] = useState("dwg");
+  const [exportFormat, setExportFormat] = useState("pdf");
   const [isExporting, setIsExporting] = useState(false);
   const [exportStatus, setExportStatus] = useState(null);
 
@@ -191,9 +191,9 @@ const handleExport = async () => {
               value={exportFormat}
               onChange={handleFormatChange}
             >
+              <option value="pdf">PDF Report</option>
                <option value="dxf">DXF (AutoCAD)</option>
-              <option value="png">PNG Image</option>
-              <option value="pdf">PDF Document</option>
+              <option value="csv">CSV</option>
               <option value="txt">TXT</option>
             </select>
             <button
