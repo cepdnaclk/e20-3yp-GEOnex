@@ -11,12 +11,13 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import PositioningMode from "../components/PositioningMode";
 import ProjectOverview from "../components/ProjectOverview";
 import SectionsOverview from "../components/SectionsOverview";
+import SurveyControlSection from "../components/SurveyControlSection";
 
 // Extend dayjs with relativeTime
 dayjs.extend(relativeTime);
 
 const ProjectDetails = () => {
-  const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections, removeProjectSection} = useContext(Context);
+  const { navigate, backendUrl, removeProject, fetchProject,project,surveyStatus, setSurveyStatus} = useContext(Context);
   const { projectId } = useParams();
   
 
@@ -26,7 +27,6 @@ const ProjectDetails = () => {
 
   
 
-  
   const handleDelete = async () => {
     const ok = window.confirm(
       `Delete project “${project.Name}”?\nThis action cannot be undone.`
@@ -42,7 +42,16 @@ const ProjectDetails = () => {
 
   useEffect(() => {
     fetchProject(projectId);
+    // Don't set surveyStatus here; wait for project to load
   }, [projectId]);
+
+  useEffect(() => {
+    if (project && project.Status) {
+      setSurveyStatus(project.Status);
+    } else if (project) {
+      setSurveyStatus('active');
+    }
+  }, [project]);
 
   // Handle export format selection
   const handleFormatChange = (e) => {
@@ -117,6 +126,12 @@ const handleExport = async () => {
 
       <div className="flex flex-col gap-2">
          {/* Actions Section (Left) */}
+         {/* Control */}
+         <SurveyControlSection/>
+  
+
+
+         {/* Actions */}
         <div className="h-max bg-white p-5 rounded-lg flex flex-col gap-3 overflow-auto">
           <h2 className="text-base md:text-lg font-semibold pb-5">Actions</h2>
           <div
@@ -271,20 +286,18 @@ const handleExport = async () => {
 
         {/* assigned Configs */}
         
-        <PositioningMode />
+         
       </div>
 
       <div className="flex flex-col gap-4 max-w-2xl  ">
          {/* Overview Section (Right) */}
-        <ProjectOverview/>
+        
 
         {/* /* assigned survayers */} 
 
-          <div className=" bg-white p-5 rounded-lg flex flex-col gap-2 h-max ">
-            <h2 className="text-base md:text-lg font-semibold pb-2">Surveyers</h2>
-
-            {/* Sections Manage */}
-          </div>
+         
+          <ProjectOverview/>
+          <PositioningMode />
          <SectionsOverview/>
 
       </div>

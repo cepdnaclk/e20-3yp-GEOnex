@@ -7,8 +7,10 @@ router.post('/', createProject);
 router.get('/recentprojects/:userid', getProjects);
 router.get('/:id', getProjectById);
 router.put('/:id', updateProject);
+
 router.put('/status/:id', updateProjectStatus);
 router.put('/sections/:id', modifySectionToProject);
+
 router.delete('/:id', deleteProject);
 router.delete('/sections/:id', deleteSectionfromProject);
 
