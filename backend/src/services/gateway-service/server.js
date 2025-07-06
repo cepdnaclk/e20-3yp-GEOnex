@@ -100,6 +100,7 @@ async function forwardRequest(req, res, serviceName, preserveApiPath = true) {
       headers: forwardHeaders,
       timeout: 30000,
       withCredentials: true,
+      responseType: 'arraybuffer', 
       validateStatus: function (status) {
         return status < 500; // Don't throw for 4xx errors
       }
@@ -139,7 +140,33 @@ async function forwardRequest(req, res, serviceName, preserveApiPath = true) {
       res.set('Set-Cookie', response.headers['set-cookie']);
     }
 
-    res.status(response.status).json(response.data);
+    // res.status(response.status).json(response.data);
+
+
+    const isAttachment = response.headers['content-disposition']?.includes('attachment');
+
+    if (isAttachment) {
+      // Handle file download
+      res.status(response.status);
+      Object.entries(response.headers).forEach(([key, value]) => {
+        res.setHeader(key, value);
+      });
+      if (Buffer.isBuffer(response.data)) {
+        res.send(response.data);
+      } else {
+        res.send(Buffer.from(response.data));
+      }
+
+    } else {
+      // ✅ Handle JSON/API response as usual
+      const contentType = response.headers['content-type'] || '';
+      if (contentType.includes('application/json')) {
+        res.status(response.status).json(JSON.parse(Buffer.from(response.data).toString()));
+      } else {
+        res.status(response.status).send(Buffer.from(response.data).toString());
+      }
+    }
+
 
   } catch (error) {
     console.error(`[ERROR] Request to ${serviceName} failed:`, error.message);

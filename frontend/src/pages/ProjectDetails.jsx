@@ -11,22 +11,23 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import PositioningMode from "../components/PositioningMode";
 import ProjectOverview from "../components/ProjectOverview";
 import SectionsOverview from "../components/SectionsOverview";
+import SurveyControlSection from "../components/SurveyControlSection";
+import RemoteRoverEnable from "../components/RemoteRoverEnable";
 
 // Extend dayjs with relativeTime
 dayjs.extend(relativeTime);
 
 const ProjectDetails = () => {
-  const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections, removeProjectSection} = useContext(Context);
+  const { navigate, backendUrl, removeProject, fetchProject,project,surveyStatus, setSurveyStatus} = useContext(Context);
   const { projectId } = useParams();
   
 
-  const [exportFormat, setExportFormat] = useState("dwg");
+  const [exportFormat, setExportFormat] = useState("pdf");
   const [isExporting, setIsExporting] = useState(false);
   const [exportStatus, setExportStatus] = useState(null);
 
   
 
-  
   const handleDelete = async () => {
     const ok = window.confirm(
       `Delete project “${project.Name}”?\nThis action cannot be undone.`
@@ -42,7 +43,16 @@ const ProjectDetails = () => {
 
   useEffect(() => {
     fetchProject(projectId);
+    // Don't set surveyStatus here; wait for project to load
   }, [projectId]);
+
+  useEffect(() => {
+    if (project && project.Status) {
+      setSurveyStatus(project.Status);
+    } else if (project) {
+      setSurveyStatus('active');
+    }
+  }, [project]);
 
   // Handle export format selection
   const handleFormatChange = (e) => {
@@ -53,9 +63,8 @@ const ProjectDetails = () => {
 const handleExport = async () => {
   try {
     setIsExporting(true);
-    setExportStatus({ type: 'info', message: `Preparing ${exportFormat} file...` });
+    setExportStatus({ type: 'info', message: `Preparing ${exportFormat?.toUpperCase()} file...` });
 
-    // Call backend to export file (adjust URL based on format and project ID)
     const response = await fetch(`${backendUrl}/api/export/${exportFormat}/${projectId}`, {
       method: 'GET',
     });
@@ -63,26 +72,30 @@ const handleExport = async () => {
     console.log("Export response:", response);
 
     if (!response.ok) {
-      throw new Error(`Failed to export: ${response.statusText}`);
+      throw new Error(`Failed to export: ${response.status} ${response.statusText}`);
     }
 
-    // Get file blob and suggested filename
+    // Get file blob
     const blob = await response.blob();
-    const contentDisposition = response.headers.get("Content-Disposition");
-    let filename = `project-points.${exportFormat}`;
 
-    if (contentDisposition && contentDisposition.includes("filename=")) {
-      filename = contentDisposition
-        .split("filename=")[1]
-        .replaceAll('"', '')
-        .trim();
+    // Extract filename from Content-Disposition header
+    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = `project-points.${exportFormat?.toLowerCase() || 'txt'}`;
+
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      if (match && match[1]) {
+        filename = decodeURIComponent(match[1].replace(/['"]/g, '').trim());
+      }
     }
 
-    // Create a download link and trigger download
+    // Create a temporary download link
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.download = filename;
+    link.style.display = "none";
+
     document.body.appendChild(link);
     link.click();
 
@@ -90,14 +103,16 @@ const handleExport = async () => {
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
 
-    setExportStatus({ type: 'success', message: `Successfully exported as ${exportFormat}` });
+    setExportStatus({ type: 'success', message: `Successfully exported as ${exportFormat.toUpperCase()}` });
+
   } catch (error) {
     console.error("Export failed:", error);
-    setExportStatus({ type: 'error', message: `Failed to export as ${exportFormat}` });
+    setExportStatus({ type: 'error', message: `Export failed: ${error.message}` });
   } finally {
     setIsExporting(false);
   }
 };
+
 
 
 
@@ -112,8 +127,14 @@ const handleExport = async () => {
 
       <div className="flex flex-col gap-2">
          {/* Actions Section (Left) */}
+         {/* Control */}
+         <SurveyControlSection/>
+  
+
+
+         {/* Actions */}
         <div className="h-max bg-white p-5 rounded-lg flex flex-col gap-3 overflow-auto">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Actions</h2>
+          <h2 className="text-base md:text-lg font-semibold pb-2 border-b">Actions</h2>
           <div
             className="flex items-center gap-3 p-3 rounded-lg cursor-pointer"
             style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
@@ -186,9 +207,9 @@ const handleExport = async () => {
               value={exportFormat}
               onChange={handleFormatChange}
             >
+              <option value="pdf">PDF Report</option>
                <option value="dxf">DXF (AutoCAD)</option>
-              <option value="png">PNG Image</option>
-              <option value="pdf">PDF Document</option>
+              <option value="csv">CSV</option>
               <option value="txt">TXT</option>
             </select>
             <button
@@ -266,23 +287,26 @@ const handleExport = async () => {
 
         {/* assigned Configs */}
         
-        <PositioningMode />
+         
       </div>
 
       <div className="flex flex-col gap-4 max-w-2xl  ">
          {/* Overview Section (Right) */}
-        <ProjectOverview/>
+        
 
         {/* /* assigned survayers */} 
 
-          <div className=" bg-white p-5 rounded-lg flex flex-col gap-2 h-max ">
-            <h2 className="text-base md:text-lg font-semibold pb-2">Surveyers</h2>
-
-            {/* Sections Manage */}
-          </div>
+         
+          <ProjectOverview/>
+          <PositioningMode />
          <SectionsOverview/>
 
       </div>
+
+      <div className="flex flex-col gap-4 max-w-2xl">
+        <RemoteRoverEnable />
+        </div>
+
       </div>
       
     </div>

@@ -10,6 +10,7 @@ const ContextProvider = (props) => {
   const navigate = useNavigate();
   const [showPointRecorded, setShowPointRecorded] = useState(false);
   const [showConfirmDiscard, setShowConfirmDiscard] = useState(false);
+  const [surveyStatus, setSurveyStatus] = useState("active"); // 'active', 'paused', 'completed'
 
   const env = import.meta.env.VITE_ENV;
 
@@ -45,6 +46,8 @@ const ContextProvider = (props) => {
   const [theme, setTheme] = useState("Light");
 
   // const [notifications, setNotifications] = useState([]);
+
+
 
  
   const getAuthState = async () => {
@@ -111,6 +114,30 @@ const ContextProvider = (props) => {
     }
   };
 
+
+  // Function to update project status
+  const updateProjectStatus = async (projectId, status) => {
+    try {
+      const response = await axios.put(
+        `${backendUrl}/api/projects/status/${projectId}`,
+        { Status: status }
+      );
+      if (response.data.success) {
+        setProject((prevProject) => ({
+          ...prevProject,
+          Status: status,
+        }));
+        toast.success("Project status updated successfully");
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating project status:", error);
+      toast.error("Failed to update project status");
+    }
+  };
+
+
   // Function to fetch points by project id
   const fetchPoints = async (projectId) => {
     setLoadingPoints(true);
@@ -149,6 +176,7 @@ const ContextProvider = (props) => {
       toast.error("Failed to delete point.");
     }
   };
+
 
 
 
@@ -478,7 +506,10 @@ const fetchSettings = async () => {
     updateProjectSections,
     removeProjectSection,
     updateProjectBaseMode,
-    updateProjectBaseLocations
+    updateProjectBaseLocations,
+    surveyStatus, 
+    setSurveyStatus,
+    updateProjectStatus
   };
 
   return <Context.Provider value={value}>{props.children}</Context.Provider>;

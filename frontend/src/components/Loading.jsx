@@ -1,5 +1,3 @@
-import React from "react";
-
 const Loading = () => {
   return (
     <div
@@ -11,15 +9,24 @@ const Loading = () => {
         <span className="font-semibold">GEO</span>nex
       </h1>
 
-      {/* animated Loading… */}
-      <p className="flex items-end gap-1 mt-1 md:mt-3 text-base sm:text-xl text-white/80">
-        {/* three dots with staggered bounce */}
-        <span className="animate-bounce [animation-delay:0s]">.</span>
-        <span className="animate-bounce [animation-delay:.15s]">.</span>
-        <span className="animate-bounce [animation-delay:.3s]">.</span>
-      </p>
+      {/* animated dots */}
+      <div className="flex gap-1 mt-3">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <span
+            key={i}
+            className="dot text-white/80"
+            style={{
+              animationDelay: `${i * 0.15}s`,
+            }}
+          >
+            .
+          </span>
+        ))}
+      </div>
     </div>
   );
 };
+
+
 
 export default Loading;

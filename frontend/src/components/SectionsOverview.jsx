@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { Context } from "../context/Context";
 
 const SectionsOverview = () => {
-    const { navigate, backendUrl, removeProject, fetchProject,project, setProject, updateProjectSections, removeProjectSection} = useContext(Context);
+    const { project, setProject, updateProjectSections, removeProjectSection} = useContext(Context);
     const [newSection, setNewSection] = useState("");
 
    const projectId = project._id;
@@ -42,7 +42,7 @@ const SectionsOverview = () => {
 
     return (
         <div className="bg-white p-5 rounded-lg flex flex-col gap-2 h-max max-w-xl">
-              <h2 className="text-base md:text-lg font-semibold pb-2">Sections</h2>
+              <h2 className="text-base md:text-lg font-semibold pb-2 border-b">Sections</h2>
 
              <div className="w-full max-w-4xl mx-auto">
   <div className="flex flex-wrap gap-2">

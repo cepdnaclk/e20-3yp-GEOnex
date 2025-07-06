@@ -6,8 +6,11 @@ import { Context } from '../context/Context';
 dayjs.extend(relativeTime);
 
 const ProjectOverview = () => {
+
+
   const {
     project,
+    surveyStatus
   } = useContext(Context);
 
   const {
@@ -29,7 +32,7 @@ const ProjectOverview = () => {
       <OverviewRow label="Last Modified" value={dayjs(Last_Modified).fromNow()} />
       <OverviewRow
         label="Status"
-        value={Status}
+        value={surveyStatus}
         customClasses="bg-blue-600 text-white"
       />
       <OverviewRow label="Number of Points" value={Total_Points} />

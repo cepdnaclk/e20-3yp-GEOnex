@@ -2,7 +2,10 @@ const fs = require("fs").promises;
 const {ObjectId} = require('mongodb');
 const { getDb } = require("../config/db");
 
-const { exportToTxt,  exportToDxf, exportToPdf } = require("../utils/export");
+const { exportToPdf} = require("../utils/exportPDF");
+const { exportToCsv } = require("../utils/exportCsv");
+const { exportToTxt} = require("../utils/exportTxt");
+const { exportToDxf } = require("../utils/exportDxf");
 
 
 // Validation middleware for projectId
@@ -50,6 +53,16 @@ const exportTxt = async (req, res) => {
     const cursor = await db.collection('points').find({ 
       ProjectId: new ObjectId(projectId) 
     });
+
+    // fetch project name
+    const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+        projectId
+      });
+    }
+
     const points = await cursor.toArray();
     
     if (!points || points.length === 0) {
@@ -59,8 +72,9 @@ const exportTxt = async (req, res) => {
       });
     }
     
-    const filename = `points-${projectId}-${Date.now()}.txt`;
-    filePath = await exportToTxt(points, filename);
+    const safeProjectName = project.Name.trim().replace(/\s+/g, '-');
+    const filename = `points-${safeProjectName}-${Date.now()}.txt`;
+    filePath = await exportToTxt(points, filename,safeProjectName);
     
     if (!filePath || !(await fs.access(filePath).then(() => true).catch(() => false))) {
       throw new Error("Failed to generate TXT file");
@@ -72,7 +86,7 @@ const exportTxt = async (req, res) => {
     
     // Send file and cleanup after response
     res.download(filePath, filename, (err) => {
-      if (err) {
+      if (err) {   
         console.error("Error sending TXT file:", err);
       }
       // Cleanup temp file
@@ -92,60 +106,66 @@ const exportTxt = async (req, res) => {
 }
 
 
+// CSV export function
+const exportCsv = async (req, res) => {
+  let filePath = null;
+  try {
+    const { projectId } = req.params;
+    if (!ObjectId.isValid(projectId)) {
+      return res.status(400).json({ error: "Invalid Project ID" });
+    }
+    const db = getDb();
+    const cursor = await db.collection('points').find({
+      ProjectId: new ObjectId(projectId)
+    });
 
-// const exportPng= async (req, res) => {
-//   let filePath = null;
-  
-//   try {
-//     const { projectId} = req.params;
-//     if (!ObjectId.isValid(projectId)) {
-//       return res.status(400).json({ error: "Invalid Project ID" });
-//     }
+    const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+        projectId
+      });
+    }
+    const points = await cursor.toArray();
+    if (!points || points.length === 0) {
+      return res.status(404).json({
+        message: "No points found for the specified user",
+        projectId
+      });
+    }
+    const safeProjectName = project.Name.trim().replace(/\s+/g, '-');
+    const filename = `points-${safeProjectName}-${Date.now()}.csv`;
+    filePath = await exportToCsv(points, filename, safeProjectName, true);
+    if (!filePath || !(await fs.access
+(filePath).then(() => true).catch(() => false))) {
+      throw new Error("Failed to generate CSV file");
+    }
 
-//     const db = getDb();
-//     const cursor = await db.collection('points').find({ 
-//       ProjectId: new ObjectId(projectId) 
-//     });
-//     const points = await cursor.toArray();
-    
-//     if (!points || points.length === 0) {
-//       return res.status(404).json({ 
-//         message: "No points found for the specified user",
-//         projectId 
-//       });
-//     }
-    
-//     const filename = `points-${projectId}-${Date.now()}.png`;
-//     filePath = await exportToPng(points, filename);
-    
-//     if (!filePath || !(await fs.access(filePath).then(() => true).catch(() => false))) {
-//       throw new Error("Failed to generate PNG file");
-//     }
-    
-//     // Set proper headers
-//     res.setHeader('Content-Type', 'image/png');
-//     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    
-//     // Send file and cleanup after response
-//     res.download(filePath, filename, (err) => {
-//       if (err) {
-//         console.error("Error sending PNG file:", err);
-//       }
-//       // Cleanup temp file
-//       cleanupFile(filePath);
-//     });
-    
-//   } catch (err) {
-//     console.error("PNG export error:", err);
-//     if (filePath) {
-//       cleanupFile(filePath);
-//     }
-//     res.status(500).json({ 
-//       message: "Error generating PNG export", 
-//       error: process.env.NODE_ENV === 'development' ? err.message : "Internal server error"
-//     });
-//   }
-// }
+    // Set proper headers
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    // Send file and cleanup after response
+    res.download(filePath, filename, (err) => {
+      if (err) {
+        console.error("Error sending CSV file:", err);
+      }
+      // Cleanup temp file
+      cleanupFile(filePath);
+    });
+  } catch (err) {
+    console.error("CSV export error:", err);
+    if (filePath) {
+      cleanupFile(filePath);
+    }
+    res.status(500).json({
+      message: "Error generating CSV export",
+      error: process.env.NODE_ENV === 'development' ? err.message : "Internal server error"
+    });
+  }
+}
+
+
+
 
 
 const exportDxf =  async (req, res) => {
@@ -202,6 +222,10 @@ const exportDxf =  async (req, res) => {
   }
 }
 
+
+// PDF export function
+// This function generates a PDF report of points associated with a project
+
 const exportPdf = async (req, res) => {
   let filePath = null;
   
@@ -216,6 +240,14 @@ const exportPdf = async (req, res) => {
       ProjectId: new ObjectId(projectId) 
     });
     const points = await cursor.toArray();
+
+    const project = await db.collection('projects').findOne({ _id: new ObjectId(projectId) });
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+        projectId
+      });
+    }
     
     if (!points || points.length === 0) {
       return res.status(404).json({ 
@@ -224,15 +256,16 @@ const exportPdf = async (req, res) => {
       });
     }
     
-    const filename = `points-${projectId}-${Date.now()}.pdf`;
-    filePath = await exportToPdf(points, filename);
+    const safeProjectName = project.Name.trim().replace(/\s+/g, '-');
+    const filename = `points-${safeProjectName}-${Date.now()}.txt`;
+    filePath = await exportToPdf(points, filename,project);
     
     if (!filePath || !(await fs.access(filePath).then(() => true).catch(() => false))) {
       throw new Error("Failed to generate PDF file");
     }
     
     // Set proper headers
-    res.setHeader('Content-Type', 'application/dxf');
+    res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     
     // Send file and cleanup after response
@@ -259,7 +292,7 @@ const exportPdf = async (req, res) => {
 
 module.exports = {
   exportTxt,
-  // exportPng,
+  exportCsv,
   exportDxf,
   exportPdf,
   validateProjectId,

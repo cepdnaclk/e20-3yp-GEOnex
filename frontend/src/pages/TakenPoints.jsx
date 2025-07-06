@@ -13,11 +13,14 @@ const TakenPoints = () => {
   const {
     navigate,
     points,
+    project,
     setPoints,
     fetchPoints,
     loadingPoints,
     deletePoint,
     backendUrl,
+    setSurveyStatus,
+    updateProjectStatus,
   } = useContext(Context);
   const { projectId } = useParams();
 
@@ -30,6 +33,13 @@ const TakenPoints = () => {
       fetchPoints(projectId);
     }
   }, [projectId]);
+
+  const handleSavechanges = () => {
+    setSurveyStatus('Paused');
+    updateProjectStatus(project._id, 'Paused');
+    navigate(`/projects/${projectId}`);
+
+  };
 
   // Use the context's deletePoint function
   const handleDeletePoint = async (pointId) => {
@@ -101,8 +111,10 @@ const TakenPoints = () => {
               bg-black hover:bg-gray-800 text-white rounded-xl
               dark:bg-indigo-600 dark:hover:bg-indigo-500"
               onClick={() => {
-                navigate(`/projects/${projectId}`);
-              }}
+                
+                handleSavechanges();
+                }
+              }
             >
               Save Changes
             </button>
