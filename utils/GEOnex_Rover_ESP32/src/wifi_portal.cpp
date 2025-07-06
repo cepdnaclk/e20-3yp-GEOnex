@@ -1,6 +1,6 @@
 #include "wifi_portal.h"
 #include <WiFi.h>
-#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+#include <WiFiManager.h> 
 
 WiFiPortal::WiFiPortal(const char *apName, const char *apPassword)
 {
@@ -24,13 +24,13 @@ void WiFiPortal::connect()
 
     if (!res)
     {
-        Serial.println("❌ Failed to connect to WiFi");
+        Serial.println("Failed to connect to WiFi");
         // Optionally restart or go to deep sleep
         // ESP.restart();
     }
     else
     {
-        Serial.println("✅ Connected to WiFi!");
+        Serial.println("Connected to WiFi!");
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());
     }
