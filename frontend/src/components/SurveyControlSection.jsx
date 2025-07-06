@@ -29,12 +29,12 @@ export default function SurveyControlSection() {
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg flex flex-col gap-2 h-max">
+    <div className="bg-white dark:bg-gray-800 p-5 rounded-lg flex flex-col gap-2 h-max">
       <h2 className="text-base md:text-lg font-semibold border-b pb-2">Survey Status</h2>
       
       {/* Surveying Animation - Central and Large */}
       <div className="mb-1 flex flex-col items-center py-6">
-        <div className="flex gap-2 mb-4">
+        {/* <div className="flex gap-2 mb-4">
           <div className={`w-5 h-5 rounded-full transition-all duration-700 ${
             surveyStatus === 'active' ? 'bg-blue-950 animate-pulse' : 'bg-gray-300'
           }`}></div>
@@ -59,13 +59,29 @@ export default function SurveyControlSection() {
           <div className={`w-5 h-5 rounded-full transition-all duration-700 ${
             surveyStatus === 'active' ? 'bg-blue-950 animate-pulse' : 'bg-gray-300'
           }`} style={{ animationDelay: '1.4s' }}></div>
+        </div> */}
+
+        <div className="flex gap-2 mb-4">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              style={{ animationDelay: `${i * 0.2}s` }}
+              className={`w-5 h-5 rounded-full transition-all duration-700 ${
+                surveyStatus === "Active"
+                  ? "bg-blue-950 dark:bg-indigo-500 animate-pulse"
+                  : "bg-gray-300 dark:bg-gray-600"
+              }`}
+            />
+          ))}
         </div>
-        <span className="text-xl font-semibold text-gray-700 text-center mb-1">
+
+        
+        <span className="text-xl font-semibold text-gray-700 dark:text-gray-100 text-center mb-1">
           {surveyStatus === 'Active' ? 'Surveying in Progress...' : 
            surveyStatus === 'Paused' ? 'Survey Paused' : 
            'Survey Completed'}
         </span>
-        <div className="text-sm text-gray-500 text-center">
+        <div className="text-sm text-gray-500 dark:text-gray-300 text-center">
           {surveyStatus === 'Active' ? 'Collecting geodata from field sensors' : 
            surveyStatus === 'Paused' ? 'Field operations temporarily suspended' : 
            'All survey points successfully recorded'}
@@ -122,13 +138,15 @@ export default function SurveyControlSection() {
 
         {surveyStatus === 'Completed' && (
           <div className="space-y-2">
-            <div className="flex items-center justify-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-md">
+            <div className="flex items-center justify-center gap-2 bg-green-100 text-green-800 dark:text-white dark:bg-emerald-600 px-4 py-2 rounded-md">
               <CheckCircle size={16} />
               Survey Completed
             </div>
             <button
               onClick={handleReset}
-              className="flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors font-medium w-full"
+              className="flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-600 text-white
+              dark:text-white dark:bg-black
+               px-4 py-2 rounded-md transition-colors font-medium w-full"
             >
               <RotateCcw size={16} />
               Reset Survey
@@ -138,8 +156,8 @@ export default function SurveyControlSection() {
       </div>
 
       {/* Additional Info */}
-      <div className="mt-1 p-1 bg-gray-50 rounded-md">
-        <p className="text-xs text-gray-600">
+      <div className="mt-1 p-1 bg-gray-50 dark:bg-gray-800 rounded-md">
+        <p className="text-xs text-gray-600 dark:text-white ">
           {surveyStatus === 'Active' && 'Survey is currently active. You can pause it anytime.'}
           {surveyStatus === 'Paused' && 'Survey is paused. Click resume to continue.'}
           {surveyStatus === 'Completed' && 'Survey has been completed successfully.'}

@@ -31,7 +31,8 @@ export default function Layout() {
       <Navbar mobileOpen={open} onClose={() => setOpen(false)} />
 
       {/* ───── page area ───── */}
-      <div className="flex-1 relative h-screen overflow-y-auto
+      <div id="scroll-area" 
+      className="flex-1 relative h-screen overflow-y-auto
       bg-[#e8e8e8] dark:bg-gray-900">
         {/* mobile hamburger */}
         <button
@@ -44,7 +45,7 @@ export default function Layout() {
         </button>
 
         {/* routed pages */}
-        <div className="w-full max-w-7xl mx-auto px-5 py-8">
+        <div className="w-full max-w-7xl mx-auto px-5 py-4">
           <Outlet />
         </div>
       </div>
