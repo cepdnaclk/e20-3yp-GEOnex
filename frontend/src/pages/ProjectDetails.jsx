@@ -328,7 +328,7 @@ const ProjectDetails = () => {
 
 
       </div>
-    </div>
+    
   );
 };
 
