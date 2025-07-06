@@ -41,7 +41,7 @@ const SectionsOverview = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-5 rounded-lg flex flex-col gap-2 h-max max-w-xl">
+    <div className="bg-white dark:bg-gray-800 p-5 rounded-lg flex flex-col gap-2 h-max">
       <h2 className="text-base md:text-lg font-semibold pb-2 border-b">
         Sections
       </h2>
@@ -80,7 +80,9 @@ const SectionsOverview = () => {
               </span>
             ))
           ) : (
-            <span className="text-gray-500 dark:text-gray-400">No sections available</span>
+            <span className="text-gray-500 dark:text-gray-400">
+              No sections available
+            </span>
           )}
         </div>
       </div>
@@ -95,7 +97,6 @@ const SectionsOverview = () => {
           border border-gray-300 dark:border-gray-600 
           bg-[rgba(232,232,232,1)] 
           dark:bg-gray-900 dark:text-gray-100"
-          
           value={newSection}
           onChange={(e) => setNewSection(e.target.value)}
           onKeyDown={(e) => {
