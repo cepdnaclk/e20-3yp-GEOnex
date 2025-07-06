@@ -13,7 +13,9 @@
 #include "wifi_strength.h"
 #include "pin_manager.h"
 #include "base_average.h"
+#include "wifi_portal.h"
 
+WiFiPortal wifi("GeoNex-Base", "12345678", BUTTON_RESET_WIFI);
 
 void setup()
 {
@@ -23,7 +25,8 @@ void setup()
   setupPins();
 
   // Initialize WiFi and connect to network
-  connectWiFi();
+  // connectWiFi(); // Normal method to connect to wifi
+  wifi.connect(); // Use WiFiPortal to connect to WiFi
 
   // Initialize MQTT
   connectMQTT();
@@ -80,6 +83,7 @@ void loop()
   //Serial.printf("[Test]  WiFi Quality: %d\n", wifiquality);
 
   checkButtonPresses();
+  wifi.checkResetButton();
 
   int batteryPercentage = getBatteryPercentage(readBatteryVoltage());
   //Serial.printf("[Test]  Battery Percentage: %d%%\n", batteryPercentage);
