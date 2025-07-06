@@ -16,11 +16,15 @@
 #include "mqtt_callback.h"
 #include "gps_correction.h"
 #include "gnss_config.h"
+#include "wifi_portal.h"
 
 IMUManager mpu(SDA, SCL);
 
 // GNSS configuration
 GNSSConfig gnss;
+
+// WiFiPortalESP32 wifiPortal("GeoNex-Setup", "12345678");
+WiFiPortal wifi("GeoNex-Setup", "12345678");
 
 void setup()
 {
@@ -35,7 +39,8 @@ void setup()
   setupPins();
 
   // Initialize WiFi and connect to network
-  connectWiFi();
+  // connectWiFi();  // Normal method to connect to wifi
+  wifi.connect();  // Use WiFiPortal to connect to WiFi
 
   // Initialize MQTT
   connectMQTT();
@@ -72,9 +77,9 @@ void loop()
 
     // Print GPS data for tesing
     Serial.print("[Test]  Raw GPS: ");
-    Serial.print(lat, 6);
+    Serial.print(lat, 8);
     Serial.print(", ");
-    Serial.print(lon, 6);
+    Serial.print(lon, 8);
     Serial.print(", ");
     Serial.print(satellites);
     Serial.print(", ");
@@ -86,11 +91,11 @@ void loop()
     correctGPSCoordinates(lat, lon, pitch, roll, POLE_HEIGHT);
 
     Serial.print("[Test] MPU Corrected GPS: ");
-    Serial.print(lat, 6);
+    Serial.print(lat, 8);
     Serial.print(", ");
-    Serial.println(lon, 6);
+    Serial.println(lon, 8);
 
-    updateRoverLive(lat, lon, time); // ✅ Trigger correction
+    updateRoverLive(lat, lon, time); // Trigger correction
 
     GpsPosition corrected = getCorrectedRoverPosition();
   }

@@ -1,93 +1,37 @@
 #include "wifi_portal.h"
 #include <WiFi.h>
+#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 
-WiFiPortalESP32::WiFiPortalESP32() {}
-
-void WiFiPortalESP32::begin()
+WiFiPortal::WiFiPortal(const char *apName, const char *apPassword)
 {
-    loadCredentials();
-
-    if (ssid == "" || password == "")
-    {
-        Serial.println("No saved credentials.");
-        promptCredentials();
-        loadCredentials(); // reload after saving
-    }
+    _apName = apName;
+    _apPassword = apPassword;
 }
 
-bool WiFiPortalESP32::connect()
+void WiFiPortal::connect()
 {
-    WiFi.begin(ssid.c_str(), password.c_str());
-    Serial.print("Connecting to Wi-Fi");
+    Serial.begin(115200);
+    delay(1000);
 
-    unsigned long start = millis();
-    while (WiFi.status() != WL_CONNECTED && millis() - start < 10000)
-    {
-        delay(500);
-        Serial.print(".");
-    }
+    WiFi.mode(WIFI_STA); // Station mode only
 
-    if (WiFi.status() == WL_CONNECTED)
+    WiFiManager wm;
+
+    // Optional: Uncomment this if you want to reset saved credentials
+    // wm.resetSettings();
+
+    bool res = wm.autoConnect(_apName, _apPassword);
+
+    if (!res)
     {
-        Serial.println("\nConnected!");
-        Serial.print("IP Address: ");
-        Serial.println(WiFi.localIP());
-        return true;
+        Serial.println("❌ Failed to connect to WiFi");
+        // Optionally restart or go to deep sleep
+        // ESP.restart();
     }
     else
     {
-        Serial.println("\nFailed to connect.");
-        return false;
+        Serial.println("✅ Connected to WiFi!");
+        Serial.print("IP Address: ");
+        Serial.println(WiFi.localIP());
     }
-}
-
-void WiFiPortalESP32::promptCredentials()
-{
-    Serial.println("Enter Wi-Fi SSID:");
-    while (Serial.available() == 0)
-        ;
-    ssid = Serial.readStringUntil('\n');
-    ssid.trim();
-
-    Serial.println("Enter Wi-Fi Password:");
-    while (Serial.available() == 0)
-        ;
-    password = Serial.readStringUntil('\n');
-    password.trim();
-
-    saveCredentials(ssid, password);
-}
-
-void WiFiPortalESP32::clearCredentials()
-{
-    preferences.begin("wifi", false);
-    preferences.clear();
-    preferences.end();
-    Serial.println("🧽 Credentials cleared.");
-}
-
-void WiFiPortalESP32::loadCredentials()
-{
-    preferences.begin("wifi", true); // read-only
-    ssid = preferences.getString("ssid", "");
-    password = preferences.getString("password", "");
-    preferences.end();
-}
-
-void WiFiPortalESP32::saveCredentials(const String &ssid, const String &password)
-{
-    preferences.begin("wifi", false);
-    preferences.putString("ssid", ssid);
-    preferences.putString("password", password);
-    preferences.end();
-}
-
-String WiFiPortalESP32::getSSID()
-{
-    return ssid;
-}
-
-String WiFiPortalESP32::getPassword()
-{
-    return password;
 }
