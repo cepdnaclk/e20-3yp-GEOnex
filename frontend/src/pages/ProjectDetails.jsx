@@ -12,6 +12,7 @@ import PositioningMode from "../components/PositioningMode";
 import ProjectOverview from "../components/ProjectOverview";
 import SectionsOverview from "../components/SectionsOverview";
 import SurveyControlSection from "../components/SurveyControlSection";
+import RemoteRoverEnable from "../components/RemoteRoverEnable";
 
 // Extend dayjs with relativeTime
 dayjs.extend(relativeTime);
@@ -133,7 +134,7 @@ const handleExport = async () => {
 
          {/* Actions */}
         <div className="h-max bg-white p-5 rounded-lg flex flex-col gap-3 overflow-auto">
-          <h2 className="text-base md:text-lg font-semibold pb-5">Actions</h2>
+          <h2 className="text-base md:text-lg font-semibold pb-2 border-b">Actions</h2>
           <div
             className="flex items-center gap-3 p-3 rounded-lg cursor-pointer"
             style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
@@ -301,6 +302,11 @@ const handleExport = async () => {
          <SectionsOverview/>
 
       </div>
+
+      <div className="flex flex-col gap-4 max-w-2xl">
+        <RemoteRoverEnable />
+        </div>
+
       </div>
       
     </div>
