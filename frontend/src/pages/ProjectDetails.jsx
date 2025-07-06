@@ -121,11 +121,11 @@ const handleExport = async () => {
   return (
     <div>
       <PageTopic topic={project.Name}  intro={project.Description} />
-      <div className="flex flex-col lg:flex-row gap-4 lg:ml-14 p-4">
+      <div className="flex flex-col lg:flex-row gap-4 ">
 
 
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 lg:w-96">
          {/* Actions Section (Left) */}
          {/* Control */}
          <SurveyControlSection/>
@@ -290,7 +290,7 @@ const handleExport = async () => {
          
       </div>
 
-      <div className="flex flex-col gap-4 max-w-2xl  ">
+      <div className="flex flex-col gap-4 lg:w-96  ">
          {/* Overview Section (Right) */}
         
 
@@ -303,7 +303,7 @@ const handleExport = async () => {
 
       </div>
 
-      <div className="flex flex-col gap-4 max-w-2xl">
+      <div className="flex flex-col gap-4 lg:w-96">
         <RemoteRoverEnable />
         </div>
 

@@ -6,7 +6,7 @@ import { assets } from "../assets/assets";
 const PageTopic = ({topic, intro}) => {
     const navigate = useNavigate();
     return (
-        <div className="flex items-center gap-3 p-4 mb-5">
+        <div className="flex items-center gap-3 mb-8">
         <button
           className="text-2xl"
           onClick={() => {
