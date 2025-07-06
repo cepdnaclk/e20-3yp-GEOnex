@@ -339,7 +339,7 @@ const MapSection = () => {
 
       {/* Show Point Recorded Popup */}
       {showPointRecorded && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[5px] z-[2000]">
+        <div >
           <PointRecorded
             sensorData={sensorData}
             baseData={baseSensorData}
@@ -350,7 +350,7 @@ const MapSection = () => {
 
       {/* Show Confirm Discard Popup */}
       {showConfirmDiscard && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[5px] z-[2000]">
+        <div >
           <ConfirmDiscard projectId={projectId} />
         </div>
       )}

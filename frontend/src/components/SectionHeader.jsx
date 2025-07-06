@@ -41,12 +41,12 @@ export default function SectionHeader({ title, subtitle, right = null}) {
       
         
         <div>
-          <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
             {title}
           </h1>
 
           {subtitle && (
-            <p className="text-xs md:text-base lg:text-lg mt-0 md:mt-1">{subtitle}</p>
+            <p className="text-sm md:text-base lg:text-lg mt-0 md:mt-1">{subtitle}</p>
           )}
         </div>
       
