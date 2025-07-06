@@ -20,10 +20,11 @@ const PageTopic = ({ topic, intro, right = null }) => {
 
   return (
     <div
-      className={`sticky top-0 z-30 flex items-center justify-between 
-                  gap-3 mb-3 py-3
+      className={`sticky top-0 z-20 flex items-center justify-between 
+                  gap-3 mb-2 py-3
                   transition-colors duration-300
-                  -mx-5 px-5 
+                  -mx-5 pl-16 pt-0 pr-4
+                  md:px-5 
                   ${
                     scrolled
                       ? "bg-gray-100 dark:bg-gray-900 shadow-sm backdrop-blur"
@@ -32,19 +33,19 @@ const PageTopic = ({ topic, intro, right = null }) => {
     >
       {/* left cluster */}
       <div className="flex items-center gap-3">
-        <button className="text-2xl" onClick={() => navigate(-1)}>
+        <button className="text-xl" onClick={() => navigate(-1)}>
           <img
-            className="w-6 h-6 md:w-8 md:h-8 dark:invert dark:brightness-0"
+            className="w-5 h-5 md:w-8 md:h-8 dark:invert dark:brightness-0"
             src={assets.arrow}
             alt="goback"
           />
         </button>
 
         <div>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+          <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold">
             {topic}
           </h1>
-          <p className="text-sm md:text-base lg:text-lg mt-1">{intro}</p>
+          <p className="text-xs md:text-base lg:text-lg mt-1">{intro}</p>
         </div>
       </div>
       {/* right-hand slot */}
