@@ -48,7 +48,7 @@ const PointSurvey = () => {
             right={
               <button
                 className="flex items-center gap-1 text-xs md:text-base lg:text-lg
-             px-3 md:px-10 py-2 bg-black hover:bg-gray-800 text-white 
+             px-3 md:px-10 py-2 bg-black hover:bg-gray-800 text-white mt-2
              rounded-xl dark:bg-indigo-600 dark:hover:bg-indigo-500 "
                 onClick={() => {
                   navigate(`/projects/takenpoints/${projectId}`);

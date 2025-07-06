@@ -39,11 +39,11 @@ export default function Layout() {
           onClick={() => setOpen(true)}
           className="md:hidden p-3 m-2 rounded 
           hover:bg-gray-200 focus:outline-none focus:ring
-          fixed left-3 top-[0.35rem] z-30
+          fixed left-0 top-[-0.30rem] z-30
           dark:bg-gray-700"
         >
           {/* burger icon */}
-          <img className="w-5 h-5" src={assets.hamburger_icon} />
+          <img className="w-6 h-6" src={assets.hamburger_icon} />
         </button>
 
         {/* routed pages */}

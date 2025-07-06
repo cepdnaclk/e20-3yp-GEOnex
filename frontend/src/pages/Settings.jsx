@@ -22,7 +22,7 @@ const Settings = () => {
     );
   }
   return (
-    <div className="min-h-screen p-1 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100">
       <SectionHeader
         title="Settings"
         subtitle="Manage your communication,display,and user preferences"

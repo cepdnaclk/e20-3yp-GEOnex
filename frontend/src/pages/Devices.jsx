@@ -7,7 +7,7 @@ import SectionHeader from "../components/SectionHeader";
 
 const Devices = () => {
   return (
-    <div className="min-h-screen p-1 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen text-gray-900 dark:text-gray-100">
       <SectionHeader title="Devices" subtitle="Track all your devices here" />
 
       <div className="flex flex-wrap gap-4">

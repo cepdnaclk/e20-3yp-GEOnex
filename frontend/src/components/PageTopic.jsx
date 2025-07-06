@@ -23,7 +23,7 @@ const PageTopic = ({ topic, intro, right = null }) => {
       className={`sticky top-0 z-20 flex items-center justify-between 
                   gap-3 mb-2 py-3
                   transition-colors duration-300
-                  -mx-5 pl-16 pt-0 pr-4
+                  -mx-5 -my-2 pl-12 pt-0 pr-4
                   md:px-5 
                   ${
                     scrolled
@@ -32,7 +32,7 @@ const PageTopic = ({ topic, intro, right = null }) => {
                   }`}
     >
       {/* left cluster */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 mt-1">
         <button className="text-xl" onClick={() => navigate(-1)}>
           <img
             className="w-5 h-5 md:w-8 md:h-8 dark:invert dark:brightness-0"
@@ -45,7 +45,7 @@ const PageTopic = ({ topic, intro, right = null }) => {
           <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold">
             {topic}
           </h1>
-          <p className="text-xs md:text-base lg:text-lg mt-1">{intro}</p>
+          <p className="text-xs md:text-base lg:text-lg mt-0 md:mt-1">{intro}</p>
         </div>
       </div>
       {/* right-hand slot */}

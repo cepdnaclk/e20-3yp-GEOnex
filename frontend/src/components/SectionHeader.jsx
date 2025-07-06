@@ -30,7 +30,7 @@ export default function SectionHeader({ title, subtitle, right = null}) {
     <div className={`sticky top-0 z-20 flex items-center justify-between 
                   gap-3 mb-2 py-3
                   transition-colors duration-300
-                  -mx-6 pl-16 pt-0 pr-4
+                  -mx-6 -my-2 pl-16 pt-0 pr-4
                   md:px-5 
                   ${
                     scrolled
@@ -41,12 +41,12 @@ export default function SectionHeader({ title, subtitle, right = null}) {
       
         
         <div>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+          <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold">
             {title}
           </h1>
 
           {subtitle && (
-            <p className="text-sm md:text-base lg:text-lg mt-1">{subtitle}</p>
+            <p className="text-xs md:text-base lg:text-lg mt-0 md:mt-1">{subtitle}</p>
           )}
         </div>
       
