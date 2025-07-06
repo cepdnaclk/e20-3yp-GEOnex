@@ -25,5 +25,5 @@ jobs:
             --application-name Geonex \
             --deployment-group-name GeonexGroup \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }} \
-            --deployment-config-name CodeDeployDefault.EC2OneAtATime \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
             --description "Deployment from GitHub Actions - ${{ github.sha }}"
