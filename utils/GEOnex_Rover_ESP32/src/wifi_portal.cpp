@@ -1,6 +1,7 @@
 #include "wifi_portal.h"
 #include <WiFi.h>
 #include <WiFiManager.h>
+#include"config.h"
 
 WiFiPortal::WiFiPortal(const char *apName, const char *apPassword, int resetButtonPin)
 {
@@ -33,6 +34,7 @@ void WiFiPortal::connect()
         Serial.println("Connected to WiFi!");
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());
+        digitalWrite(LED_WIFI, HIGH);
     }
 }
 
