@@ -1,27 +1,17 @@
-#ifndef WIFI_PORTAL_ESP32_H
-#define WIFI_PORTAL_ESP32_H
+#ifndef WIFI_PORTAL_H
+#define WIFI_PORTAL_H
 
 #include <Arduino.h>
-#include <Preferences.h>
 
-class WiFiPortalESP32
+class WiFiPortal
 {
 public:
-    WiFiPortalESP32();
-    void begin();
-    bool connect();
-    void promptCredentials();
-    void clearCredentials();
-    String getSSID();
-    String getPassword();
+    WiFiPortal(const char *apName = "GeoNex-Setup", const char *apPassword = "12345678");
+    void connect();
 
 private:
-    Preferences preferences;
-    String ssid;
-    String password;
-
-    void loadCredentials();
-    void saveCredentials(const String &ssid, const String &password);
+    const char *_apName;
+    const char *_apPassword;
 };
 
 #endif
