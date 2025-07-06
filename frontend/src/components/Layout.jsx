@@ -37,7 +37,9 @@ export default function Layout() {
         {/* mobile hamburger */}
         <button
           onClick={() => setOpen(true)}
-          className="md:hidden p-3 m-2 rounded hover:bg-gray-200 focus:outline-none focus:ring
+          className="md:hidden p-3 m-2 rounded 
+          hover:bg-gray-200 focus:outline-none focus:ring
+          fixed left-0 top-0 
           dark:bg-gray-700"
         >
           {/* burger icon */}
