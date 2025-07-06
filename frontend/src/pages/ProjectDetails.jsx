@@ -303,9 +303,9 @@ const handleExport = async () => {
 
       </div>
 
-      <div className="flex flex-col gap-4 max-w-2xl">
+      {/* <div className="flex flex-col gap-4 max-w-2xl">
         <RemoteRoverEnable />
-        </div>
+        </div> */}
 
       </div>
       
