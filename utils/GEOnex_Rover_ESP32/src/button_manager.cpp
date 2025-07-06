@@ -10,13 +10,13 @@ extern GPSModule gpsModule;
 
 void checkButtonPresses()
 {
-    if (digitalRead(BUTTON_RESET_WIFI) == HIGH)
-    {
-        Serial.println("[RESET] Resetting WiFi...");
-        WiFi.disconnect();
-        delay(WIFI_RETRY_DELAY);
-        connectWiFi();
-    }
+    // if (digitalRead(BUTTON_RESET_WIFI) == HIGH)
+    // {
+    //     Serial.println("[RESET] Resetting WiFi...");
+    //     WiFi.disconnect();
+    //     delay(WIFI_RETRY_DELAY);
+    //     connectWiFi();
+    // }
 
     if (digitalRead(BUTTON_SEND_GPS) == HIGH)
     {
