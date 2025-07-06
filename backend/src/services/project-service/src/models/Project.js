@@ -6,7 +6,7 @@ const projectSchema = new mongoose.Schema({
   Name: { type: String, required: true },
   Created_On: { type: Date, required: true },
   Last_Modified: { type: Date, required: true },
-  Status: { type: String, default: "Started" },
+  Status: { type: String, default: "Active" },
   Survey_Time: { type: String, required: false },
   Description: { type: String, required: false },
   Total_Points: { type: Number, default: 0 },
