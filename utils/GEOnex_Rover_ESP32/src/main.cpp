@@ -23,8 +23,7 @@ IMUManager mpu(SDA, SCL);
 // GNSS configuration
 GNSSConfig gnss;
 
-// WiFiPortalESP32 wifiPortal("GeoNex-Setup", "12345678");
-WiFiPortal wifi("GeoNex-Setup", "12345678");
+WiFiPortal wifi("GeoNex-Setup", "12345678", BUTTON_RESET_WIFI);
 
 void setup()
 {
@@ -128,6 +127,7 @@ void loop()
   checkBaseTimeout();
 
   checkButtonPresses();
+  wifi.checkResetButton();
 
   // Read battery voltage
   // Uncomment the next line to enable battery voltage reading

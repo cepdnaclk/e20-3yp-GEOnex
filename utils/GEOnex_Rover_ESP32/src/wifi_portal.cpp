@@ -1,11 +1,17 @@
 #include "wifi_portal.h"
 #include <WiFi.h>
-#include <WiFiManager.h> 
+#include <WiFiManager.h>
 
-WiFiPortal::WiFiPortal(const char *apName, const char *apPassword)
+WiFiPortal::WiFiPortal(const char *apName, const char *apPassword, int resetButtonPin)
 {
     _apName = apName;
     _apPassword = apPassword;
+    _resetPin = resetButtonPin;
+
+    if (_resetPin != -1)
+    {
+        pinMode(_resetPin, INPUT_PULLUP);
+    }
 }
 
 void WiFiPortal::connect()
@@ -13,25 +19,49 @@ void WiFiPortal::connect()
     Serial.begin(115200);
     delay(1000);
 
-    WiFi.mode(WIFI_STA); // Station mode only
+    WiFi.mode(WIFI_STA);
 
     WiFiManager wm;
-
-    // Optional: Uncomment this if you want to reset saved credentials
-    // wm.resetSettings();
-
     bool res = wm.autoConnect(_apName, _apPassword);
 
     if (!res)
     {
         Serial.println("Failed to connect to WiFi");
-        // Optionally restart or go to deep sleep
-        // ESP.restart();
     }
     else
     {
         Serial.println("Connected to WiFi!");
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());
+    }
+}
+
+void WiFiPortal::checkResetButton()
+{
+    if (_resetPin == -1)
+        return;
+
+    // Simple debounce using millis
+    if (millis() - _lastCheck < 200)
+        return;
+    _lastCheck = millis();
+
+    if (digitalRead(_resetPin) == HIGH && !_resetHandled)
+    {
+        _resetHandled = true; // prevent re-trigger
+
+        Serial.println("[RESET] Resetting WiFi credentials via WiFiManager...");
+        delay(300); // for stability
+
+        WiFiManager wm;
+        wm.resetSettings(); // clear stored credentials
+        delay(500);
+        ESP.restart(); // restart to re-init WiFi setup
+    }
+
+    // Reset flag if button released
+    if (digitalRead(_resetPin) == LOW)
+    {
+        _resetHandled = false;
     }
 }
