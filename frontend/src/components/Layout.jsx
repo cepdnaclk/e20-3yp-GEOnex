@@ -31,12 +31,15 @@ export default function Layout() {
       <Navbar mobileOpen={open} onClose={() => setOpen(false)} />
 
       {/* ───── page area ───── */}
-      <div className="flex-1 relative h-screen overflow-y-auto
+      <div id="scroll-area" 
+      className="flex-1 relative h-screen overflow-y-auto
       bg-[#e8e8e8] dark:bg-gray-900">
         {/* mobile hamburger */}
         <button
           onClick={() => setOpen(true)}
-          className="md:hidden p-3 m-2 rounded hover:bg-gray-200 focus:outline-none focus:ring
+          className="md:hidden p-3 m-2 rounded 
+          hover:bg-gray-200 focus:outline-none focus:ring
+          fixed left-0 top-0 
           dark:bg-gray-700"
         >
           {/* burger icon */}
@@ -44,7 +47,7 @@ export default function Layout() {
         </button>
 
         {/* routed pages */}
-        <div className="w-full max-w-7xl mx-auto px-5 py-8">
+        <div className="w-full max-w-7xl mx-auto px-5 py-4">
           <Outlet />
         </div>
       </div>

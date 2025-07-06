@@ -9,10 +9,10 @@ import SensorData from "../components/SensorData";
 import PageTopic from "../components/PageTopic";
 
 const PointSurvey = () => {
-  const { navigate, backendUrl} = useContext(Context);
-  const { projectId } = useParams(); 
-  const [projectName, setProjectName] = useState(""); 
-  
+  const { navigate, backendUrl } = useContext(Context);
+  const { projectId } = useParams();
+  const [projectName, setProjectName] = useState("");
+
   useEffect(() => {
     // Fetch project name
     const fetchName = async () => {
@@ -39,31 +39,33 @@ const PointSurvey = () => {
        md:grid-cols-2 md:grid-rows-7 md:h-screen "
       >
         {/* Header row with left group and right button */}
-        <div className="col-span-1 md:col-span-2 flex flex-row items-center justify-between">
+        <div className="col-span-1 md:col-span-2">
           {/* Left group: arrow and title */}
 
           <PageTopic
             topic={projectName || "Loading..."}
             intro="Feel free to do surveys"
+            right={
+              <button
+                className="flex items-center gap-1 text-sm md:text-base lg:text-lg
+             px-4 md:px-10 py-2 bg-black hover:bg-gray-800 text-white 
+             rounded-xl dark:bg-indigo-600 dark:hover:bg-indigo-500 "
+                onClick={() => {
+                  navigate(`/projects/takenpoints/${projectId}`);
+                }}
+              >
+                Proceed <span>→</span>
+              </button>
+            }
           />
-
-          {/* Right side: "Proceed" Button */}
-          <button
-            className="flex items-center gap-1 text-sm md:text-base lg:text-lg
-             px-4 md:px-10 py-2 bg-black hover:bg-gray-800 text-white rounded-xl dark:bg-indigo-600 dark:hover:bg-indigo-500"
-            onClick={() => {
-              navigate(`/projects/takenpoints/${projectId}`);
-            }}
-          >
-            Proceed <span>→</span>
-          </button>
         </div>
         <div
           className="col-span-1 md:col-span-2 
         h-[70vh] 
         md:row-span-6 md:h-auto 
         bg-white rounded-lg
-        flex flex-col gap-4 overflow-auto"
+        flex flex-col overflow-auto
+        -mx-6"
         >
           <MapSection />
         </div>

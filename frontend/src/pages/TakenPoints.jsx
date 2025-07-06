@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import RenamePointPopup from "../components/RenamePointPopup";
 import PageTopic from "../components/PageTopic";
-import { Trash2 } from 'lucide-react';
+import { Trash2 } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const TakenPoints = () => {
@@ -35,10 +35,9 @@ const TakenPoints = () => {
   }, [projectId]);
 
   const handleSavechanges = () => {
-    setSurveyStatus('Paused');
-    updateProjectStatus(project._id, 'Paused');
+    setSurveyStatus("Paused");
+    updateProjectStatus(project._id, "Paused");
     navigate(`/projects/${projectId}`);
-
   };
 
   // Use the context's deletePoint function
@@ -89,36 +88,38 @@ const TakenPoints = () => {
     <div className="text-gray-900 dark:text-gray-100">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:grid-rows-[80px_auto]">
         {/* Header row with left group and right button */}
-        <div className="col-span-1 md:col-span-2 flex items-center justify-between">
+        <div className="col-span-1 md:col-span-2 ">
           {/* Left group: arrow and title */}
-          <PageTopic topic="Taken Points" intro="Play with points" />
+          <PageTopic
+            topic="Taken Points"
+            intro="Play with points"
+            right={
+              <div className="flex items-center gap-3">
+                {/* refresh button */}
+                <button
+                  className="text-2xl"
+                  onClick={() => window.location.reload()}
+                >
+                  <img
+                    className="w-7 h-7 md:w-9 md:h-9 invert-0 dark:invert dark:brightness-0"
+                    src={assets.refresh}
+                    alt="refresh"
+                  />
+                </button>
 
-          <div className="flex items-center gap-3">
-            {/* refresh button */}
-            <button
-              className="text-2xl"
-              onClick={() => window.location.reload()}
-            >
-              <img
-                className="w-7 h-7 md:w-9 md:h-9 invert-0 dark:invert dark:brightness-0"
-                src={assets.refresh}
-                alt="refresh"
-              />
-            </button>
-
-            <button
-              className="flex items-center gap-1 text-sm md:text-base lg:text-lg md:px-10 px-4 py-2 
+                <button
+                  className="flex items-center gap-1 text-sm md:text-base lg:text-lg md:px-10 px-4 py-2 
               bg-black hover:bg-gray-800 text-white rounded-xl
               dark:bg-indigo-600 dark:hover:bg-indigo-500"
-              onClick={() => {
-                
-                handleSavechanges();
-                }
-              }
-            >
-              Save Changes
-            </button>
-          </div>
+                  onClick={() => {
+                    handleSavechanges();
+                  }}
+                >
+                  Save Changes
+                </button>
+              </div>
+            }
+          />
         </div>
 
         <div className="p-4 col-span-1 md:col-span-2 ">
@@ -164,7 +165,9 @@ const TakenPoints = () => {
                       <td className="px-6 py-4 rounded-l-lg">{point.Name}</td>
                       <td className="px-6 py-4">{point.Latitude}</td>
                       <td className="px-6 py-4">{point.Longitude}</td>
-                      <td className="px-8 py-4">{point.Accuracy? point.Accuracy: "N/A"}</td>
+                      <td className="px-8 py-4">
+                        {point.Accuracy ? point.Accuracy : "N/A"}
+                      </td>
                       <td className="px-6 py-4">
                         {point.Section || "default"}
                       </td>
@@ -185,9 +188,9 @@ const TakenPoints = () => {
                             className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
                             onClick={() => handleDeletePoint(point._id)}
                             title="Delete"
-                            >
+                          >
                             <Trash2 size={16} />
-                            </button>
+                          </button>
                         </div>
                       </td>
                     </tr>
