@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { assets } from "../assets/assets";
 import axios from "axios";
 import { toast } from "react-toastify";
+import SectionHeader from "../components/SectionHeader";
 
 const Projects = () => {
   const { navigate, projects, getProjectsData, removeProject, userData } =
@@ -23,41 +24,36 @@ const Projects = () => {
       >
         <div
           className="col-span-1 md:col-span-2 lg:col-span-4 
-         flex items-center justify-between"
+         "
         >
-          {/* Left side: Title & Subtitle */}
-          <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-semi-bold">
-              Projects
-            </h1>
-            <p className="text-sm md:text-base lg:text-lg mt-1">
-              Manage your all projects
-            </p>
-          </div>
-
-          {/* Right side: "Add New Project" Button */}
-          <button
-            className="flex text-sm md:text-lg lg:text-xl
-            items-center gap-1 text-s px-4 py-2 bg-black  hover:bg-gray-800 text-white rounded-lg
+          <SectionHeader
+            title="Projects"
+            subtitle="Manage all projects"
+            right={
+              <button
+                className="flex text-sm md:text-lg lg:text-xl
+            items-center gap-1 text-s mt-4 px-4 py-2 bg-black  hover:bg-gray-800 text-white rounded-lg
             dark:bg-indigo-600 dark:hover:bg-indigo-500"
-            onClick={() => {
-              navigate(`/projects/${userId}/newproject`);
-            }}
-          >
-            <svg
-              className="w-5 h-5 md:w-6 md:h-6 lg:w-6 lg:h-6 flex-shrink-0"
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M12 8v8M8 12h8"></path>
-            </svg>
+                onClick={() => {
+                  navigate(`/projects/${userId}/newproject`);
+                }}
+              >
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6 lg:w-6 lg:h-6 flex-shrink-0"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 8v8M8 12h8"></path>
+                </svg>
 
-            <span className="hidden sm:inline">Add New Project</span>
-          </button>
+                <span className="hidden sm:inline">Add New Project</span>
+              </button>
+            }
+          />
         </div>
 
         <div

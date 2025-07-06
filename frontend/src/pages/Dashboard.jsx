@@ -3,13 +3,14 @@ import { assets } from "../assets/assets";
 import RecentProjects from "../components/RecentProjects";
 import { Context } from "../context/Context";
 import DashboardNotifications from "../components/DashboardNotifications";
+import SectionHeader from "../components/SectionHeader";
 
 const Dashboard = () => {
   const { navigate, userData, rovers, base, fetchUserDevices, backendUrl } =
     useContext(Context);
 
   // Use a constant or get this from context instead of hardcoding
-  const userId = userData.userId; 
+  const userId = userData.userId;
 
   // Memoize the RecentProjects component to prevent unnecessary re-renders
   const memoizedRecentProjects = useMemo(() => {
@@ -42,45 +43,42 @@ const Dashboard = () => {
       >
         <div
           className="col-span-1 md:col-span-2 lg:col-span-4 
-          flex items-center justify-between"
+          "
         >
-          {/* Left side: Title & Subtitle */}
-          <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-semi-bold">
-              Hello {userData ? userData.name : "User"}
-            </h1>
-            <p className="text-sm md:text-base lg:text-lg mt-1">
-              Welcome to Site Measurement IoT
-            </p>
-          </div>
-
-          {/* Right side: "Add New Project" Button */}
-          <button
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-black  hover:bg-gray-800  
+          <SectionHeader
+            title={`Hello ${userData?.name ?? "User"}`}
+            subtitle="Welcome to Site Measurement IoT"
+            right={
+              <button
+                className="flex items-center justify-center mt-4 gap-2 px-4 py-2 bg-black  hover:bg-gray-800  
                       text-white rounded-lg text-sm md:text-lg lg:text-xl
                       dark:bg-indigo-600 dark:hover:bg-indigo-500"
-            onClick={() => {
-              navigate(`/projects/${userId}/newproject`);
-            }}
-          >
-            <svg
-              className="w-5 h-5 md:w-6 md:h-6 lg:w-6 lg:h-6 flex-shrink-0"
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M12 8v8M8 12h8"></path>
-            </svg>
+                onClick={() => {
+                  navigate(`/projects/${userId}/newproject`);
+                }}
+              >
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6 lg:w-6 lg:h-6 flex-shrink-0"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 8v8M8 12h8"></path>
+                </svg>
 
-            <span className="hidden sm:inline">Add New Project</span>
-          </button>
+                <span className="hidden sm:inline">Add New Project</span>
+              </button>
+            }
+          />
         </div>
 
-        <div className="col-span-1 bg-white rounded-lg flex gap-2 p-2 truncate 
-        justify-start items-center dark:bg-gray-700">
+        <div
+          className="col-span-1 bg-white rounded-lg flex gap-2 p-2 truncate 
+        justify-start items-center dark:bg-gray-700"
+        >
           <svg
             stroke="currentColor"
             fill="currentColor"
@@ -118,8 +116,10 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
-        <div className="col-span-1 bg-white rounded-lg flex gap-2 p-2 truncate 
-        justify-start items-center dark:bg-gray-700">
+        <div
+          className="col-span-1 bg-white rounded-lg flex gap-2 p-2 truncate 
+        justify-start items-center dark:bg-gray-700"
+        >
           <img className="w-16 h-16 " src={assets.base} alt="Base" />
           <div style={{ lineHeight: "0.8" }}>
             {!base ? (
@@ -153,8 +153,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="col-span-1 bg-white rounded-lg flex gap-2 p-4 
-        justify-start items-center dark:bg-gray-700">
+        <div
+          className="col-span-1 bg-white rounded-lg flex gap-2 p-4 
+        justify-start items-center dark:bg-gray-700"
+        >
           <div>
             <p className="font-semi-bold text-3xl md:text-6xl lg:text-6xl pr-3">
               {rovers.length}
@@ -164,18 +166,24 @@ const Dashboard = () => {
             <p className="font-semi-bold text-lg md:text-xl lg:text-2xl">
               Client Connected
             </p>
-            <div>{rovers.map((rover, i) => <div key={i}><span className="text-xs">{rover.DeviceCode}</span>
-
-            </div>)}</div>
+            <div>
+              {rovers.map((rover, i) => (
+                <div key={i}>
+                  <span className="text-xs">{rover.DeviceCode}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-       {/* <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg">
+        {/* <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg">
            // <DashboardNotifications userId={userId}/> 
         </div> */}
 
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 
-        rounded-lg dark:bg-gray-800">
+        <div
+          className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 
+        rounded-lg dark:bg-gray-800"
+        >
           {memoizedRecentProjects}
         </div>
       </div>
