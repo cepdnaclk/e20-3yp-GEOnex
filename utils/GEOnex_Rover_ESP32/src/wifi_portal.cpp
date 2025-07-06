@@ -1,6 +1,6 @@
 #include "wifi_portal.h"
 #include <WiFi.h>
-#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+#include <WiFiManager.h> 
 
 WiFiPortal::WiFiPortal(const char *apName, const char *apPassword)
 {
