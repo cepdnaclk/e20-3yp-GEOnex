@@ -13,6 +13,8 @@
 
 body {
   overscroll-behavior-x: contain; /* stop “rubber-band” on the X-axis            */
-  touch-action: pan-y;            /* only allow vertical panning / pinch-zoom   */
+  overscroll-behavior-y: contain; 
+  /* touch-action: pan-y;            only allow vertical panning / pinch-zoom   */
   overflow-x: hidden;             /* never let the page scroll horizontally     */
+  overflow-y: hidden; 
 }
