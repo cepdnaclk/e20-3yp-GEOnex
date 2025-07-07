@@ -127,9 +127,9 @@ const ContextProvider = (props) => {
           ...prevProject,
           Status: status,
         }));
-        toast.success("Project status updated successfully");
+        // toast.success("Project status updated successfully");
       } else {
-        toast.error(response.data.message);
+        // toast.error(response.data.message);
       }
     } catch (error) {
       console.error("Error updating project status:", error);

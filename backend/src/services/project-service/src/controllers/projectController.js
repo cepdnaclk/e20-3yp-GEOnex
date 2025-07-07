@@ -75,7 +75,7 @@ const updateProject = async (req, res) => {
             return res.status(404).json({ message: 'Project not found' });
         }
 
-        res.json({ message: 'Project updated successfully' });
+        res.status(200).json({ message: 'Project updated successfully' });
     } catch (error) {
         console.error("Error updating project:", error);
         res.status(500).json({ message: 'Error updating project', error });
@@ -102,7 +102,7 @@ const updateProjectStatus = async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    res.json({ message: 'Project updated successfully' });
+    res.status(200).json({ message: 'Project updated successfully' });
   } catch (error) {
     console.error("Error updating project:", error);
     res.status(500).json({ message: 'Error updating project', error });
