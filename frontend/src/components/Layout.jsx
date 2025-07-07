@@ -1,11 +1,23 @@
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 /* A wrapper that owns the “sidebar-open” state */
 export default function Layout() {
   const [open, setOpen] = useState(false);
+
+  /* ─── Jump to top whenever the route changes ───────────── */
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const scroller = document.getElementById("scroll-area");
+    if (scroller) {
+      // modern - smooth-less jump
+      scroller.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      // fallback (old Safari / iOS)
+      scroller.scrollTop = 0;
+    }
+  }, [pathname]);
 
   /* lock / unlock page scroll when drawer is open */
   useEffect(() => {
@@ -25,9 +37,11 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className="flex min-h-screen 
+    <div
+      className="flex min-h-screen 
     w-full overflow-x-hidden
-    bg-[#e8e8e8] dark:bg-gray-900">
+    bg-[#e8e8e8] dark:bg-gray-900"
+    >
       {/* ❋ backdrop shown only while the sidebar is open on phones */}
       {open && (
         <div
