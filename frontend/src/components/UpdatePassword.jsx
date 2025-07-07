@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../context/Context";
@@ -56,8 +56,18 @@ const UpdatePassword = ({ isOpen, onClose }) => {
     }
   };
 
+  useEffect(() => {
+      const onKey = (e) => e.key === "Escape" && onClose();
+      window.addEventListener("keydown", onKey, { passive: true });
+      return () => window.removeEventListener("keydown", onKey);
+    }, [onClose]);
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-[5px] z-[2000]
+                 flex items-center justify-center"
+        onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}>
       <div className="bg-white dark:bg-gray-800 w-11/12 max-w-md rounded-lg p-6 shadow-lg">
         <h3 className="text-xl font-semibold mb-4">Change Password</h3>
         <form onSubmit={handleSubmit} className="space-y-4">

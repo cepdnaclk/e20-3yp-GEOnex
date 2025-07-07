@@ -24,7 +24,7 @@ export default function Layout() {
       {open && (
         <div
           onClick={() => setOpen(false)}
-          className="fixed inset-0 bg-black/40 md:hidden z-40"
+          className="fixed inset-0 bg-black/40 md:hidden z-[2900]"
         />
       )}
       {/* ───── sidebar ───── */}
@@ -39,15 +39,15 @@ export default function Layout() {
           onClick={() => setOpen(true)}
           className="md:hidden p-3 m-2 rounded 
           hover:bg-gray-200 focus:outline-none focus:ring
-          fixed left-0 top-0 
+          fixed left-0 top-[-0.30rem] z-30
           dark:bg-gray-700"
         >
           {/* burger icon */}
-          <img className="w-5 h-5" src={assets.hamburger_icon} />
+          <img className="w-6 h-6" src={assets.hamburger_icon} />
         </button>
 
         {/* routed pages */}
-        <div className="w-full max-w-7xl mx-auto px-5 py-4">
+        <div className="w-full max-w-7xl mx-auto px-5 pt-2 md:pt-4 pb-4">
           <Outlet />
         </div>
       </div>

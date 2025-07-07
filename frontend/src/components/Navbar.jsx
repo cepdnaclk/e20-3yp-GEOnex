@@ -30,7 +30,7 @@ const Navbar = ({ mobileOpen = false, onClose = () => {} }) => {
 
   // Advanced responsive classes with smooth transitions
   const sidebarClasses = [
-    "fixed md:static inset-0 md:top-0 md:left-0 z-40",
+    "fixed md:static inset-0 md:top-0 md:left-0 z-[3000]",
     "flex flex-col",
     "bg-gradient-to-b from-gray-100 to-gray-200",
     "dark:from-gray-900 dark:to-gray-800",
