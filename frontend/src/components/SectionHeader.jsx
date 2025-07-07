@@ -2,7 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 
-const PageTopic = ({ topic, intro, right = null }) => {
+/**
+ * Re-usable page header for top-level sections.
+ *
+ * Props
+ * ─────
+ *  title   : string                – big text
+ *  subtitle: string (optional)     – smaller text under the title
+ *  right   : ReactNode (optional)  – anything you want on the far right
+ */
+export default function SectionHeader({ title, subtitle, right = null }) {
   const navigate = useNavigate();
 
   const [scrolled, setScrolled] = useState(false);
@@ -23,7 +32,7 @@ const PageTopic = ({ topic, intro, right = null }) => {
       className={`sticky top-0 z-20 flex items-center justify-between 
                   gap-3 mb-2 py-3
                   transition-colors duration-300
-                  -mx-5 -my-2 px-4
+                  -mx-6 -my-2 px-4
                    
                   ${
                     scrolled
@@ -31,41 +40,32 @@ const PageTopic = ({ topic, intro, right = null }) => {
                       : "bg-transparent"
                   }`}
     >
-      {/* left cluster */}
       <div className="flex items-center gap-3">
         {/* mobile burger – fires custom event the Layout listens for */}
         <button
-          className="md:hidden pl-2 rounded hover:bg-gray-200
-                             focus:outline-none focus:ring dark:bg-gray-700"
+          className="md:hidden p-2 rounded hover:bg-gray-200
+                       focus:outline-none focus:ring dark:bg-gray-700"
           onClick={() => window.dispatchEvent(new Event("openSidebar"))}
         >
           <img src={assets.hamburger_icon} alt="" className="w-5 h-5" />
         </button>
 
-        <button className="text-xl" onClick={() => navigate(-1)}>
-          <img
-            className="w-5 h-5 md:w-8 md:h-8 dark:invert dark:brightness-0"
-            src={assets.arrow}
-            alt="goback"
-          />
-        </button>
-
         {/* titles */}
         <div>
-          <h1 className="text-xl md:text-3xl lg:text-4xl font-semibold">
-            {topic}
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+            {title}
           </h1>
 
-          <p className="text-xs md:text-base lg:text-lg mt-0 md:mt-1">
-            {intro}
-          </p>
+          {subtitle && (
+            <p className="text-sm md:text-base lg:text-lg mt-0 md:mt-1">
+              {subtitle}
+            </p>
+          )}
         </div>
       </div>
 
-      {/* right-hand slot */}
+      {/* right block (optional) */}
       {right && <div className="flex-shrink-0">{right}</div>}
     </div>
   );
-};
-
-export default PageTopic;
+}

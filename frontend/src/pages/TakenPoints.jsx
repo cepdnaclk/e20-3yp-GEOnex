@@ -101,14 +101,14 @@ const TakenPoints = () => {
                   onClick={() => window.location.reload()}
                 >
                   <img
-                    className="w-7 h-7 md:w-9 md:h-9 invert-0 dark:invert dark:brightness-0"
+                    className="w-5 h-5 md:w-9 md:h-9 invert-0 dark:invert dark:brightness-0"
                     src={assets.refresh}
                     alt="refresh"
                   />
                 </button>
 
                 <button
-                  className="flex items-center gap-1 text-sm md:text-base lg:text-lg md:px-10 px-4 py-2 
+                  className="flex items-center gap-1 text-xs md:text-base lg:text-lg md:px-10 px-3 py-2 
               bg-black hover:bg-gray-800 text-white rounded-xl
               dark:bg-indigo-600 dark:hover:bg-indigo-500"
                   onClick={() => {

@@ -117,7 +117,7 @@ const NewProject = () => {
       />
 
       {/* Form Section */}
-      <div className="flex-1 p-4 max-w-3xl mx-4 pl-10">
+      <div className="flex-1 max-w-3xl">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
           {/* Project Name */}
           <div className="mb-6">

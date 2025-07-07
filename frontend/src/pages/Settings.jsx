@@ -6,6 +6,7 @@ import Network from "../components/Network";
 import { Context } from "../context/Context";
 import Map from "../components/Map";
 import UpdatePassword from "../components/UpdatePassword";
+import SectionHeader from "../components/SectionHeader";
 
 const Settings = () => {
   const { userData, settings, updateSetting, resetSettings, logout } =
@@ -21,13 +22,11 @@ const Settings = () => {
     );
   }
   return (
-    <div className="min-h-screen p-1 text-gray-900 dark:text-gray-100">
-      <div className="mb-10">
-        <h1 className="text-4xl font-semi-bold">Settings</h1>
-        <p className="text-md mt-1">
-          Manage your communication,display,and user preferences
-        </p>
-      </div>
+    <div className="min-h-screen text-gray-900 dark:text-gray-100">
+      <SectionHeader
+        title="Settings"
+        subtitle="Manage your communication,display,and user preferences"
+      />
 
       <div className="flex flex-wrap gap-4">
         {/* Left column */}
@@ -73,7 +72,9 @@ const Settings = () => {
 
               <div className="flex items-center justify-between mt-4">
                 <span>Email</span>
-                <span className="text-gray-500 dark:text-gray-300">{userData.email}</span>
+                <span className="text-gray-500 dark:text-gray-300">
+                  {userData.email}
+                </span>
               </div>
               <hr className="border-gray-300 dark:border-gray-600" />
 
@@ -103,7 +104,7 @@ const Settings = () => {
               </button>
 
               {showPw && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[5px] z-[2000]">
+                <div>
                   <UpdatePassword
                     isOpen={showPw}
                     onClose={() => setShowPw(false)}

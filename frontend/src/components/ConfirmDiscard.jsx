@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../context/Context";
 import { assets } from "../assets/assets";
 import { toast } from "react-toastify";
@@ -18,11 +18,27 @@ const ConfirmDiscard = ({ projectId }) => {
     setShowConfirmDiscard(false);
   };
 
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && setShowConfirmDiscard(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [setShowConfirmDiscard]);
+
   return (
-    <div>
-      <div className="bg-white p-2 rounded-2xl shadow-lg 
-      w-[215px] md:w-[280px] text-center">
-        <h2 className="text-lg md:text-xl font-bold text-red-500">Confirm Action</h2>
+    <div
+      className="fixed inset-0 bg-black/30 backdrop-blur-[5px] z-[2000]
+                 flex items-center justify-center"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setShowConfirmDiscard(false);
+      }}
+    >
+      <div
+        className="bg-white p-2 mx-4 rounded-2xl shadow-lg 
+      w-full md:w-[340px] h-[280px] text-center"
+      >
+        <h2 className="text-lg md:text-xl font-bold text-red-500">
+          Confirm Action
+        </h2>
 
         {/* Divider */}
         <div className="border-t border-black my-3"></div>

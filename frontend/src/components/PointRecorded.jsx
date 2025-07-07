@@ -39,6 +39,8 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       }
     }
 
+    
+
     if (
       project?.baseMode === "known" &&
       clientDevice &&
@@ -142,11 +144,22 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     }
   };
 
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && setShowPointRecorded(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [setShowPointRecorded]);
+
   return (
-    <div>
+    <div
+    className="fixed inset-0 bg-black/30 backdrop-blur-[5px] z-[2000]
+                 flex items-center justify-center"
+        onClick={(e) => {
+        if (e.target === e.currentTarget) setShowPointRecorded(false);
+      }}>
       <div
-        className="bg-white p-2 rounded-2xl shadow-lg 
-      w-full md:w-[280px] 
+        className="bg-white p-2 mx-4 rounded-2xl shadow-lg 
+      w-full md:w-[380px] 
       text-center"
       >
         {/* /* Title  */}

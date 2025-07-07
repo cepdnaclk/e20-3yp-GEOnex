@@ -35,7 +35,7 @@ const PointSurvey = () => {
   return (
     <div className="text-gray-900 dark:text-gray-100">
       <div
-        className="grid grid-cols-1 gap-4
+        className="grid grid-cols-1 gap-0
        md:grid-cols-2 md:grid-rows-7 md:h-screen "
       >
         {/* Header row with left group and right button */}
@@ -47,8 +47,8 @@ const PointSurvey = () => {
             intro="Feel free to do surveys"
             right={
               <button
-                className="flex items-center gap-1 text-sm md:text-base lg:text-lg
-             px-4 md:px-10 py-2 bg-black hover:bg-gray-800 text-white 
+                className="flex items-center gap-1 text-xs md:text-base lg:text-lg
+             px-3 md:px-10 py-2 bg-black hover:bg-gray-800 text-white mt-2
              rounded-xl dark:bg-indigo-600 dark:hover:bg-indigo-500 "
                 onClick={() => {
                   navigate(`/projects/takenpoints/${projectId}`);
@@ -61,11 +61,12 @@ const PointSurvey = () => {
         </div>
         <div
           className="col-span-1 md:col-span-2 
-        h-[70vh] 
+        h-[80vh] 
         md:row-span-6 md:h-auto 
         bg-white rounded-lg
         flex flex-col overflow-auto
-        -mx-6"
+        -mx-6
+        "
         >
           <MapSection />
         </div>
