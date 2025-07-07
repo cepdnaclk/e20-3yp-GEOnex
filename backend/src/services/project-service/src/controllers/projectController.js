@@ -48,6 +48,20 @@ const getProjectById = async (req, res) => {
 
     try {
         const project = await db.collection('projects').findOne({ _id: new ObjectId(id) });
+        if (project && project.BaseStation) {
+            const deviceCollection = db.collection('devices');
+            // Populate BaseStation
+            const baseStation = await deviceCollection.findOne({ _id: new ObjectId(project.BaseStation) });
+            project.BaseStation = baseStation;
+
+            // Populate ClientDevices
+            if (Array.isArray(project.ClientDevices)) {
+            const clientDevices = await deviceCollection
+                .find({ _id: { $in: project.ClientDevices.map(id => new ObjectId(id)) } })
+                .toArray();
+            project.ClientDevices = clientDevices;
+            }
+        }
 
         if (!project) {
             return res.status(404).json({ message: 'Project not found' });

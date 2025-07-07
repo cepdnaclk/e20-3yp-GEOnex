@@ -13,14 +13,15 @@ export default function MapDeviceData() {
   const [base, setBase] = useState(null);
   const [points, setPoints] = useState([]);
 
-  const { userData , backendUrl, wsUrl} = useContext(Context);
+  const { userData , backendUrl, wsUrl, project} = useContext(Context);
 
   // Mock user ID (in real app, this would come from auth context)
   const userId = userData.userId;
 
     // mock devices 
-    const rovers = ["device123", "device456"];
-    const baseStation = "base123";
+    const rovers = Array.isArray(project?.ClientDevices) && project.ClientDevices.length > 0? project.ClientDevices.map(device => device.DeviceCode): ["device123", "device456"];
+
+    const baseStation = project?.BaseStation?.DeviceCode || "base123";
     
     // Define your WebSocket URL here
     const WS_URL = `${wsUrl}`;

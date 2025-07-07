@@ -52,12 +52,15 @@ const MapSection = () => {
     showConfirmDiscard,
     setShowConfirmDiscard,
     wsUrl,
+    project,
   } = useContext(Context);
 
-  // mock devices
-  const rovers = ["device123", "device456"];
+  // mock devices 
+    const rovers = Array.isArray(project?.ClientDevices) && project.ClientDevices.length > 0? project.ClientDevices.map(device => device.DeviceCode): ["device123", "device456"];
 
-  const baseStation = "base123";
+    const baseStation = project?.BaseStation?.DeviceCode || "base123";
+
+
   // Define your WebSocket URL here
   const WS_URL = `${wsUrl}`;
   // Use our custom hook to get sensor data and connection status
