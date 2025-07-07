@@ -8,10 +8,16 @@ const app = express();
 const cors = require('cors');
 
 // Allow all origins with credentials
+// app.use(cors({
+//   origin: true,  // allows all origins
+//   credentials: true // allow cookies/auth headers
+// }));
+
 app.use(cors({
-  origin: true,  // allows all origins
-  credentials: true // allow cookies/auth headers
+  origin: 'https://www.geonex.site',
+  credentials: true
 }));
+
 
 
 app.use(express.json());
