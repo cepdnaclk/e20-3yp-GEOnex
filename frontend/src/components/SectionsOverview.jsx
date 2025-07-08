@@ -14,22 +14,21 @@ const SectionsOverview = () => {
     const trimmed = newSection.trim();
     if (trimmed === "") return;
 
-    if (project.Sections.includes(trimmed)) {
+    if ((project.Sections || []).includes(trimmed)) {
       toast.error("Section already exists");
     } else {
       setProject({
         ...project,
-        Sections: [...project.Sections, trimmed],
+        Sections: [...(project.Sections || []), trimmed],
       });
-      updateProjectSections(projectId, [...project.Sections, trimmed]);
+      updateProjectSections(projectId, trimmed);
       setNewSection("");
     }
   };
 
   const removeSection = async (projectId, section) => {
     try {
-      await removeProjectSection(projectId, section);
-
+      const response = await removeProjectSection(projectId, section);
       if (response.data.success) {
         toast.success("Section removed successfully");
       } else {

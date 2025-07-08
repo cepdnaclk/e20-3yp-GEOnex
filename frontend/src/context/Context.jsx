@@ -238,9 +238,9 @@ const fetchProject = async (projectId) => {
       }
     };
 
-  const updateProjectSections = async (projectId, sections) => {
+  const updateProjectSections = async (projectId, newSection) => {
     try {
-      const newSection = sections[sections.length - 1];
+      
       const response = await axios.put(
         `${backendUrl}/api/projects/sections/${projectId}`,
         { sectionName: newSection }
@@ -248,7 +248,9 @@ const fetchProject = async (projectId) => {
       if (response.data.success) {
         setProject((prevProject) => ({
           ...prevProject,
-          Sections: sections,
+          Sections: Array.isArray(prevProject.Sections)
+           ? [...prevProject.Sections, newSection]
+           : [newSection],
         }));
         toast.success("Project sections updated successfully");
       } else {

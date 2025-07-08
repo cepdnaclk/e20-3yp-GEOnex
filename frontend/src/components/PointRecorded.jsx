@@ -5,22 +5,28 @@ import { toast } from "react-toastify";
 import { use } from "react";
 
 const PointRecorded = ({ sensorData, baseData, projectId }) => {
-  const { backendUrl, setShowPointRecorded, fetchPoints, points, project, updateProjectSections } = useContext(Context);
+  const {
+    backendUrl,
+    setShowPointRecorded,
+    fetchPoints,
+    points,
+    project,
+    updateProjectSections,
+  } = useContext(Context);
 
   const [pointName, setPointName] = useState("New Point");
   const [loading, setLoading] = useState(false);
   const [clientDevice, setClientDevice] = useState();
   const [isTakePoint, setIsTakePoint] = useState(false);
   const [selectedSection, setSelectedSection] = useState("");
-  const [projectSections, setProjectSections] = useState(project?.Sections || []);
-
-
+  const [projectSections, setProjectSections] = useState(() =>
+    Array.isArray(project?.Sections) ? project.Sections : []
+  );
 
   const [correctedLatitude, setCorrectedLatitude] = useState(null);
   const [correctedLongitude, setCorrectedLongitude] = useState(null);
 
   useEffect(() => {
-
     // compare time delta of baseData and clientDevice
     if (baseData?.timestamp && clientDevice?.timestamp) {
       const baseTime = new Date(baseData.timestamp).getTime();
@@ -28,7 +34,9 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       const timeDeltaSeconds = Math.abs((clientTime - baseTime) / 1000);
       console.log(`Base timestamp: ${baseData.timestamp}`);
       console.log(`Client timestamp: ${clientDevice.timestamp}`);
-      console.log(`Time delta between base and client device: ${timeDeltaSeconds} seconds`);
+      console.log(
+        `Time delta between base and client device: ${timeDeltaSeconds} seconds`
+      );
       // assign accuracy based on time delta
       if (timeDeltaSeconds > 10) {
         clientDevice.accuracy = "Low";
@@ -38,8 +46,6 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
         clientDevice.accuracy = "High";
       }
     }
-
-    
 
     if (
       project?.baseMode === "known" &&
@@ -84,9 +90,6 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     }
   }, [projectSections, selectedSection]);
 
-    
-
-
   const handleSectionChange = (e) => {
     const value = e.target.value;
 
@@ -111,8 +114,6 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       return;
     }
     setLoading(true);
-
-    
 
     const payload = {
       ProjectId: projectId,
@@ -152,33 +153,34 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
 
   return (
     <div
-    className="fixed inset-0 bg-black/30 backdrop-blur-[5px] z-[2000]
+      className="fixed inset-0 bg-black/30 backdrop-blur-[5px] z-[2000]
                  flex items-center justify-center"
-        onClick={(e) => {
+      onClick={(e) => {
         if (e.target === e.currentTarget) setShowPointRecorded(false);
-      }}>
+      }}
+    >
       <div
         className="bg-white p-2 mx-4 rounded-2xl shadow-lg 
       w-full md:w-[380px] 
       text-center"
       >
         {/* /* Title  */}
-          <h2 className="sm:text-lg md:text-xl font-bold">Record a Point</h2>
-          <p
-            className={`text-sm md:text-base font-semibold mt-1 ${
-              clientDevice?.accuracy === "Low"
-                ? "text-red-500"
-                : clientDevice?.accuracy === "Medium"
-                ? "text-yellow-500"
-                : clientDevice?.accuracy === "High"
-                ? "text-green-500"
-                : "text-gray-500"
-            }`}
-          >
-            Accuracy: {clientDevice?.accuracy || "N/A"}
-          </p>
+        <h2 className="sm:text-lg md:text-xl font-bold">Record a Point</h2>
+        <p
+          className={`text-sm md:text-base font-semibold mt-1 ${
+            clientDevice?.accuracy === "Low"
+              ? "text-red-500"
+              : clientDevice?.accuracy === "Medium"
+              ? "text-yellow-500"
+              : clientDevice?.accuracy === "High"
+              ? "text-green-500"
+              : "text-gray-500"
+          }`}
+        >
+          Accuracy: {clientDevice?.accuracy || "N/A"}
+        </p>
 
-          {/* Divider */}
+        {/* Divider */}
         <div className="border-t border-black my-3"></div>
 
         <div className="mt-4 px-4">
@@ -195,26 +197,32 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
         </div>
 
         {/* Section Selection */}
-            <div className="mt-4 px-4">
-        <label className="block text-sm md:text-base text-gray-700">
-        Select a section
-        </label>
-        <select
-        className="w-full mt-1 p-1 border rounded-xl text-sm md:text-base"
-        style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
-        value={selectedSection || ""}
-        onChange={handleSectionChange}
-        >
-        <option value="">Select a section...</option>
-        {projectSections.map((section, idx) => (
-          <option key={idx} value={section}>
-            {section}
-          </option>
-        ))}
-        <option value="__add_new__"> Add new section...</option>
-        </select>
+        <div className="mt-4 px-4">
+          <label className="block text-sm md:text-base text-gray-700">
+            Select a section
+          </label>
+          <select
+            className="w-full mt-1 p-1 border rounded-xl text-sm md:text-base"
+            style={{ backgroundColor: "rgba(232, 232, 232, 1)" }}
+            value={selectedSection || ""}
+            onChange={handleSectionChange}
+          >
+            <option value="">Select a section...</option>
+            {/* {projectSections.map((section, idx) => (
+              <option key={idx} value={section}>
+                {section}
+              </option>
+            ))} */}
+            {(Array.isArray(projectSections) ? projectSections : []).map(
+              (section, idx) => (
+                <option key={idx} value={section}>
+                  {section}
+                </option>
+              )
+            )}
+            <option value="__add_new__"> Add new section...</option>
+          </select>
         </div>
-
 
         <div className="mt-4 px-4">
           <label className="block text-sm md:text-base text-gray-700">
