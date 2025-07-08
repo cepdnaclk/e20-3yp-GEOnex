@@ -52,15 +52,12 @@ const MapSection = () => {
     showConfirmDiscard,
     setShowConfirmDiscard,
     wsUrl,
-    project,
   } = useContext(Context);
 
-  // mock devices 
-    const rovers = Array.isArray(project?.ClientDevices) && project.ClientDevices.length > 0? project.ClientDevices.map(device => device.DeviceCode): ["device123", "device456"];
+  // mock devices
+  const rovers = ["device123", "device456"];
 
-    const baseStation = project?.BaseStation?.DeviceCode || "base123";
-
-
+  const baseStation = "base123";
   // Define your WebSocket URL here
   const WS_URL = `${wsUrl}`;
   // Use our custom hook to get sensor data and connection status
@@ -300,10 +297,10 @@ const MapSection = () => {
       </div>
 
       {/* Buttons on the bottom right */}
-      <div className="absolute bottom-10 right-8 flex flex-col gap-1 md:gap-2 z-[1000] items-center">
+      <div className="absolute bottom-4 right-2 flex flex-col gap-1 md:gap-2 z-[1000] items-center">
         {/* Taken points button */}
         <button
-          className="bg-black p-3 md:p-3 rounded-full shadow-md w-12 h-12 md:w-12 md:h-12 flex items-center justify-center "
+          className="bg-black p-2 md:p-3 rounded-full shadow-md w-8 h-8 md:w-12 md:h-12 flex items-center justify-center "
           onClick={() => {
             navigate(`/projects/takenpoints/${projectId}`);
           }}
@@ -311,38 +308,38 @@ const MapSection = () => {
           <img
             src={assets.filter}
             alt="Button 1"
-            className="w-6 h-6 md:w-6 md:h-6"
+            className="w-4 h-4 md:w-6 md:h-6"
           />
         </button>
 
         {/* Button 2 */}
         <button
-          className="bg-orange-500 p-3 md:p-3 rounded-full shadow-md w-12 h-12 md:w-12 md:h-12 flex items-center "
+          className="bg-orange-500 p-2 md:p-3 rounded-full shadow-md w-8 h-8 md:w-12 md:h-12 flex items-center "
           onClick={() => setShowConfirmDiscard(true)}
         >
           <img
             src={assets.reverse}
             alt="Button 2"
-            className="w-6 h-6 md:w-6 md:h-6"
+            className="w-4 h-4 md:w-6 md:h-6"
           />
         </button>
 
         {/* Button 3 */}
         <button
-          className="bg-blue-500 p-3 md:p-4 rounded-full shadow-md w-14 h-14 md:w-16 md:h-16 flex items-center "
+          className="bg-blue-500 p-3 md:p-4 rounded-full shadow-md w-10 h-10 md:w-16 md:h-16 flex items-center "
           onClick={() => setShowPointRecorded(true)}
         >
           <img
             src={assets.add_location}
             alt="Button 3"
-            className="w-8 h-8 md:w-8 md:h-8"
+            className="w-4 h-4 md:w-8 md:h-8"
           />
         </button>
       </div>
 
       {/* Show Point Recorded Popup */}
       {showPointRecorded && (
-        <div >
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[5px] z-[2000]">
           <PointRecorded
             sensorData={sensorData}
             baseData={baseSensorData}
@@ -353,7 +350,7 @@ const MapSection = () => {
 
       {/* Show Confirm Discard Popup */}
       {showConfirmDiscard && (
-        <div >
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[5px] z-[2000]">
           <ConfirmDiscard projectId={projectId} />
         </div>
       )}
