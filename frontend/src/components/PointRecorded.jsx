@@ -127,7 +127,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     };
 
     try {
-      const response = await axios.post(`${backendUrl}/api/points`, payload);
+      const response = await axios.post(`${backendUrl}/api/points/`, payload);
       if (response.data._id) {
         toast.success("Point recorded successfully.");
         // Refresh the points list so the new point appears on the map
