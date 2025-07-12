@@ -11,6 +11,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     fetchPoints,
     points,
     project,
+    fetchProject,
     updateProjectSections,
   } = useContext(Context);
 
@@ -21,9 +22,7 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
   const [clientDevice, setClientDevice] = useState();
   const [isTakePoint, setIsTakePoint] = useState(false);
   const [selectedSection, setSelectedSection] = useState("");
-  const [projectSections, setProjectSections] = useState(() =>
-    Array.isArray(project?.Sections) ? project.Sections : []
-  );
+  const [projectSections, setProjectSections] = useState([]);
 
   const [correctedLatitude, setCorrectedLatitude] = useState(null);
   const [correctedLongitude, setCorrectedLongitude] = useState(null);
@@ -37,6 +36,17 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
   const [baseMatchData, setBaseMatchData] = useState();
   const [minDelta, setMinDelta] = useState(Infinity);
 
+
+  useEffect(() => {
+    fetchProject(projectId);
+  }, [projectId]);
+
+  useEffect(() => {
+  console.log("Project.Sections changed:", project?.Sections);
+  if (Array.isArray(project?.Sections)) {
+    setProjectSections(project.Sections);
+  }
+}, [project?.Sections]);
 
 
   useEffect(() => {
@@ -286,13 +296,15 @@ useEffect(() => {
                 {section}
               </option>
             ))} */}
-            {(Array.isArray(projectSections) ? projectSections : []).map(
-              (section, idx) => (
-                <option key={idx} value={section}>
-                  {section}
-                </option>
-              )
-            )}
+            {Array.isArray(projectSections) && projectSections.length === 0 ? (
+      <option disabled>Loading sections...</option>
+    ) : (
+      projectSections.map((section, idx) => (
+        <option key={idx} value={section}>
+          {section}
+        </option>
+      ))
+    )}
             <option value="__add_new__"> Add new section...</option>
           </select>
         </div>
