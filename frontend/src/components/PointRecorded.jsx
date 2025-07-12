@@ -14,6 +14,8 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     updateProjectSections,
   } = useContext(Context);
 
+
+  
   const [pointName, setPointName] = useState("New Point");
   const [loading, setLoading] = useState(false);
   const [clientDevice, setClientDevice] = useState();
@@ -26,46 +28,117 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
   const [correctedLatitude, setCorrectedLatitude] = useState(null);
   const [correctedLongitude, setCorrectedLongitude] = useState(null);
 
+  const [clientResponses, setClientResponses] = useState([]);
+  const [baseResponses, setBaseResponses] = useState([]);
+
+
+
+  const [clientMatchData, setClientMatchData] = useState();
+  const [baseMatchData, setBaseMatchData] = useState();
+  const [minDelta, setMinDelta] = useState(Infinity);
+
+
+
   useEffect(() => {
-    // compare time delta of baseData and clientDevice
-    if (baseData?.timestamp && clientDevice?.timestamp) {
-      const baseTime = new Date(baseData.timestamp).getTime();
-      const clientTime = new Date(clientDevice.timestamp).getTime();
-      const timeDeltaSeconds = Math.abs((clientTime - baseTime) / 1000);
-      console.log(`Base timestamp: ${baseData.timestamp}`);
-      console.log(`Client timestamp: ${clientDevice.timestamp}`);
-      console.log(
-        `Time delta between base and client device: ${timeDeltaSeconds} seconds`
-      );
-      // assign accuracy based on time delta
-      if (timeDeltaSeconds > 10) {
+
+    if (clientResponses.length > 0 && baseResponses.length > 0) {
+      
+      let minDelta_tmp = Infinity;
+      let matchedClient = null;
+      let matchedBase = null;
+
+      clientResponses.forEach(client => {
+        baseResponses.forEach(base => {
+          const clientTime = new Date(client.timestamp).getTime();
+          const baseTime = new Date(base.timestamp).getTime();
+          const delta = Math.abs(clientTime - baseTime);
+          if (delta < minDelta_tmp) {
+            minDelta_tmp = delta;
+            
+            matchedClient = client;
+            matchedBase = base;
+          }
+        });
+      });
+
+      setMinDelta(minDelta_tmp);
+      setClientMatchData(matchedClient);
+      setBaseMatchData(matchedBase);
+      console.log("Time Delay: ", minDelta_tmp);
+    }
+
+  }, [clientResponses, baseResponses]);
+
+
+  useEffect(() => {
+    
+    if (
+      project?.baseMode === "known" &&
+      clientMatchData &&
+      typeof clientMatchData.latitude === "number" &&
+      typeof clientMatchData.longitude === "number" &&
+      baseMatchData &&
+      typeof baseMatchData.latitude === "number" &&
+      typeof baseMatchData.longitude === "number"
+    ) {
+
+        if (minDelta > 10) {
         clientDevice.accuracy = "Low";
-      } else if (timeDeltaSeconds > 5) {
+      } else if (minDelta > 3) {
         clientDevice.accuracy = "Medium";
       } else {
         clientDevice.accuracy = "High";
       }
-    }
 
-    if (
-      project?.baseMode === "known" &&
-      clientDevice &&
-      typeof clientDevice.latitude === "number" &&
-      typeof clientDevice.longitude === "number" &&
-      baseData &&
-      typeof baseData.latitude === "number" &&
-      typeof baseData.longitude === "number"
-    ) {
       const deltaLat = project.baseLatitude - baseData.baseLatitude;
       const deltaLng = project.baseLongitude - baseData.baseLongitude;
-
-      setCorrectedLatitude(clientDevice.latitude + deltaLat);
-      setCorrectedLongitude(clientDevice.longitude + deltaLng);
+ 
+      setCorrectedLatitude(clientMatchData.latitude + deltaLat);
+      setCorrectedLongitude(clientMatchData.longitude + deltaLng);
     } else {
+      //  Auto fix
+      console.log("Auto Fix running");
       setCorrectedLatitude(clientDevice?.latitude || null);
       setCorrectedLongitude(clientDevice?.longitude || null);
     }
-  }, [project, clientDevice, baseData]);
+  }, [project,baseMatchData,clientMatchData, clientDevice]);
+
+
+
+  useEffect(() => {
+    if (clientDevice && clientDevice.deviceName !== 'N/A') {
+      setClientResponses(prev => {
+      const updated = [...prev, { ...clientDevice, timestamp: clientDevice.timestamp }];
+      return updated.length > 10 ? updated.slice(updated.length - 10) : updated;
+      });
+    }
+
+  }, [clientDevice]);
+
+
+  useEffect(() => {
+
+    if ( baseData && baseData.deviceName !== 'N/A'){
+        
+      setBaseResponses(prev => {
+              const updated = [...prev, { ...baseData, timestamp: baseData.timestamp }];
+              return updated.length > 10 ? updated.slice(updated.length - 10) : updated;
+            });
+
+      } 
+
+  }, [baseData]);
+
+
+
+  useEffect(() => {
+  console.log("Updated Client Responses: ", clientResponses);
+}, [clientResponses]);
+
+useEffect(() => {
+  console.log("Updated Base Responses: ", baseResponses);
+}, [baseResponses]);
+
 
   useEffect(() => {
     if (sensorData && sensorData.length > 0) {
