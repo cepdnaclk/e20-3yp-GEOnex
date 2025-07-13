@@ -23,3 +23,7 @@ app.listen(PORT, () => {
   console.log(`Export service running on port ${PORT}`);
 }
 );
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy', service: 'export-service' });
+});
