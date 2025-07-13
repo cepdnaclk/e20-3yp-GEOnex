@@ -109,13 +109,13 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
 
       console.log("Corrected Latitude:", clientMatchData.latitude + deltaLat);
       console.log("Corrected Longitude:", clientMatchData.longitude + deltaLng);
-      console.log("DeltaLat:", deltaLat, "DeltaLng:", deltaLng);
+      // console.log("DeltaLat:", deltaLat, "DeltaLng:", deltaLng);
 
       // console.log("ClientMatchData:", clientMatchData);
       // console.log("BaseMatchData:", baseMatchData);
 
       // console.log("Project baseLatitude:", project.baseLatitude, "Project baseLongitude:", project.baseLongitude);
-      console.log("BaseData baseLatitude:", baseData.latitude, "BaseData baseLongitude:", baseData.longitude);
+      // console.log("BaseData baseLatitude:", baseData.latitude, "BaseData baseLongitude:", baseData.longitude);
 
     } else {
       //  Auto fix
