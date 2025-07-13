@@ -92,19 +92,31 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       typeof baseMatchData.longitude === "number"
     ) {
 
-        if (minDelta > 10) {
+        if (minDelta > 10000) {
         clientDevice.accuracy = "Low";
-      } else if (minDelta > 3) {
+      } else if (minDelta > 3000) {
         clientDevice.accuracy = "Medium";
       } else {
         clientDevice.accuracy = "High";
       }
 
-      const deltaLat = project.baseLatitude - baseData.baseLatitude;
-      const deltaLng = project.baseLongitude - baseData.baseLongitude;
+      const deltaLat = project.baseLatitude - baseData.latitude;
+      const deltaLng = project.baseLongitude - baseData.longitude;
  
       setCorrectedLatitude(clientMatchData.latitude + deltaLat);
       setCorrectedLongitude(clientMatchData.longitude + deltaLng);
+
+
+      console.log("Corrected Latitude:", clientMatchData.latitude + deltaLat);
+      console.log("Corrected Longitude:", clientMatchData.longitude + deltaLng);
+      console.log("DeltaLat:", deltaLat, "DeltaLng:", deltaLng);
+
+      // console.log("ClientMatchData:", clientMatchData);
+      // console.log("BaseMatchData:", baseMatchData);
+
+      // console.log("Project baseLatitude:", project.baseLatitude, "Project baseLongitude:", project.baseLongitude);
+      console.log("BaseData baseLatitude:", baseData.latitude, "BaseData baseLongitude:", baseData.longitude);
+
     } else {
       //  Auto fix
       console.log("Auto Fix running");
