@@ -16,9 +16,9 @@ port = int(os.getenv("AWS_IOT_PORT", "8883"))  # Default to 8883 if not set
 topic = os.getenv("TOPIC_Base")
 
 # === Certificate Paths ===
-ca_path = os.getenv("CA_PATH")
-cert_path = os.getenv("CERT_PATH")
-key_path = os.getenv("KEY_PATH")
+ca_path = os.getenv("CA_PATH1")
+cert_path = os.getenv("CERT_PATH1")
+key_path = os.getenv("KEY_PATH1")
 
 # === Validate required environment variables ===
 required_vars = [thing_name, endpoint, topic, ca_path, cert_path, key_path]
@@ -97,7 +97,7 @@ def main():
                 else:
                     print(f"[PUBLISH ERROR] Failed to publish: {result.rc}")
                 
-                time.sleep(1)  # Wait 10 seconds before next transmission
+                time.sleep(10)  # Wait 10 seconds before next transmission
             else:
                 print("[ERROR] Not connected, attempting to reconnect...")
                 client.reconnect()

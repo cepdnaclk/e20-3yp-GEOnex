@@ -11,61 +11,156 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     fetchPoints,
     points,
     project,
+    fetchProject,
     updateProjectSections,
   } = useContext(Context);
 
+
+  
   const [pointName, setPointName] = useState("New Point");
   const [loading, setLoading] = useState(false);
   const [clientDevice, setClientDevice] = useState();
   const [isTakePoint, setIsTakePoint] = useState(false);
   const [selectedSection, setSelectedSection] = useState("");
-  const [projectSections, setProjectSections] = useState(() =>
-    Array.isArray(project?.Sections) ? project.Sections : []
-  );
+  const [projectSections, setProjectSections] = useState([]);
 
   const [correctedLatitude, setCorrectedLatitude] = useState(null);
   const [correctedLongitude, setCorrectedLongitude] = useState(null);
 
+  const [clientResponses, setClientResponses] = useState([]);
+  const [baseResponses, setBaseResponses] = useState([]);
+
+
+
+  const [clientMatchData, setClientMatchData] = useState();
+  const [baseMatchData, setBaseMatchData] = useState();
+  const [minDelta, setMinDelta] = useState(Infinity);
+
+
   useEffect(() => {
-    // compare time delta of baseData and clientDevice
-    if (baseData?.timestamp && clientDevice?.timestamp) {
-      const baseTime = new Date(baseData.timestamp).getTime();
-      const clientTime = new Date(clientDevice.timestamp).getTime();
-      const timeDeltaSeconds = Math.abs((clientTime - baseTime) / 1000);
-      console.log(`Base timestamp: ${baseData.timestamp}`);
-      console.log(`Client timestamp: ${clientDevice.timestamp}`);
-      console.log(
-        `Time delta between base and client device: ${timeDeltaSeconds} seconds`
-      );
-      // assign accuracy based on time delta
-      if (timeDeltaSeconds > 10) {
+    fetchProject(projectId);
+  }, [projectId]);
+
+  useEffect(() => {
+  console.log("Project.Sections changed:", project?.Sections);
+  if (Array.isArray(project?.Sections)) {
+    setProjectSections(project.Sections);
+  }
+}, [project?.Sections]);
+
+
+  useEffect(() => {
+
+    if (clientResponses.length > 0 && baseResponses.length > 0) {
+      
+      let minDelta_tmp = Infinity;
+      let matchedClient = null;
+      let matchedBase = null;
+
+      clientResponses.forEach(client => {
+        baseResponses.forEach(base => {
+          const clientTime = new Date(client.timestamp).getTime();
+          const baseTime = new Date(base.timestamp).getTime();
+          const delta = Math.abs(clientTime - baseTime);
+          if (delta < minDelta_tmp) {
+            minDelta_tmp = delta;
+            
+            matchedClient = client;
+            matchedBase = base;
+          }
+        });
+      });
+
+      setMinDelta(minDelta_tmp);
+      setClientMatchData(matchedClient);
+      setBaseMatchData(matchedBase);
+      console.log("Time Delay: ", minDelta_tmp);
+    }
+
+  }, [clientResponses, baseResponses]);
+
+
+  useEffect(() => {
+    
+    if (
+      project?.baseMode === "known" &&
+      clientMatchData &&
+      typeof clientMatchData.latitude === "number" &&
+      typeof clientMatchData.longitude === "number" &&
+      baseMatchData &&
+      typeof baseMatchData.latitude === "number" &&
+      typeof baseMatchData.longitude === "number"
+    ) {
+
+        if (minDelta > 10000) {
         clientDevice.accuracy = "Low";
-      } else if (timeDeltaSeconds > 5) {
+      } else if (minDelta > 3000) {
         clientDevice.accuracy = "Medium";
       } else {
         clientDevice.accuracy = "High";
       }
-    }
 
-    if (
-      project?.baseMode === "known" &&
-      clientDevice &&
-      typeof clientDevice.latitude === "number" &&
-      typeof clientDevice.longitude === "number" &&
-      baseData &&
-      typeof baseData.latitude === "number" &&
-      typeof baseData.longitude === "number"
-    ) {
-      const deltaLat = project.baseLatitude - baseData.baseLatitude;
-      const deltaLng = project.baseLongitude - baseData.baseLongitude;
+      const deltaLat = project.baseLatitude - baseData.latitude;
+      const deltaLng = project.baseLongitude - baseData.longitude;
+ 
+      setCorrectedLatitude(clientMatchData.latitude + deltaLat);
+      setCorrectedLongitude(clientMatchData.longitude + deltaLng);
 
-      setCorrectedLatitude(clientDevice.latitude + deltaLat);
-      setCorrectedLongitude(clientDevice.longitude + deltaLng);
+
+      console.log("Corrected Latitude:", clientMatchData.latitude + deltaLat);
+      console.log("Corrected Longitude:", clientMatchData.longitude + deltaLng);
+      // console.log("DeltaLat:", deltaLat, "DeltaLng:", deltaLng);
+
+      // console.log("ClientMatchData:", clientMatchData);
+      // console.log("BaseMatchData:", baseMatchData);
+
+      // console.log("Project baseLatitude:", project.baseLatitude, "Project baseLongitude:", project.baseLongitude);
+      // console.log("BaseData baseLatitude:", baseData.latitude, "BaseData baseLongitude:", baseData.longitude);
+
     } else {
+      //  Auto fix
+      console.log("Auto Fix running");
       setCorrectedLatitude(clientDevice?.latitude || null);
       setCorrectedLongitude(clientDevice?.longitude || null);
     }
-  }, [project, clientDevice, baseData]);
+  }, [project,baseMatchData,clientMatchData, clientDevice]);
+
+
+
+  useEffect(() => {
+    if (clientDevice && clientDevice.deviceName !== 'N/A') {
+      setClientResponses(prev => {
+      const updated = [...prev, { ...clientDevice, timestamp: clientDevice.timestamp }];
+      return updated.length > 10 ? updated.slice(updated.length - 10) : updated;
+      });
+    }
+
+  }, [clientDevice]);
+
+
+  useEffect(() => {
+
+    if ( baseData && baseData.deviceName !== 'N/A'){
+        
+      setBaseResponses(prev => {
+              const updated = [...prev, { ...baseData, timestamp: baseData.timestamp }];
+              return updated.length > 10 ? updated.slice(updated.length - 10) : updated;
+            });
+
+      } 
+
+  }, [baseData]);
+
+
+
+  useEffect(() => {
+  console.log("Updated Client Responses: ", clientResponses);
+}, [clientResponses]);
+
+useEffect(() => {
+  console.log("Updated Base Responses: ", baseResponses);
+}, [baseResponses]);
+
 
   useEffect(() => {
     if (sensorData && sensorData.length > 0) {
@@ -213,13 +308,15 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
                 {section}
               </option>
             ))} */}
-            {(Array.isArray(projectSections) ? projectSections : []).map(
-              (section, idx) => (
-                <option key={idx} value={section}>
-                  {section}
-                </option>
-              )
-            )}
+            {Array.isArray(projectSections) && projectSections.length === 0 ? (
+      <option disabled>Loading sections...</option>
+    ) : (
+      projectSections.map((section, idx) => (
+        <option key={idx} value={section}>
+          {section}
+        </option>
+      ))
+    )}
             <option value="__add_new__"> Add new section...</option>
           </select>
         </div>

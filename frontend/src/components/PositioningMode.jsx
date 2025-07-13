@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState, useContext } from "react";
 import { Context } from "../context/Context";
 
 const PositioningMode = () => {
-  const [baseMode, setBaseMode] = useState("known");
+  const [baseMode, setBaseMode] = useState("auto");
   const [baseLatitude, setBaseLatitude] = useState("");
   const [baseLongitude, setBaseLongitude] = useState("");
   const {
@@ -15,15 +15,28 @@ const PositioningMode = () => {
     updateProjectBaseLocations,
   } = useContext(Context);
 
+
+  useEffect(() => {
+    if (project.baseMode) {
+      setBaseMode(project.baseMode);
+    }
+  }, [project.baseMode]);
+
   const handleBaseModeChange = (mode) => {
-    setBaseMode(mode);
-    updateProjectBaseMode(project._id, mode);
+    setBaseMode(mode); 
+    if (mode === "auto") {
+      setBaseLatitude("");
+      setBaseLongitude("");
+      updateProjectBaseMode(project._id, mode);
+    }
   };
 
   const handleBaseLocationUpdate = (latitude, longitude) => {
     if (baseMode === "known") {
       if (latitude && longitude) {
+        updateProjectBaseMode(project._id, baseMode);
         updateProjectBaseLocations(project._id, latitude, longitude);
+        
       } else {
         alert("Please enter valid latitude and longitude values.");
       }

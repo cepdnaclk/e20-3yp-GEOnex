@@ -66,7 +66,7 @@ const MapSection = () => {
     WS_URL,
     baseStation
   );
-
+  
   // Update the base position when base sensor data updates
   useEffect(() => {
     console.log("Base Sensor Data:", baseSensorData);
