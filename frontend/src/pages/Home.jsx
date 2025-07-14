@@ -238,7 +238,7 @@ const HomePage = () => {
 
       {/* Hero Section */}
       <section className="pt-24 pb-12 md:pt-32 md:pb-20 text-white text-center relative min-h-96">
-        <div className="absolute inset-0 bg-[url('./images/heroic-image.jpg')] bg-cover bg-center bg-no-repeat"></div>
+        
         <div className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-900 opacity-70"></div>
         <div className="container mx-auto px-4 relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
