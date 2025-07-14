@@ -13,6 +13,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.8.1",
     "dayjs": "^1.11.13",
     "frontend": "file:",
