@@ -13,6 +13,8 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
     project,
     fetchProject,
     updateProjectSections,
+    lastSelectedSection,
+    setLastSelectedSection
   } = useContext(Context);
 
 
@@ -21,7 +23,8 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
   const [loading, setLoading] = useState(false);
   const [clientDevice, setClientDevice] = useState();
   const [isTakePoint, setIsTakePoint] = useState(false);
-  const [selectedSection, setSelectedSection] = useState("");
+
+  const [selectedSection, setSelectedSection] = useState(lastSelectedSection || "");
   const [projectSections, setProjectSections] = useState([]);
 
   const [correctedLatitude, setCorrectedLatitude] = useState(null);
@@ -30,12 +33,9 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
   const [clientResponses, setClientResponses] = useState([]);
   const [baseResponses, setBaseResponses] = useState([]);
 
-
-
   const [clientMatchData, setClientMatchData] = useState();
   const [baseMatchData, setBaseMatchData] = useState();
   const [minDelta, setMinDelta] = useState(Infinity);
-
 
   useEffect(() => {
     fetchProject(projectId);
@@ -175,15 +175,15 @@ useEffect(() => {
 
   useEffect(() => {
     if (points) {
-      setPointName(`Point ${points.length + 1}`);
+      setPointName(`P ${points.length + 1}`);
     }
   }, [points]);
 
   useEffect(() => {
     if (projectSections.length > 0 && !selectedSection) {
-      setSelectedSection(projectSections[0]);
+      setSelectedSection(lastSelectedSection ?? projectSections[0]);
     }
-  }, [projectSections, selectedSection]);
+  }, [projectSections, selectedSection, lastSelectedSection]);
 
   const handleSectionChange = (e) => {
     const value = e.target.value;
@@ -194,10 +194,12 @@ useEffect(() => {
         const updated = [...projectSections, newSection];
         setProjectSections(updated);
         setSelectedSection(newSection);
+        setLastSelectedSection(newSection);
         updateProjectSections(project._id, newSection);
       }
     } else {
       setSelectedSection(value);
+      setLastSelectedSection(value);      // remember choice
     }
   };
 
