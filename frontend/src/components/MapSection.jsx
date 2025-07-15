@@ -362,6 +362,9 @@ const MapSection = () => {
           ${saving ? "opacity-50 cursor-not-allowed" : ""}`}
           // onClick={() => setShowPointRecorded(true)}
           {...buttonProps}
+          onContextMenu={(e) => {
+            if (isTouch) e.preventDefault();
+          }}
         >
           {saving ? (
             <img
@@ -374,6 +377,8 @@ const MapSection = () => {
               src={assets.add_location}
               alt="add point"
               className="w-8 h-8 md:w-8 md:h-8"
+              draggable="false"
+              onDragStart={(e) => e.preventDefault()}
             />
           )}
         </button>
