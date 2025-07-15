@@ -21,6 +21,9 @@ import { useParams } from "react-router-dom";
 import "./MarkerStyles.css";
 import MapPopUp from "./MapPopUp";
 
+import useLongPress from "../hooks/useLongPress";
+import useIsTouchDevice from "../hooks/useIsTouchDevice";
+
 // Hook to track window width
 function useWindowSize() {
   const [size, setSize] = useState({ width: window.innerWidth });
@@ -38,6 +41,26 @@ const MapSection = () => {
   const mapRef = useRef();
   const { width } = useWindowSize();
 
+  const [autoSave, setAutoSave] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const isTouch = useIsTouchDevice(); // true on touch screens
+
+  const handlers = useLongPress(
+    () => {
+      // long press
+      setAutoSave(false); // show dialog
+      setShowPointRecorded(true);
+    },
+    () => {
+      // quick tap
+      setAutoSave(true); // silent mode
+      setSaving(true);
+      setShowPointRecorded(true);
+    },
+    600 // ms; change if desired
+  );
+
   const [base, setBase] = useState({ lat: 7.254822, lng: 80.59252 });
   const [center, setCenter] = useState({ lat: 7.254822, lng: 80.59215 });
 
@@ -54,6 +77,24 @@ const MapSection = () => {
     wsUrl,
   } = useContext(Context);
 
+  useEffect(() => {
+    if (!showPointRecorded) setSaving(false);
+  }, [showPointRecorded]);
+
+  const buttonProps = isTouch
+    ? {
+        // phones / tablets
+        disabled: saving,
+        ...handlers,
+      }
+    : {
+        // desktop / laptop
+        onClick: () => {
+          setAutoSave(false); // always dialog
+          setShowPointRecorded(true);
+        },
+      };
+
   // mock devices
   const rovers = ["device123", "device456"];
 
@@ -66,7 +107,7 @@ const MapSection = () => {
     WS_URL,
     baseStation
   );
-  
+
   // Update the base position when base sensor data updates
   useEffect(() => {
     console.log("Base Sensor Data:", baseSensorData);
@@ -193,9 +234,7 @@ const MapSection = () => {
   });
 
   return (
-    <div
-      className="w-full h-full relative p-2 bg-[rgba(232,232,232,1)] dark:bg-gray-900 text-gray-900"
-    >
+    <div className="w-full h-full relative p-2 bg-[rgba(232,232,232,1)] dark:bg-gray-900 text-gray-900">
       <MapContainer
         center={center}
         zoom={ZOOM_LEVEL}
@@ -305,11 +344,7 @@ const MapSection = () => {
             navigate(`/projects/takenpoints/${projectId}`);
           }}
         >
-          <img
-            src={assets.filter}
-            alt="Button 1"
-            className="w-6 h-6"
-          />
+          <img src={assets.filter} alt="Button 1" className="w-6 h-6" />
         </button>
 
         {/* Button 2 */}
@@ -317,40 +352,48 @@ const MapSection = () => {
           className="bg-orange-500 p-3 md:p-3 rounded-full shadow-md w-12 h-12 flex items-center "
           onClick={() => setShowConfirmDiscard(true)}
         >
-          <img
-            src={assets.reverse}
-            alt="Button 2"
-            className="w-6 h-6"
-          />
+          <img src={assets.reverse} alt="Button 2" className="w-6 h-6" />
         </button>
 
         {/* Button 3 */}
         <button
-          className="bg-blue-500 p-3 md:p-4 rounded-full shadow-md w-14 h-14 md:w-16 md:h-16 flex items-center "
-          onClick={() => setShowPointRecorded(true)}
+          className={`bg-blue-500 p-3 md:p-4 rounded-full shadow-md 
+          w-14 h-14 md:w-16 md:h-16 flex items-center
+          ${saving ? "opacity-50 cursor-not-allowed" : ""}`}
+          // onClick={() => setShowPointRecorded(true)}
+          {...buttonProps}
         >
-          <img
-            src={assets.add_location}
-            alt="Button 3"
-            className="w-8 h-8 md:w-8 md:h-8"
-          />
+          {saving ? (
+            <img
+              src={assets.spinner}
+              alt="saving"
+              className="w-8 h-8 animate-spin"
+            />
+          ) : (
+            <img
+              src={assets.add_location}
+              alt="add point"
+              className="w-8 h-8 md:w-8 md:h-8"
+            />
+          )}
         </button>
       </div>
 
       {/* Show Point Recorded Popup */}
       {showPointRecorded && (
-        <div >
+        <div>
           <PointRecorded
             sensorData={sensorData}
             baseData={baseSensorData}
             projectId={projectId}
+            autoSave={autoSave}
           />
         </div>
       )}
 
       {/* Show Confirm Discard Popup */}
       {showConfirmDiscard && (
-        <div >
+        <div>
           <ConfirmDiscard projectId={projectId} />
         </div>
       )}
