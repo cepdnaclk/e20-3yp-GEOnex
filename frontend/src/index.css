@@ -16,5 +16,5 @@ body {
   overscroll-behavior-y: contain; 
   /* touch-action: pan-y;            only allow vertical panning / pinch-zoom   */
   overflow-x: hidden;             /* never let the page scroll horizontally     */
-  overflow-y: hidden; 
+  overflow-y: auto; 
 }
