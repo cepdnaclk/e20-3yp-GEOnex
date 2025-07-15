@@ -1,19 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronRight, Play, Shield, Zap, Globe, Database, Clock, Users, Star, ArrowRight, Menu, X } from 'lucide-react';
+import React, { useState, useEffect ,useContext } from 'react';
+import { ChevronRight, Play, Shield, Zap, Globe, Database, Clock, Users, Star, ArrowRight, Menu, X, Check,AlertTriangle
+ } from 'lucide-react';
+import { Context } from "../context/Context";
+
 
 const GEOnexLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const { navigate } = useContext(Context);
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState({});
+
+  const whatsappBaseUrl = "https://wa.me/+94788428664"; 
+
+  
+  const validate = () => {
+    const errs = {};
+    if (!form.name.trim()) errs.name = "Name is required";
+    if (!form.email.trim()) errs.email = "Email is required";
+    else {
+      
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(form.email)) errs.email = "Invalid email address";
+    }
+    return errs;
+  };
+
+  
+  const buildWhatsAppMessage = () => {
+    const msgLines = [
+      `Name: ${form.name}`,
+      `Email: ${form.email}`,
+      `Message: ${form.message || "(No message)"}`,
+    ];
+    return encodeURIComponent(msgLines.join("\n"));
+  };
+
+  // Handle redirect to WhatsApp with message
+  const handleWhatsAppRedirect = (e) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
+
+    const waUrl = `${whatsappBaseUrl}?text=${buildWhatsAppMessage()}`;
+    window.open(waUrl, "_blank");
+  };
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+ 
   const AnimatedCard = ({ children, delay = 0 }) => (
     <div 
-      className={`transform transition-all duration-1000 hover:scale-105 hover:shadow-2xl animate-fade-in`}
+      className={`transform transition-all duration-1000 hover:scale-105  animate-fade-in`}
       style={{ animationDelay: `${delay}ms` }}
     >
       {children}
@@ -59,9 +102,11 @@ const GEOnexLanding = () => {
             <div className="hidden md:flex items-center space-x-8">
               <a href="#products" className="text-gray-700 hover:text-blue-600 transition-colors duration-200">Products</a>
               <a href="#benefits" className="text-gray-700 hover:text-blue-600 transition-colors duration-200">Benefits</a>
-              <a href="#testimonials" className="text-gray-700 hover:text-blue-600 transition-colors duration-200">Testimonials</a>
-              <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-all duration-200 transform hover:scale-105">
-                Get Started
+              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors duration-200">Contact Us</a>
+              <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-all duration-200 transform hover:scale-105" onClick={() => {
+                navigate('/login')
+              }}>
+                Sign in
               </button>
             </div>
 
@@ -76,31 +121,49 @@ const GEOnexLanding = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
+      <section className="relative pt-48 pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-        <FloatingElement className="absolute top-20 left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl"></FloatingElement>
-        <FloatingElement className="absolute bottom-20 right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-xl"></FloatingElement>
-        
+        <FloatingElement className="absolute top-20 left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl" />
+        <FloatingElement className="absolute bottom-20 right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-xl" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 animate-fade-in">
-              <span className="block mb-2">Replacement of</span>
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Millions
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6 animate-fade-in">
+              <div className="block mb-4">
+                <span className="mr-4">Survey</span>
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-8xl">
+                  Millions
+                </span>
+                <span className="ml-4">of points</span>
+              </div>
+              <span className="block">
+                <span className="mr-4">with</span>
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  One
+                </span>
+                <span className="ml-4">simple solution.</span>
               </span>
-              <span className="block">like never before</span>
             </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '200ms' }}>
-              Revolutionary surveying technology that transforms how professionals capture, process, and share geospatial data worldwide.
+            <p
+              className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto animate-fade-in"
+              style={{ animationDelay: "200ms" }}
+            >
+              Powered by smart hardware and cloud technology, GEOnex redefines how surveys are done.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: '400ms' }}>
-              <button className="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 animate-pulse-glow">
+            <div
+              className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
+              style={{ animationDelay: "400ms" }}
+            >
+              <a
+                href="#products"
+                className="bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 animate-pulse-glow flex items-center justify-center"
+              >
                 Explore Products
                 <ChevronRight className="inline ml-2" size={20} />
-              </button>
-              <button className="bg-white/80 backdrop-blur-sm text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-white transition-all duration-200 transform hover:scale-105 border border-gray-200/50">
+              </a>
+              <button
+                className="bg-white/80 backdrop-blur-sm text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-white transition-all duration-200 transform hover:scale-105 border border-gray-200/50 flex items-center justify-center"
+              >
                 <Play className="inline mr-2" size={20} />
                 See Live Demo
               </button>
@@ -108,104 +171,114 @@ const GEOnexLanding = () => {
           </div>
         </div>
       </section>
+        <section className="py-20 bg-gray-50" id = "about">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
 
-      {/* Problem-Solution Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <AnimatedCard>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                Why GEOnex Replaces Traditional Solutions
-              </h2>
-              <p className="text-xl text-gray-600 mb-8">
-                Traditional total stations and GNSS systems are becoming obsolete. GEOnex delivers the precision you need with modern connectivity, real-time collaboration, and intelligent automation.
-              </p>
-              <div className="space-y-4">
-                {[
-                  "Real-time data synchronization across teams",
-                  "Cloud-based processing and storage",
-                  "IoT integration for smart workflows",
-                  "Eliminate manual data transfer errors",
-                  "Reduce survey time by up to 70%"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                    <span className="text-gray-700">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </AnimatedCard>
-            
-            <AnimatedCard delay={200}>
-              <div className="bg-white p-8 rounded-2xl shadow-xl">
-                <div className="w-full h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center">
-                  <span className="text-gray-500 text-lg">Problem-Solution Visualization</span>
-                </div>
-              </div>
-            </AnimatedCard>
-          </div>
-        </div>
-      </section>
-
-      {/* Products Showcase */}
-      <section id="products" className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              Three Products.
-              <br />
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Infinite Possibilities.
-              </span>
+          <AnimatedCard>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Why Choose GEOnex
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Discover our complete ecosystem designed to revolutionize your surveying workflow
+            <p className="text-xl text-gray-600 mb-8">
+              Total stations and GNSS systems have shaped surveying for years. GEOnex builds on that foundation, offering a modern, connected solution designed for speed, precision, and teamwork.
             </p>
+            <div className="space-y-4">
+              {[
+            "Real-time data sharing between field and office teams",
+            "Cloud-based processing and instant access from anywhere",
+            "IoT-connected devices streamline every step",
+            "Minimize manual data handling and reduce errors",
+            "Complete surveys up to 70% faster with automated workflows"
+              ].map((item, index) => (
+            <div key={index} className="flex items-center space-x-3">
+              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              <span className="text-gray-700">{item}</span>
+            </div>
+              ))}
+            </div>
+          </AnimatedCard>
+
+          <AnimatedCard delay={200}>
+            <div className="p-8">
+              <div className="w-full h-96 rounded-xl flex items-center justify-center">
+            <img
+              src="/images/LandingPage/geonex-r-b.png"
+              alt="GEOnex Problem-Solution Visualization"
+              className="object-contain"
+            />
+              </div>
+            </div>
+          </AnimatedCard>
+            </div>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "GEOnex Client",
-                subtitle: "Portable Field Device",
-                description: "Professional-grade portable device for field data collection with unmatched precision and reliability.",
-                icon: <Shield className="w-12 h-12 text-blue-600" />
-              },
-              {
-                title: "GEOnex Base",
-                subtitle: "Base Station System",
-                description: "Advanced base station delivering real-time corrections and ensuring centimeter-level accuracy.",
-                icon: <Zap className="w-12 h-12 text-purple-600" />
-              },
-              {
-                title: "GEOnex Web App",
-                subtitle: "Cloud Platform",
-                description: "Comprehensive cloud platform for real-time monitoring, data management, and team collaboration.",
-                icon: <Globe className="w-12 h-12 text-green-600" />
-              }
-            ].map((product, index) => (
-              <AnimatedCard key={index} delay={index * 100}>
-                <div className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100">
-                  <div className="mb-6">
-                    <FloatingElement>
-                      {product.icon}
-                    </FloatingElement>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h3>
-                  <p className="text-blue-600 font-semibold mb-4">{product.subtitle}</p>
-                  <p className="text-gray-600 mb-6">{product.description}</p>
-                  <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center mb-6">
-                    <span className="text-gray-500">Product Image</span>
-                  </div>
-                  <button className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-gray-800 transition-all duration-200 transform hover:scale-105">
-                    Learn More
-                  </button>
-                </div>
-              </AnimatedCard>
-            ))}
+        </section>
+
+        <section id="products" className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold text-gray-900 mb-6">
+            Three Products.
+            <br />
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Infinite Possibilities.
+            </span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Discover our complete ecosystem designed to revolutionize your surveying workflow
+          </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              title: "GEOnex Client",
+              subtitle: "Portable Field Device",
+              description: "Professional-grade portable device for field data collection with unmatched precision and reliability.",
+              icon: <Shield className="w-12 h-12 text-blue-600" />,
+              image: "/images/LandingPage/geonex-r.png"
+            },
+            {
+              title: "GEOnex Base",
+              subtitle: "Base Station System",
+              description: "Advanced base station delivering real-time corrections and ensuring centimeter-level accuracy.",
+              icon: <Zap className="w-12 h-12 text-purple-600" />,
+              image: "/images/LandingPage/geonex-b.png"
+            },
+            {
+              title: "GEOnex Web App",
+              subtitle: "Cloud Platform",
+              description: "Comprehensive cloud platform for real-time monitoring, data management, and team collaboration.",
+              icon: <Globe className="w-12 h-12 text-green-600" />,
+              image: "/images/LandingPage/geonex-x.png"
+            }
+          ].map((product, index) => (
+            <AnimatedCard key={index} delay={index * 100}>
+              <div className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100">
+            {/* <div className="mb-6">
+              <FloatingElement>
+                {product.icon}
+              </FloatingElement>
+            </div> */}
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h3>
+            <p className="text-blue-600 font-semibold mb-4">{product.subtitle}</p>
+            <p className="text-gray-600 mb-6">{product.description}</p>
+            <div className="w-full h-auto rounded-xl flex items-center justify-center mb-6">
+              <img
+                src={product.image}
+                alt={product.title}
+                className="object-contain h-full"
+              />
+            </div>
+            {/* <button className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-gray-800 transition-all duration-200 transform hover:scale-105">
+              Learn More
+            </button> */}
+              </div>
+            </AnimatedCard>
+          ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+                
 
       {/* Benefits Section */}
       <section id="benefits" className="py-20 bg-gray-50">
@@ -265,18 +338,48 @@ const GEOnexLanding = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {[
-                      { feature: "Real-time Data Sharing", total: "❌", gnss: "⚠️", geonex: "✅" },
-                      { feature: "Cloud Integration", total: "❌", gnss: "❌", geonex: "✅" },
-                      { feature: "IoT Connectivity", total: "❌", gnss: "❌", geonex: "✅" },
+                      { feature: "Real-time Data Sharing", total: "cross", gnss: "alert", geonex: "check" },
+                      { feature: "Cloud Integration", total: "cross", gnss: "cross", geonex: "check" },
+                      { feature: "IoT Connectivity", total: "cross", gnss: "cross", geonex: "check" },
                       { feature: "Setup Time", total: "30+ min", gnss: "15+ min", geonex: "< 5 min" },
-                      { feature: "Accuracy", total: "mm", gnss: "cm", geonex: "mm" },
-                      { feature: "Team Collaboration", total: "❌", gnss: "Limited", geonex: "✅" }
+                      { feature: "Accuracy", total: "mm", gnss: "cm", geonex: "cm" },
+                      { feature: "Team Collaboration", total: "cross", gnss: "Limited", geonex: "check" }
                     ].map((row, index) => (
                       <tr key={index} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4 font-medium text-gray-900">{row.feature}</td>
-                        <td className="px-6 py-4 text-center">{row.total}</td>
-                        <td className="px-6 py-4 text-center">{row.gnss}</td>
-                        <td className="px-6 py-4 text-center bg-blue-50 font-semibold text-blue-900">{row.geonex}</td>
+                        <td className="px-6 py-4 text-center">
+                          {row.total === "cross" ? (
+                            <X className="mx-auto w-6 h-6 text-red-500" aria-label="No" />
+                          ) : row.total === "alert" ? (
+                            <AlertTriangle className="mx-auto w-6 h-6 text-yellow-500" aria-label="Limited" />
+                          ) : row.total === "check" ? (
+                            <Check className="mx-auto w-6 h-6 text-green-600" aria-label="Yes" />
+                          ) : (
+                            row.total
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          {row.gnss === "cross" ? (
+                            <X className="mx-auto w-6 h-6 text-red-500" aria-label="No" />
+                          ) : row.gnss === "alert" ? (
+                            <AlertTriangle className="mx-auto w-6 h-6 text-yellow-500" aria-label="Limited" />
+                          ) : row.gnss === "check" ? (
+                            <Check className="mx-auto w-6 h-6 text-green-600" aria-label="Yes" />
+                          ) : (
+                            row.gnss
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-center bg-blue-50 font-semibold text-blue-900">
+                          {row.geonex === "cross" ? (
+                            <X className="mx-auto w-6 h-6 text-red-500" aria-label="No" />
+                          ) : row.geonex === "alert" ? (
+                            <AlertTriangle className="mx-auto w-6 h-6 text-yellow-500" aria-label="Limited" />
+                          ) : row.geonex === "check" ? (
+                            <Check className="mx-auto w-6 h-6 text-green-600" aria-label="Yes" />
+                          ) : (
+                            row.geonex
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -286,9 +389,7 @@ const GEOnexLanding = () => {
           </AnimatedCard>
         </div>
       </section>
-
-      {/* Testimonials */}
-      <section id="testimonials" className="py-20 bg-gray-50">
+      {/* <section id="testimonials" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
@@ -321,30 +422,96 @@ const GEOnexLanding = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-5xl font-bold text-white mb-6">
-            Ready to Transform
-            <br />
-            Your Surveying?
-          </h2>
-          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
-            Join thousands of professionals who have already made the switch to GEOnex
-          </p>
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600" id="contact">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-5xl font-bold text-white mb-6">
+          Ready to Transform
+          <br />
+          Your Surveying?
+        </h2>
+        <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+          Join thousands of professionals who have already made the switch to GEOnex
+        </p>
+
+        <form
+          onSubmit={handleWhatsAppRedirect}
+          className="max-w-2xl mx-auto mb-12 space-y-6 text-left"
+          noValidate
+        >
+          <div>
+            <label htmlFor="name" className="block text-white font-semibold mb-1">
+              Name <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              className={`w-full rounded-full px-4 py-3 text-gray-900 focus:outline-none ${
+                errors.name ? "border-2 border-red-500" : ""
+              }`}
+              required
+            />
+            {errors.name && <p className="text-red-400 mt-1 text-sm">{errors.name}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="email" className="block text-white font-semibold mb-1">
+              Email <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              className={`w-full rounded-full px-4 py-3 text-gray-900 focus:outline-none ${
+                errors.email ? "border-2 border-red-500" : ""
+              }`}
+              required
+            />
+            {errors.email && <p className="text-red-400 mt-1 text-sm">{errors.email}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="message" className="block text-white font-semibold mb-1">
+              Message
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              value={form.message}
+              onChange={handleChange}
+              rows={4}
+              className="w-full rounded-xl px-4 py-3 text-gray-900 focus:outline-none"
+              placeholder="Optional"
+            />
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all duration-200 transform hover:scale-105">
+            <button
+              type="submit"
+              onClick={handleWhatsAppRedirect}
+              className="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 flex items-center justify-center"
+            >
               Schedule a Demo
               <ArrowRight className="inline ml-2" size={20} />
             </button>
-            <button className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200 transform hover:scale-105">
+            <button
+              type="submit"
+              onClick={handleWhatsAppRedirect}
+              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200 transform hover:scale-105"
+            >
               Contact Sales
             </button>
           </div>
-        </div>
-      </section>
+        </form>
+      </div>
+    </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
@@ -359,17 +526,16 @@ const GEOnexLanding = () => {
             <div>
               <h4 className="text-lg font-semibold mb-4">Products</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">GEOnex Client</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">GEOnex Base</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">GEOnex Web App</a></li>
+                <li><a href="#products" className="hover:text-white transition-colors">GEOnex Client</a></li>
+                <li><a href="#products" className="hover:text-white transition-colors">GEOnex Base</a></li>
+                <li><a href="#products" className="hover:text-white transition-colors">GEOnex Web App</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#about" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
               </ul>
             </div>
             <div>
