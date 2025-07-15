@@ -22,6 +22,7 @@ import "./MarkerStyles.css";
 import MapPopUp from "./MapPopUp";
 
 import useLongPress from "../hooks/useLongPress";
+import useIsTouchDevice from "../hooks/useIsTouchDevice";
 
 // Hook to track window width
 function useWindowSize() {
@@ -42,6 +43,8 @@ const MapSection = () => {
 
   const [autoSave, setAutoSave] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const isTouch = useIsTouchDevice(); // true on touch screens
 
   const handlers = useLongPress(
     () => {
@@ -77,6 +80,20 @@ const MapSection = () => {
   useEffect(() => {
     if (!showPointRecorded) setSaving(false);
   }, [showPointRecorded]);
+
+  const buttonProps = isTouch
+    ? {
+        // phones / tablets
+        disabled: saving,
+        ...handlers,
+      }
+    : {
+        // desktop / laptop
+        onClick: () => {
+          setAutoSave(false); // always dialog
+          setShowPointRecorded(true);
+        },
+      };
 
   // mock devices
   const rovers = ["device123", "device456"];
@@ -344,8 +361,7 @@ const MapSection = () => {
           w-14 h-14 md:w-16 md:h-16 flex items-center
           ${saving ? "opacity-50 cursor-not-allowed" : ""}`}
           // onClick={() => setShowPointRecorded(true)}
-          disabled={saving}
-          {...handlers}
+          {...buttonProps}
         >
           {saving ? (
             <img
