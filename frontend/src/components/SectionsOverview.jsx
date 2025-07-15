@@ -17,10 +17,7 @@ const SectionsOverview = () => {
     if ((project.Sections || []).includes(trimmed)) {
       toast.error("Section already exists");
     } else {
-      setProject({
-        ...project,
-        Sections: [...(project.Sections || []), trimmed],
-      });
+      
       updateProjectSections(projectId, trimmed);
       setNewSection("");
     }

@@ -47,7 +47,7 @@ const ContextProvider = (props) => {
 
   // const [notifications, setNotifications] = useState([]);
 
-
+  const [lastSelectedSection, setLastSelectedSection] = useState(null);
 
  
   const getAuthState = async () => {
@@ -511,7 +511,9 @@ const fetchSettings = async () => {
     updateProjectBaseLocations,
     surveyStatus, 
     setSurveyStatus,
-    updateProjectStatus
+    updateProjectStatus,
+    lastSelectedSection,
+    setLastSelectedSection
   };
 
   return <Context.Provider value={value}>{props.children}</Context.Provider>;
