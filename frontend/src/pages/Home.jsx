@@ -62,9 +62,10 @@ const GEOnexLanding = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const AnimatedCard = ({ children, delay = 0 }) => (
+  const AnimatedCard = ({ children, delay = 0, className = '' }) => (
     <div
-      className={`transform transition-all duration-1000 hover:scale-105  animate-fade-in`}
+      className={`transform transition-all duration-1000 hover:scale-105  animate-fade-in
+        ${className}`}
       style={{ animationDelay: `${delay}ms` }}
     >
       {children}
@@ -263,8 +264,8 @@ const GEOnexLanding = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10" />
 
         {/* floating blobs */}
-        <div className="absolute top-14 left-4 sm:left-10 w-16 h-16 sm:w-20 sm:h-20 bg-blue-500/20 rounded-full blur-xl animate-float" />
-        <div className="absolute -bottom-6 right-4 sm:right-10 w-24 h-24 sm:w-32 sm:h-32 bg-purple-500/20 rounded-full blur-xl animate-float" />
+        <FloatingElement className="absolute top-14 left-4 sm:left-10 w-16 h-16 sm:w-20 sm:h-20 bg-blue-500/20 rounded-full blur-xl" />
+        <FloatingElement className="absolute -bottom-6 right-4 sm:right-10 w-24 h-24 sm:w-32 sm:h-32 bg-purple-500/20 rounded-full blur-xl" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -357,16 +358,16 @@ const GEOnexLanding = () => {
       <section className="py-20 bg-gray-50" id="about">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <AnimatedCard>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <AnimatedCard className="order-2 md:order-1">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
                 Why Choose GEOnex
               </h2>
-              <p className="text-xl text-gray-600 mb-8">
+              <p className="text-md md:text-xl text-gray-600 mb-8">
                 Total stations and GNSS systems have shaped surveying for years.
                 GEOnex builds on that foundation, offering a modern, connected
                 solution designed for speed, precision, and teamwork.
               </p>
-              <div className="space-y-4">
+              <ul className="space-y-3 md:space-y-4 list-inside list-none">
                 {[
                   "Real-time data sharing between field and office teams",
                   "Cloud-based processing and instant access from anywhere",
@@ -374,17 +375,17 @@ const GEOnexLanding = () => {
                   "Minimize manual data handling and reduce errors",
                   "Complete surveys up to 70% faster with automated workflows",
                 ].map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                    <span className="text-gray-700">{item}</span>
-                  </div>
+                  <li key={index} className="flex items-start">
+                    <div className="mt-2 w-1.5 h-1.5 sm:w-2 sm:h-2 flex-shrink-0 bg-blue-600 rounded-full"></div>
+                    <span className="ml-3 text-gray-700 text-sm md:text-base">{item}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </AnimatedCard>
 
-            <AnimatedCard delay={200}>
-              <div className="p-8">
-                <div className="w-full h-96 rounded-xl flex items-center justify-center">
+            <AnimatedCard delay={200} className="order-1 md:order-2">
+              <div className="p-4 sm:p-8">
+                <div className="w-full h-56 sm:h-72 md:h-96 rounded-xl flex items-center justify-center">
                   <img
                     src="/images/LandingPage/geonex-r-b.png"
                     alt="GEOnex Problem-Solution Visualization"
@@ -396,6 +397,8 @@ const GEOnexLanding = () => {
           </div>
         </div>
       </section>
+
+      
 
       <section id="products" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
