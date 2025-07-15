@@ -1,7 +1,9 @@
 const fs = require("fs");
 const path = require("path");
+const { transformToSLD99 } = require("./convertSLD99");
 
 const PDFDocument = require("pdfkit");
+
 const exportToPdf = (points, filename, project) => {
   return new Promise((resolve, reject) => {
     if (!points || points.length === 0) {
@@ -37,12 +39,18 @@ const exportToPdf = (points, filename, project) => {
     // ==== MAIN MAP AND CERTIFICATION LAYOUT ====
     drawMainLayout(doc, points, project);
 
+    if (points.length > 20) {
+      doc.addPage({ margin: 0, size: 'A3', layout: 'landscape' });
+      drawProfessionalHeader(doc, project, sideNumber = 2); 
+      drawDataTable(doc, points.slice(20));
+    }
+
+
     doc.end();
   });
 };
 
-// Professional Header with Clean Design
-function drawProfessionalHeader(doc, project) {
+function drawProfessionalHeader(doc, project, sideNumber = 1) {
   const headerHeight = 80;
   
   // Clean white background with subtle border
@@ -60,16 +68,27 @@ function drawProfessionalHeader(doc, project) {
   }
   
   // Company logo area (Black colored box named "GEOnex")
-doc.fillColor('#000000').rect(20, 20, 56, 56).fill();
-doc.fillColor('#FFFFFF').fontSize(11).font('Helvetica-Bold')
-    .text("GEOnex", 20, 43, { width: 56, align: 'center' });
-doc.fillColor('#FFFFFF').fontSize(7).font('Helvetica')
+  doc.fillColor('#000000').rect(20, 20, 56, 56).fill();
+  doc.fillColor('#FFFFFF').fontSize(11).font('Helvetica-Bold')
+      .text("GEOnex", 20, 43, { width: 56, align: 'center' });
+  doc.fillColor('#FFFFFF').fontSize(7).font('Helvetica');
   
   // Main title with professional styling
   doc.fontSize(28).font('Helvetica-Bold').fillColor('#2E5BBA')
      .text("GEOnex", 100, 20);
   doc.fontSize(24).fillColor('#1A1A1A')
      .text("SURVEY REPORT", 100, 45);
+  
+  // Professional Side Label
+  const sideLabelX = 400;
+  const sideLabelY = 35;
+
+  // Side label text next to the star
+  doc.fillColor('#333333').fontSize(16).font('Helvetica-Bold');
+  doc.text(`S ${sideNumber}`, sideLabelX + 22, sideLabelY - 8, {
+    width: 100,
+    align: 'left'
+  });
   
   // Technical specifications box
   doc.strokeColor('#2E5BBA').lineWidth(2);
@@ -78,8 +97,7 @@ doc.fillColor('#FFFFFF').fontSize(7).font('Helvetica')
   doc.fontSize(10).fillColor('#333333').font('Helvetica-Bold');
   doc.text(`PROJECT: ${project?.Name || "UNNAMED"}`, 960, 25);
   doc.text(`ZONE: ${project?.Zone || "UTM-44N"}`, 960, 35);
-  doc.text(`POINTS: ${project?.Total_Points || "N/A"}`, 960, 45);
-  doc.text(`GENERATED: ${new Date().toISOString().split('T')[0]}`, 960, 55);
+  doc.text(`GENERATED: ${new Date().toISOString().split('T')[0]}`, 960, 45);
   
   // Clean corner elements
   drawCleanCorner(doc, 1140, 16, '#2E5BBA');
@@ -98,67 +116,93 @@ function drawCleanCorner(doc, x, y, color) {
 }
 
 // Clean Data Table
+// Clean Data Table with Split Layout
 function drawDataTable(doc, points) {
   const tableY = 90;
   const tableHeight = 160;
   const rowHeight = 12;
   
+  // Determine if we need to split the table
+  const needsSplit = points.length > 12;
+  const leftPoints = needsSplit ? points.slice(0, 10) : points;
+  const rightPoints = needsSplit ? points.slice(10, 20) : []; 
+  
+  if (needsSplit) {
+    // Draw two side-by-side tables
+    drawTableSection(doc, leftPoints, 32, tableY, 545, tableHeight, rowHeight, "Slide 1");
+    drawTableSection(doc, rightPoints, 612, tableY, 545, tableHeight, rowHeight, "Slide 2");
+  } else {
+    // Draw single full-width table
+    drawTableSection(doc, leftPoints, 30, tableY, 1130, tableHeight, rowHeight, "");
+  }
+}
+
+function drawTableSection(doc, points, startX, startY, tableWidth, tableHeight, rowHeight, sectionTitle) {
   // Table background
-  doc.rect(30, tableY, 1130, tableHeight).fillColor('#FFFFFF').fill();
-  doc.rect(30, tableY, 1130, tableHeight).strokeColor('#333333').lineWidth(1).stroke();
+  doc.rect(startX, startY, tableWidth, tableHeight).fillColor('#FFFFFF').fill();
+  doc.rect(startX, startY, tableWidth, tableHeight).strokeColor('#333333').lineWidth(1).stroke();
+  
+  // Section title if provided
+  let headerY = startY;
   
   // Table header with professional styling
-  doc.rect(30, tableY, 1130, 20).fillColor('#E8E8E8').fill();
-  doc.rect(30, tableY, 1130, 20).strokeColor('#333333').lineWidth(1).stroke();
+  doc.rect(startX, headerY, tableWidth, 20).fillColor('#E8E8E8').fill();
+  doc.rect(startX, headerY, tableWidth, 20).strokeColor('#333333').lineWidth(1).stroke();
   doc.fontSize(10).font('Helvetica-Bold').fillColor('#1A1A1A');
   
+  // Adjust column widths based on table width
+  const isHalfWidth = tableWidth < 1000;
   const columns = [
-    { title: "POINT ID", x: 40, width: 120 },
-    { title: "LATITUDE", x: 120, width: 100 },
-    { title: "LONGITUDE", x: 220, width: 100 },
-    { title: "EASTING", x: 320, width: 100 },
-    { title: "NORTHING", x: 420, width: 100 },
-    { title: "ELEVATION", x: 520, width: 80 },
-    { title: "ZONE", x: 600, width: 60 },
-    { title: "SECTION", x: 660, width: 80 },
-    { title: "ACCURACY", x: 740, width: 80 },
-    { title: "TIMESTAMP", x: 820, width: 120 }
+    { title: "POINT ID", x: startX + 10, width: isHalfWidth ? 80 : 120 },
+    { title: "LATITUDE", x: startX + (isHalfWidth ? 90 : 130), width: isHalfWidth ? 70 : 100 },
+    { title: "LONGITUDE", x: startX + (isHalfWidth ? 160 : 230), width: isHalfWidth ? 70 : 100 },
+    { title: "EASTING", x: startX + (isHalfWidth ? 230 : 330), width: isHalfWidth ? 70 : 100 },
+    { title: "NORTHING", x: startX + (isHalfWidth ? 300 : 430), width: isHalfWidth ? 70 : 100 },
+    { title: "SECTION", x: startX + (isHalfWidth ? 370 : 540), width: isHalfWidth ? 50 : 60 },
+    { title: "TIMESTAMP", x: startX + (isHalfWidth ? 420 : 600), width: isHalfWidth ? 60 : 80 }
   ];
   
   columns.forEach(col => {
-    doc.text(col.title, col.x, tableY + 7);
+    doc.text(col.title, col.x, headerY + 7);
     doc.strokeColor('#CCCCCC').lineWidth(0.5);
-    doc.moveTo(col.x + col.width, tableY).lineTo(col.x + col.width, tableY + 20).stroke();
+    doc.moveTo(col.x + col.width, headerY).lineTo(col.x + col.width, headerY + 20).stroke();
   });
   
   // Table data with alternating row colors
   doc.font('Helvetica').fontSize(8);
-  points.slice(0, 12).forEach((point, idx) => {
-    const rowY = tableY + 20 + (idx * rowHeight);
+  const maxRows = Math.min(points.length, 12); // Limit to 12 rows per section
+  
+  for (let idx = 0; idx < maxRows; idx++) {
+    const point = points[idx];
+    const rowY = headerY + 20 + (idx * rowHeight);
     
     // Alternating row background
     if (idx % 2 === 0) {
-      doc.rect(30, rowY, 1130, rowHeight).fillColor('#FFFFFF').fill();
+      doc.rect(startX, rowY, tableWidth, rowHeight).fillColor('#FFFFFF').fill();
     } else {
-      doc.rect(30, rowY, 1130, rowHeight).fillColor('#F8F9FA').fill();
+      doc.rect(startX, rowY, tableWidth, rowHeight).fillColor('#F8F9FA').fill();
     }
     
     // Row borders
     doc.strokeColor('#E8E8E8').lineWidth(0.3);
-    doc.moveTo(30, rowY).lineTo(1160, rowY).stroke();
+    doc.moveTo(startX, rowY).lineTo(startX + tableWidth, rowY).stroke();
     
     doc.fillColor('#333333');
-    doc.text(point.Name || `PT${idx + 1}`, 40, rowY + 3);
-    doc.text(parseFloat(point.Latitude).toFixed(6), 120, rowY + 3);
-    doc.text(parseFloat(point.Longitude).toFixed(6), 220, rowY + 3);
-    doc.text(((parseFloat(point.Longitude) - 80.0) * 100000).toFixed(2), 320, rowY + 3);
-    doc.text(((parseFloat(point.Latitude) - 7.0) * 100000).toFixed(2), 420, rowY + 3);
-    doc.text(point.Elevation || "0.00", 520, rowY + 3);
-    doc.text(point.Zone || "44N", 600, rowY + 3);
-    doc.text(point.Section || "A", 660, rowY + 3);
-    doc.text("±1.5m", 740, rowY + 3);
-    doc.text(new Date().toLocaleDateString(), 820, rowY + 3);
-  });
+    doc.text(point.Name || `PT${idx + 1}`, columns[0].x, rowY + 3);
+    doc.text(parseFloat(point.Latitude).toFixed(6), columns[1].x, rowY + 3);
+    doc.text(parseFloat(point.Longitude).toFixed(6), columns[2].x, rowY + 3);
+
+    const sld99Coord = transformToSLD99(point.Latitude, point.Longitude);
+    doc.text(sld99Coord.easting.toFixed(3), columns[3].x, rowY + 3);
+    doc.text(sld99Coord.northing.toFixed(3), columns[4].x, rowY + 3);
+    doc.text(point.Section || "Default", columns[5].x, rowY + 3);
+    const timestamp = point.Timestamp
+      ? new Date(point.Timestamp).toLocaleString()
+      : "N/A";
+    doc.text(timestamp, columns[6].x, rowY + 3);
+
+
+  }
 }
 
 // Main Layout with Map and Certification
