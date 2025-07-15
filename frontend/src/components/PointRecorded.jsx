@@ -92,9 +92,9 @@ const PointRecorded = ({ sensorData, baseData, projectId }) => {
       typeof baseMatchData.longitude === "number"
     ) {
 
-        if (minDelta > 10000) {
+        if (minDelta > 5000) {
         clientDevice.accuracy = "Low";
-      } else if (minDelta > 3000) {
+      } else if (minDelta > 2000) {
         clientDevice.accuracy = "Medium";
       } else {
         clientDevice.accuracy = "High";
