@@ -62,7 +62,7 @@ const GEOnexLanding = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const AnimatedCard = ({ children, delay = 0, className = '' }) => (
+  const AnimatedCard = ({ children, delay = 0, className = "" }) => (
     <div
       className={`transform transition-all duration-1000 hover:scale-105  animate-fade-in
         ${className}`}
@@ -377,7 +377,9 @@ const GEOnexLanding = () => {
                 ].map((item, index) => (
                   <li key={index} className="flex items-start">
                     <div className="mt-2 w-1.5 h-1.5 sm:w-2 sm:h-2 flex-shrink-0 bg-blue-600 rounded-full"></div>
-                    <span className="ml-3 text-gray-700 text-sm md:text-base">{item}</span>
+                    <span className="ml-3 text-gray-700 text-sm md:text-base">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -398,19 +400,20 @@ const GEOnexLanding = () => {
         </div>
       </section>
 
-      
-
-      <section id="products" className="py-20">
+      {/* ─────────────── PRODUCTS ─────────────── */}
+      <section id="products" className="py-8 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+
+          {/* Heading */}
+          <div className="text-center mb-14 sm:mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
               Three Products.
               <br />
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Infinite Possibilities.
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto">
               Discover our complete ecosystem designed to revolutionize your
               surveying workflow
             </p>
@@ -444,24 +447,26 @@ const GEOnexLanding = () => {
               },
             ].map((product, index) => (
               <AnimatedCard key={index} delay={index * 100}>
-                <div className="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100">
+                <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl 
+                transition-all duration-300 border border-gray-100">
                   {/* <div className="mb-6">
               <FloatingElement>
                 {product.icon}
               </FloatingElement>
             </div> */}
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-xl sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2">
                     {product.title}
                   </h3>
                   <p className="text-blue-600 font-semibold mb-4">
                     {product.subtitle}
                   </p>
-                  <p className="text-gray-600 mb-6">{product.description}</p>
-                  <div className="w-full h-auto rounded-xl flex items-center justify-center mb-6">
+                  <p className="text-gray-600 text-sm sm:text-base mb-6">{product.description}</p>
+                  <div className="w-full h-28 sm:h-56 lg:h-64
+                  rounded-xl flex items-center justify-center mb-2">
                     <img
                       src={product.image}
                       alt={product.title}
-                      className="object-contain h-full"
+                      className="object-contain h-32 md:h-56"
                     />
                   </div>
                   {/* <button className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-gray-800 transition-all duration-200 transform hover:scale-105">
@@ -524,7 +529,7 @@ const GEOnexLanding = () => {
               },
             ].map((benefit, index) => (
               <AnimatedCard key={index} delay={index * 50}>
-                <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                <div className="h-48 bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="text-blue-600 mb-4">{benefit.icon}</div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {benefit.title}
