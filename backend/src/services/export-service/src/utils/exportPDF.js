@@ -42,7 +42,8 @@ const exportToPdf = (points, filename, project) => {
     if (points.length > 20) {
       doc.addPage({ margin: 0, size: 'A3', layout: 'landscape' });
       drawProfessionalHeader(doc, project, sideNumber = 2); 
-      drawDataTable(doc, points.slice(20), tableHeight = 480, rowHeight = 36);
+      drawDataTable(doc, points.slice(20), tableHeight = 560);
+      drawCleanFooter(doc);
     }
 
 
