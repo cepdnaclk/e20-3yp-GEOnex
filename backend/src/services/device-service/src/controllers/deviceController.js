@@ -90,6 +90,49 @@ const updateDevice = async (req, res) => {
     }
 };
 
+const updateByDeviceCode = async (req, res) => {
+    console.log("Update device by DeviceCode request received");
+    const deviceCode = req.params.deviceCode;
+
+    const db = getDb();
+    const {
+        Status,
+        Battery_Percentage,
+        Signal_Strength
+    } = req.body;
+
+    if (!deviceCode) {
+        return res.status(400).json({ message: 'DeviceCode is required in the request body' });
+    }
+
+    try {
+        const updateFields = {
+            ...(Status != null && { Status }),
+            ...(Battery_Percentage !== undefined && !isNaN(Number(Battery_Percentage)) && { Battery_Percentage: Number(Battery_Percentage) }),
+            ...(Signal_Strength != null && { Signal_Strength }),
+            Last_Update: new Date()
+        };
+
+        console.log(`Updating device with DeviceCode: ${deviceCode}`);
+        console.log('Update fields:', updateFields);
+
+        const result = await db.collection('devices').updateOne(
+            { DeviceCode: deviceCode },
+            { $set: updateFields }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Device not found with the given DeviceCode' });
+        }
+
+        res.status(200).json({ message: 'Device updated successfully' });
+    } catch (error) {
+        console.error("Error updating device:", error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+};
+
+
 
 const checkDeviceInUse = async (req, res) => {
     const db = getDb();
@@ -112,4 +155,4 @@ const checkDeviceInUse = async (req, res) => {
 }
 
 
-module.exports = {createDevice, getDeviceById, updateDevice, checkDeviceInUse};
+module.exports = {createDevice, getDeviceById, updateDevice, checkDeviceInUse, updateByDeviceCode};

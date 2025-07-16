@@ -25,7 +25,7 @@ const Settings = () => {
     <div className="min-h-screen text-gray-900 dark:text-gray-100">
       <SectionHeader
         title="Settings"
-        subtitle="Manage your communication,display,and user preferences"
+        subtitle="Manage your communication, display, and user preferences"
       />
 
       <div className="flex flex-wrap gap-4">

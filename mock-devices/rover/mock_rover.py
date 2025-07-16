@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # === AWS IoT Core Configuration ===
-thing_name = os.getenv("THING_NAME_Base")
+thing_name = os.getenv("THING_NAME_Rover")
 endpoint = os.getenv("AWS_IOT_ENDPOINT")
 port = int(os.getenv("AWS_IOT_PORT", "8883"))  # Default to 8883 if not set
 topic = os.getenv("TOPIC_Rover")

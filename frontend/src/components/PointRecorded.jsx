@@ -1,8 +1,49 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Context } from "../context/Context";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { use } from "react";
+
+class KalmanFilter {
+  constructor(processNoise = 0.0001, measurementNoise = 0.01, estimateError = 1, initialValue = 0) {
+    this.q = Number(processNoise);
+    this.r = Number(measurementNoise);
+    this.p = Number(estimateError);
+    this.x = Number(initialValue);
+  }
+
+  update(measurement) {
+    // Convert to number and validate
+    const numMeasurement = Number(measurement);
+    if (isNaN(numMeasurement)) {
+      console.warn('Invalid measurement received:', measurement);
+      return this.x; // Return current estimate for invalid input
+    }
+
+    this.p = this.p + this.q;
+    const k = this.p / (this.p + this.r);
+
+    if (isNaN(k)) {
+      console.warn('Kalman gain is NaN, returning current estimate');
+      return this.x;
+    }
+
+    this.x = this.x + k * (numMeasurement - this.x);
+    this.p = (1 - k) * this.p;
+
+    return this.x;
+  }
+
+  // Helper method to check filter state
+  getState() {
+    return {
+      estimate: this.x,
+      errorCovariance: this.p,
+      processNoise: this.q,
+      measurementNoise: this.r
+    };
+  }
+}
+
 
 const PointRecorded = ({
   sensorData,
@@ -42,9 +83,26 @@ const PointRecorded = ({
   const [baseMatchData, setBaseMatchData] = useState();
   const [minDelta, setMinDelta] = useState(Infinity);
 
+
+
+  const latFilter = useRef(null);
+  const lngFilter = useRef(null);
+
+
   useEffect(() => {
     fetchProject(projectId);
   }, [projectId]);
+
+
+  useEffect(() => {
+    if (project?.baseLatitude && project?.baseLongitude) {
+      if (!isNaN(project.baseLatitude) && !isNaN(project.baseLongitude)) {
+          latFilter.current = new KalmanFilter(0.0001, 0.0005, 1, project.baseLatitude);
+          lngFilter.current = new KalmanFilter(0.0001, 0.0005, 1, project.baseLongitude);
+}
+    }
+  }, [project?.baseLatitude, project?.baseLongitude]);
+
 
   useEffect(() => {
     console.log("Project.Sections changed:", project?.Sections);
@@ -98,21 +156,43 @@ const PointRecorded = ({
         clientDevice.accuracy = "High";
       }
 
-      const deltaLat = project.baseLatitude - baseData.latitude;
-      const deltaLng = project.baseLongitude - baseData.longitude;
+      const deltaLat = project.baseLatitude - baseMatchData.latitude;
+      const deltaLng = project.baseLongitude - baseMatchData.longitude;
 
-      setCorrectedLatitude(clientMatchData.latitude + deltaLat);
-      setCorrectedLongitude(clientMatchData.longitude + deltaLng);
+      const correctedLat = clientMatchData.latitude + deltaLat;
+      const correctedLng = clientMatchData.longitude + deltaLng;
 
-      console.log("Corrected Latitude:", clientMatchData.latitude + deltaLat);
-      console.log("Corrected Longitude:", clientMatchData.longitude + deltaLng);
-      // console.log("DeltaLat:", deltaLat, "DeltaLng:", deltaLng);
+      if (
+          latFilter.current &&
+          lngFilter.current &&
+          typeof correctedLat === "number" &&
+          typeof correctedLng === "number" &&
+          !isNaN(correctedLat) &&
+          !isNaN(correctedLng)
+        ) {
 
-      // console.log("ClientMatchData:", clientMatchData);
-      // console.log("BaseMatchData:", baseMatchData);
 
-      // console.log("Project baseLatitude:", project.baseLatitude, "Project baseLongitude:", project.baseLongitude);
-      // console.log("BaseData baseLatitude:", baseData.latitude, "BaseData baseLongitude:", baseData.longitude);
+          
+          const smoothLat = (latFilter.current.update(correctedLat));
+          const smoothLng = lngFilter.current.update(correctedLng);
+
+          setCorrectedLatitude(smoothLat);
+          setCorrectedLongitude(smoothLng);
+
+          console.log("typeOf: ", typeof(smoothLat));
+
+          console.log("Kalman Filter Applied");
+          console.log("Smoothed:", smoothLat, smoothLng);
+
+        } else {
+          setCorrectedLatitude(correctedLat);
+          setCorrectedLongitude(correctedLng);
+
+          console.log("No Kalman Filter Applied (missing filters or invalid data)");
+          console.log("Corrected (Raw):", correctedLat, correctedLng);
+        }
+
+
     } else {
       //  Auto fix
       console.log("Auto Fix running");

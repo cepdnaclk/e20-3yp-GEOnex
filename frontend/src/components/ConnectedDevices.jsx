@@ -411,12 +411,12 @@ export default function ConnectedDevices() {
                   <div className="flex justify-center flex-shrink-0 w-[15%]">
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
-                        device.isOnline
+                        device.Status
                           ? "bg-green-100 text-green-700 dark:bg-green-800/20 dark:text-green-400"
                           : "bg-red-100 text-red-700 dark:bg-red-800/20 dark:text-red-400"
                       }`}
                     >
-                      {device.isOnline ? "Online" : "Offline"}
+                      {device.Status ? "Online" : "Offline"}
                     </span>
                   </div>
 

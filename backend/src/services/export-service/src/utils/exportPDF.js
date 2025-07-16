@@ -42,7 +42,8 @@ const exportToPdf = (points, filename, project) => {
     if (points.length > 20) {
       doc.addPage({ margin: 0, size: 'A3', layout: 'landscape' });
       drawProfessionalHeader(doc, project, sideNumber = 2); 
-      drawDataTable(doc, points.slice(20));
+      drawDataTable(doc, points.slice(20), tableHeight = 560, splitLength = 30);
+      drawCleanFooter(doc);
     }
 
 
@@ -117,13 +118,11 @@ function drawCleanCorner(doc, x, y, color) {
 
 // Clean Data Table
 // Clean Data Table with Split Layout
-function drawDataTable(doc, points) {
+function drawDataTable(doc, points, tableHeight = 160, rowHeight = 12, splitLength = 10) {
   const tableY = 90;
-  const tableHeight = 160;
-  const rowHeight = 12;
   
   // Determine if we need to split the table
-  const needsSplit = points.length > 12;
+  const needsSplit = points.length > splitLength;
   const leftPoints = needsSplit ? points.slice(0, 10) : points;
   const rightPoints = needsSplit ? points.slice(10, 20) : []; 
   
@@ -409,7 +408,6 @@ function drawCertificationPanel(doc, x, y, width, height, project) {
   doc.text(`Coordinate System: ${project?.Zone || 'UTM Zone 44N'}`, x + 20, y + 140);
   doc.text(`Datum: WGS84`, x + 20, y + 155);
   doc.text(`Survey Method: DGPS`, x + 20, y + 170);
-  doc.text(`Accuracy: ±1.5m`, x + 20, y + 185);
   
   // Certification fields
   doc.fontSize(12).fillColor('#1A1A1A').font('Helvetica-Bold');
