@@ -42,7 +42,8 @@ const exportToPdf = (points, filename, project) => {
     if (points.length > 20) {
       doc.addPage({ margin: 0, size: 'A3', layout: 'landscape' });
       drawProfessionalHeader(doc, project, sideNumber = 2); 
-      drawDataTable(doc, points.slice(20), tableHeight = 480, rowHeight = 36);
+      drawDataTable(doc, points.slice(20), tableHeight = 560, splitLength = 30);
+      drawCleanFooter(doc);
     }
 
 
@@ -117,11 +118,11 @@ function drawCleanCorner(doc, x, y, color) {
 
 // Clean Data Table
 // Clean Data Table with Split Layout
-function drawDataTable(doc, points, tableHeight = 160, rowHeight = 12) {
+function drawDataTable(doc, points, tableHeight = 160, rowHeight = 12, splitLength = 10) {
   const tableY = 90;
   
   // Determine if we need to split the table
-  const needsSplit = points.length > 12;
+  const needsSplit = points.length > splitLength;
   const leftPoints = needsSplit ? points.slice(0, 10) : points;
   const rightPoints = needsSplit ? points.slice(10, 20) : []; 
   
