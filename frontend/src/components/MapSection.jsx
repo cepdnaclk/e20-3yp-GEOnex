@@ -61,7 +61,7 @@ const MapSection = () => {
     600 // ms; change if desired
   );
 
-  const [base, setBase] = useState({ lat: 7.254822, lng: 80.59252 });
+  const [baseUpdated, setBase] = useState({ lat: 7.254822, lng: 80.59252 });
   const [center, setCenter] = useState({ lat: 7.254822, lng: 80.59215 });
 
   const {
@@ -75,6 +75,10 @@ const MapSection = () => {
     showConfirmDiscard,
     setShowConfirmDiscard,
     wsUrl,
+    rovers,
+    base,
+    
+
   } = useContext(Context);
 
   useEffect(() => {
@@ -96,19 +100,19 @@ const MapSection = () => {
       };
 
   // mock devices
-  const rovers = ["device123", "device456"];
+  const roversCodes = rovers.map(rover => rover.DeviceCode);
 
-  const baseStation = "base123";
+  const baseStation = base.DeviceCode;
   // Define your WebSocket URL here
   const WS_URL = `${wsUrl}`;
   // Use our custom hook to get sensor data and connection status
-  const { sensorData, connectionStatus } = useSensorData(WS_URL, rovers);
+  const { sensorData, connectionStatus } = useSensorData(WS_URL, roversCodes);
   const { baseSensorData, baseconnectionStatus } = useBaseSensorData(
     WS_URL,
     baseStation
   );
 
-  // Update the base position when base sensor data updates
+  // Update the baseUpdated position when baseUpdated sensor data updates
   useEffect(() => {
     console.log("Base Sensor Data:", baseSensorData);
     if (
@@ -130,7 +134,7 @@ const MapSection = () => {
     }
   }, [projectId]);
 
-  // Update the center position based on rover and base positions
+  // Update the center position based on rover and baseUpdated positions
   useEffect(() => {
     // If we have valid sensor data from rovers
     if (Array.isArray(sensorData) && sensorData.length > 0) {
@@ -165,14 +169,14 @@ const MapSection = () => {
         lat: avgLat,
         lng: avgLng,
       });
-    } else if (base) {
-      // If no valid rover data, set center to base position
+    } else if (baseUpdated) {
+      // If no valid rover data, set center to baseUpdated position
       setCenter({
-        lat: base.lat,
-        lng: base.lng,
+        lat: baseUpdated.lat,
+        lng: baseUpdated.lng,
       });
     }
-  }, [sensorData, base, points]);
+  }, [sensorData, baseUpdated, points]);
 
   // Recenter the map when center state changes
   const RecenterAutomatically = ({ center }) => {
@@ -277,7 +281,7 @@ const MapSection = () => {
         ))}
 
         {/* Base Device Marker */}
-        <Marker position={[base.lat, base.lng]} icon={baseIcon}>
+        <Marker position={[baseUpdated.lat, baseUpdated.lng]} icon={baseIcon}>
           <Popup>
             <MapPopUp
               battery={baseSensorData.battery}

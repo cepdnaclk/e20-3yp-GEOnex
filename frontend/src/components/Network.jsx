@@ -72,7 +72,7 @@ const Network = ({ data, onChange }) => {
       <h2 className="font-semibold text-xl">Network</h2>
 
       <div className="flex items-center justify-between mt-4">
-        <span>MQTT URL</span>
+        <span>EasyConnect URL</span>
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
@@ -85,7 +85,7 @@ const Network = ({ data, onChange }) => {
       </div>
       <hr className="border-gray-300 dark:border-gray-600" />
 
-      <label className="block font-medium text-lg mt-4">Custom MQTT URL</label>
+      <label className="block font-medium text-lg mt-4">Custom  URL</label>
       <input
         type="text"
         value={url}

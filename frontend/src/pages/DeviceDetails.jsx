@@ -107,99 +107,21 @@ const DeviceDetails = () => {
             gap-4 lg:h-screen lg:ml-14"
       >
         {/* Actions Section (Left) */}
-        <div
-          className="h-max  p-5 rounded-lg flex flex-col gap-3 overflow-auto
-              bg-white dark:bg-gray-800"
-        >
-          <h2 className="text-base md:text-lg font-semibold pb-5">Actions</h2>
+        
 
-          {/* Rename */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
-                  bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
-                  dark:bg-gray-700 dark:hover:bg-gray-600"
-            onClick={() => confirmAction("Rename this device (static demo)")}
-          >
-            <img
-              className="w-6 h-6 md:w-8 md:h-8"
-              //   src={assets.}
-              alt="rename"
-            />
-            <div>
-              <h3 className="font-semibold text-sm md:text-base">
-                Rename device
-              </h3>
-              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                Rename your device
-              </p>
-            </div>
-          </div>
 
-          {/* Reset */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
-                  bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
-                  dark:bg-gray-700 dark:hover:bg-gray-600 "
-            onClick={() => {}}
-          >
-            <img
-              className="w-6 h-6 md:w-8 md:h-8"
-              //   src={assets.}
-              alt="reset"
-            />
-            <div>
-              <h3 className="font-semibold text-sm md:text-base">Reset</h3>
-              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                reset your device
-              </p>
-            </div>
-          </div>
-
-          {/* Reset */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
-                  bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
-                  dark:bg-gray-700 dark:hover:bg-gray-600 "
-            onClick={() => {}}
-          >
-            <img
-              className="w-6 h-6 md:w-8 md:h-8"
-              //   src={assets.}
-              alt="reset"
-            />
-            <div>
-              <h3 className="font-semibold text-sm md:text-base">Reset</h3>
-              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                reset your device
-              </p>
-            </div>
-          </div>
-
-          {/* Delete Device */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-lg bg-red-500 cursor-pointer
-                  dark:bg-red-600 dark:hover:bg-red-700 "
-            // onClick={handleDelete}
-          >
-            <img
-              className="w-6 h-6 md:w-8 md:h-8"
-              src={assets.bin}
-              alt="delete"
-            />
-            <div>
-              <h3 className="font-semibold text-white text-sm md:text-base">
-                Delete Device
-              </h3>
-              <p className="text-xs md:text-sm text-white">
-                This action cannot be undone
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* ───────────── Overview (right) ───────────── */}
         <div className="bg-white dark:bg-gray-800 p-5 rounded-lg flex flex-col gap-5 h-max">
           <h2 className="text-base md:text-lg font-semibold pb-5">Overview</h2>
+
+
+
+          {/*  */}
+          <div className="w-full h-auto rounded-xl flex items-center justify-center mb-6">
+              <img
+                src={device.Type == "base"? "/images/LandingPage/geonex-b.png":  "/images/LandingPage/geonex-r.png"}
+                className="object-contain h-full"
+              />
+            </div>
 
           {[
             ["Type", device.Type],
@@ -234,6 +156,99 @@ const DeviceDetails = () => {
             </div>
           ))}
         </div>
+
+        {/* ───────────── Overview (right) ───────────── */}
+
+        <div
+          className="h-max  p-5 rounded-lg flex flex-col gap-3 overflow-auto
+              bg-white dark:bg-gray-800"
+        >
+          <h2 className="text-base md:text-lg font-semibold pb-5">Actions</h2>
+
+          {/* Rename */}
+          {/* <div
+            className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
+                  bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
+                  dark:bg-gray-700 dark:hover:bg-gray-600"
+            onClick={() => confirmAction("Rename this device (static demo)")}
+          >
+            <img
+              className="w-6 h-6 md:w-8 md:h-8"
+              //   src={assets.}
+              alt="rename"
+            />
+            <div>
+              <h3 className="font-semibold text-sm md:text-base">
+                Rename device
+              </h3>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                Rename your device
+              </p>
+            </div>
+          </div> */}
+
+          {/* Reset */}
+          {/* <div
+            className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
+                  bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
+                  dark:bg-gray-700 dark:hover:bg-gray-600 "
+            onClick={() => {}}
+          >
+            <img
+              className="w-6 h-6 md:w-8 md:h-8"
+              //   src={assets.}
+              alt="reset"
+            />
+            <div>
+              <h3 className="font-semibold text-sm md:text-base">Reset</h3>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                reset your device
+              </p>
+            </div>
+          </div> */}
+
+          {/* Reset */}
+          {/* <div
+            className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
+                  bg-[rgba(217,217,217,1)]  hover:bg-[rgba(200,200,200,1)] 
+                  dark:bg-gray-700 dark:hover:bg-gray-600 "
+            onClick={() => {}}
+          >
+            <img
+              className="w-6 h-6 md:w-8 md:h-8"
+              //   src={assets.}
+              alt="reset"
+            />
+            <div>
+              <h3 className="font-semibold text-sm md:text-base">Reset</h3>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                reset your device
+              </p>
+            </div>
+          </div> */}
+
+          {/* Delete Device */}
+          <div
+            className="flex items-center gap-3 p-3 rounded-lg bg-red-500 cursor-pointer
+                  dark:bg-red-600 dark:hover:bg-red-700 "
+            // onClick={handleDelete}
+          >
+            <img
+              className="w-6 h-6 md:w-8 md:h-8"
+              src={assets.bin}
+              alt="delete"
+            />
+            <div>
+              <h3 className="font-semibold text-white text-sm md:text-base">
+                Delete Device
+              </h3>
+              <p className="text-xs md:text-sm text-white">
+                This action cannot be undone
+              </p>
+            </div>
+          </div>
+        </div>
+        
       </div>
     </div>
   );
