@@ -67,11 +67,8 @@ const init = () => {
                     const parsedValue = JSON.parse(value);
 
                     try {
-                        //  Part of the code that sends the alert to the devices server
-                        const serverIP = process.env.NODE_ENV === 'production' 
-                            ? process.env.PROD_SERVER_IP 
-                            : process.env.DEV_SERVER_IP;
-                        const response = await fetch(`http://${serverIP}:${process.env.DEVICES_SERVER_PORT}/add-alert`, {
+                        
+                        const response = await fetch(`http://device-service:${process.env.DEVICES_SERVER_PORT}/api/devices/add-alert`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -99,9 +96,7 @@ const init = () => {
                     const parsedValue = JSON.parse(value);
 
                     try {
-                        const serverIP = process.env.NODE_ENV === 'production' 
-                            ? process.env.PROD_SERVER_IP 
-                            : process.env.DEV_SERVER_IP;
+                        
                         const response = await fetch(`http://device-service:${process.env.DEVICES_SERVER_PORT}/api/devices/status/${deviceName}`, {
                             method: 'PUT',
                             headers: {
