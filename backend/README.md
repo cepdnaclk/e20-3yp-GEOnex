@@ -278,6 +278,21 @@ An overview of the MQTT topics used in the IoT project, including details on how
     }
 
   ```
+  5. Devices status update
+   * Topic `update/d/status/{deviceCode:device123}/data`
+   * Description
+        Subscribe to this topic to receive status updates for devices
+    * Payload:
+  ```sh
+    {
+    "status": "Online", // "Offline", "Active", "Registered"
+    "Battery_Percentage": 40,
+    "Signal_Strength": "70"
+    }
+
+  ```
+
+
    
 
 
