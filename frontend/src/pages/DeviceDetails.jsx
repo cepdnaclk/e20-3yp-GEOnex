@@ -201,6 +201,16 @@ const DeviceDetails = () => {
         <div className="bg-white dark:bg-gray-800 p-5 rounded-lg flex flex-col gap-5 h-max">
           <h2 className="text-base md:text-lg font-semibold pb-5">Overview</h2>
 
+
+
+          {/*  */}
+          <div className="w-full h-auto rounded-xl flex items-center justify-center mb-6">
+              <img
+                src={device.Type == "base"? "/images/LandingPage/geonex-b.png":  "/images/LandingPage/geonex-r.png"}
+                className="object-contain h-full"
+              />
+            </div>
+
           {[
             ["Type", device.Type],
             [
