@@ -120,8 +120,6 @@ const init = () => {
                     }
                 }
 
-
-
             
     });
 
@@ -130,19 +128,5 @@ const init = () => {
         console.error('MQTT Error:', error);
     });
 
-
-
-
-
 }
 module.exports = {device, init};
-
-
-// update/d/status/device123/data
-
-//  {
-// "deviceId": "device123",
-// "status": "Online",
-// "Battery_Percentage": 80,
-// "Signal_Strength": "60"
-// }
