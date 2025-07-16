@@ -265,13 +265,13 @@ An overview of the MQTT topics used in the IoT project, including details on how
   ```
 
   4. Devices alerts
-   * Topic `inform/r/alert/{deviceId}/data`
+   * Topic `inform/d/alert/{deviceId}/data`
    * Description
         Subscribe to this topic to receive alerts for all devices.
     * Payload:
   ```sh
     {
-    "deviceId": "device456",
+    "deviceId": "device123",
   "status": "Info",
   "code": "SC402",
   "created_At": "2025-02-27T12:05:00Z"
