@@ -67,7 +67,7 @@ void loop()
   int satellites;
   String time;
 
-  if (gpsInfo.isValid)
+  if (gpsInfo.isValid && gpsInfo.satellites > 6)
   {
     lat = gpsInfo.latitude;
     lon = gpsInfo.longitude;

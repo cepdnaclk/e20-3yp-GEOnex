@@ -22,10 +22,10 @@ GPSData processGPS()
     gpsdata.isValid = true;
 
     Serial.print("\nLatitude: ");
-    Serial.print(gpsdata.latitude, 6);
+    Serial.print(gpsdata.latitude, 8);
 
     Serial.print(", Longitude: ");
-    Serial.print(gpsdata.longitude, 6);
+    Serial.print(gpsdata.longitude, 8);
 
     Serial.print(" Satellites: ");
     Serial.print(gpsdata.satellites);

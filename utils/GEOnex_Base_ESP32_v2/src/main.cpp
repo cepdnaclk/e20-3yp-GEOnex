@@ -48,23 +48,24 @@ void loop()
 {
   //******************************************************* */
   // Process GPS Data
-  // GPSData gpsInfo = processGPS();
+  GPSData gpsInfo = processGPS();
 
-  // double lat, lon;
-  // int satellites;
-  // String time;
+  double lat, lon;
+  int satellites;
+  String time;
 
 
-  // if (gpsInfo.isValid)
-  // {
-  //   lat = gpsInfo.latitude;
-  //   lon = gpsInfo.longitude;
-  //   satellites = gpsInfo.satellites;
-  //   time = gpsInfo.time;
+  if (gpsInfo.isValid && gpsInfo.satellites > 6 && gpsInfo.latitude > 7 && gpsInfo.longitude > 80)  // Check if GPS data is valid and has enough satellites
+  {
+    lat = gpsInfo.latitude;
+    lon = gpsInfo.longitude;
+    satellites = gpsInfo.satellites;
+    time = gpsInfo.time;
 
-  //   // Print GPS data for testing
-  //   Serial.printf("[Test]  Raw GPS: Lat: %.6f, Lon: %.6f, Satellites: %d, Time: %s\n", lat, lon, satellites, time.c_str());
-  // }
+    // Print GPS data for testing
+    Serial.printf("[Test]  Raw GPS: Lat: %.6f, Lon: %.6f, Satellites: %d, Time: %s\n", lat, lon, satellites, time.c_str());
+  }
+  // Removed the eslse block to avoid setting invalid data
   // else
   // {
   //   lat = NAN;
@@ -88,16 +89,16 @@ void loop()
   int batteryPercentage = getBatteryPercentage(readBatteryVoltage());
   //Serial.printf("[Test]  Battery Percentage: %d%%\n", batteryPercentage);
 
-  // publishData(DEVICE_ID, "OK", lat, lon, satellites, time, batteryPercentage, wifiquality);
+  publishData(DEVICE_ID, "OK", lat, lon, satellites, time, batteryPercentage, wifiquality);
 
 
   //******************************************************* */
   // Sending average position instand of live position
   // To ensure the base station has a stable position before sending it
-  AVEGData avefix = computeAveragePosition();
-  if (avefix.isValid)
-  {
-    Serial.println("[INFO]  Base Station Position Stabilized! Sending average position");
+  // AVEGData avefix = computeAveragePosition();
+  // if (avefix.isValid)
+  // {
+  //   Serial.println("[INFO]  Base Station Position Stabilized! Sending average position");
     // Serial.print("Final Coordinates: ");
     // Serial.print(avefix.latitude, 8);
     // Serial.print(", ");
@@ -107,12 +108,20 @@ void loop()
     // Serial.print("Time: ");
     // Serial.println(avefix.time);
     // Publish the average position to MQTT
-    publishData(DEVICE_ID, "OK", avefix.latitude, avefix.longitude, avefix.satellites, avefix.time, batteryPercentage, wifiquality);
-  }
-  //******************************************************* */
+  // }
+  // else
+  //   {
+  //     lat = NAN;
+  //     lon = NAN;
+  //     satellites = -1;
+  //     time = "";
+  //     Serial.println("[Test]  No valid GPS data received.");
+  //   }
 
-  // Handle MQTT connection and loop
-  mqttLoop();
+    //publishData(DEVICE_ID, "OK", avefix.latitude, avefix.longitude, avefix.satellites, avefix.time, batteryPercentage, wifiquality);
+
+    // Handle MQTT connection and loop
+    mqttLoop();
 
 
   // Main loop delay
