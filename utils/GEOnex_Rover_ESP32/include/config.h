@@ -34,6 +34,7 @@
 // #define MQTT_TOPIC_DATA_LIVE "GEOnex/siteSurvey/data/" DEVICE_ID "/gps/live"
 // #define MQTT_TOPIC_DATA_LIVE "esp8266/pub"
 #define MQTT_TOPIC_DATA_LIVE "tracking/r/live/rover123/data"
+#define MQTT_TOPIC_DATA_UTILS "update/d/status/rover123/data"
 
 #define MQTT_TOPIC_SUB_LIVE "tracking/r/live/device123/data"
 #define MQTT_TOPIC_SUB_FIXED "fixing/b/live/device123/data"
@@ -66,7 +67,7 @@
 #define MIL_TO_RAD 0.0002908882086657216
 
 // poleHeight (in meters)
-#define POLE_HEIGHT 1.5 // Height of the GPS pole in meters
+#define POLE_HEIGHT 1.0 // Height of the GPS pole in meters
 
 // Publishing Intervals (ms)
 #define PUBLISH_INTERVAL 2000  

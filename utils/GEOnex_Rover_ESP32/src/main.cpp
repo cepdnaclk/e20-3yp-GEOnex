@@ -25,6 +25,8 @@ GNSSConfig gnss;
 
 WiFiPortal wifi("GeoNex-Setup", "12345678", BUTTON_RESET_WIFI);
 
+int count = 0;
+
 void setup()
 {
   Serial.begin(SERIAL_BAUD_RATE);
@@ -54,7 +56,7 @@ void setup()
 
   // Set known fixed base location manually
   // Comment this line to use the auto base fixed location
-  setManualBaseFixed(6.1042425, 80.222473);
+  //setManualBaseFixed(6.1042425, 80.222473);
 }
 
 void loop()
@@ -67,7 +69,7 @@ void loop()
   int satellites;
   String time;
 
-  if (gpsInfo.isValid && gpsInfo.satellites > 6)
+  if (gpsInfo.isValid && gpsInfo.satellites > 3)
   {
     lat = gpsInfo.latitude;
     lon = gpsInfo.longitude;
@@ -94,9 +96,8 @@ void loop()
     Serial.print(", ");
     Serial.println(lon, 8);
 
-    updateRoverLive(lat, lon, time); // Trigger correction
-
-    GpsPosition corrected = getCorrectedRoverPosition();
+    //updateRoverLive(lat, lon, time); // Trigger correction
+    //GpsPosition corrected = getCorrectedRoverPosition();
   }
   else
   {
@@ -123,8 +124,15 @@ void loop()
 
   publishData(DEVICE_ID, "OK", lat, lon, satellites, time, 0.0, 0.0, batteryPercentage, wifiquality);
 
+  count++;
+  if (count >= 100) // Publish every 10 iterations
+  {
+    publishStatus("Active", batteryPercentage, wifiquality);
+    count = 0; // Reset count after publishing
+  }
+
   mqttLoop();
-  checkBaseTimeout();
+  //checkBaseTimeout();
 
   checkButtonPresses();
   wifi.checkResetButton();
