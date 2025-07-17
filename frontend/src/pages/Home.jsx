@@ -403,7 +403,6 @@ const GEOnexLanding = () => {
       {/* ─────────────── PRODUCTS ─────────────── */}
       <section id="products" className="py-8 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
           {/* Heading */}
           <div className="text-center mb-14 sm:mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
@@ -447,8 +446,10 @@ const GEOnexLanding = () => {
               },
             ].map((product, index) => (
               <AnimatedCard key={index} delay={index * 100}>
-                <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl 
-                transition-all duration-300 border border-gray-100">
+                <div
+                  className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl hover:shadow-2xl 
+                transition-all duration-300 border border-gray-100"
+                >
                   {/* <div className="mb-6">
               <FloatingElement>
                 {product.icon}
@@ -460,9 +461,13 @@ const GEOnexLanding = () => {
                   <p className="text-blue-600 font-semibold mb-4">
                     {product.subtitle}
                   </p>
-                  <p className="text-gray-600 text-sm sm:text-base mb-6">{product.description}</p>
-                  <div className="w-full h-28 sm:h-56 lg:h-64
-                  rounded-xl flex items-center justify-center mb-2">
+                  <p className="text-gray-600 text-sm sm:text-base mb-6">
+                    {product.description}
+                  </p>
+                  <div
+                    className="w-full h-28 sm:h-56 lg:h-64
+                  rounded-xl flex items-center justify-center mb-2"
+                  >
                     <img
                       src={product.image}
                       alt={product.title}
@@ -480,22 +485,26 @@ const GEOnexLanding = () => {
       </section>
 
       {/* Benefits Section */}
-      <section id="benefits" className="py-20 bg-gray-50">
+      <section id="benefits" className="py-16 sm:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          {/* Heading */}
+          <div className="text-center mb-14 sm:mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2 sm:mb-6">
               Built for the
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 {" "}
                 Future
               </span>
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg sm:text-xl text-gray-600">
               Experience the advantages that set GEOnex apart
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            className="grid gap-6 sm:gap-8 
+          sm:grid-cols-2 lg:grid-cols-3 "
+          >
             {[
               {
                 icon: <Database className="w-8 h-8" />,
@@ -529,12 +538,26 @@ const GEOnexLanding = () => {
               },
             ].map((benefit, index) => (
               <AnimatedCard key={index} delay={index * 50}>
-                <div className="h-48 bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-                  <div className="text-blue-600 mb-4">{benefit.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <div
+                  className="h-34 sm:h-48 lg:h-52
+                bg-white p-6 rounded-xl shadow-lg hover:shadow-xl 
+                transition-all duration-300"
+                >
+                  <div className="text-blue-600 mb-1 sm:mb-2 lg:mb-4">
+                    {React.cloneElement(benefit.icon, {
+                      /* CHANGED icon size */
+                      className: "w-7 h-7 sm:w-8 sm:h-8",
+                    })}
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-gray-900 
+                  text-lg sm:text-xl mb-1"
+                  >
                     {benefit.title}
                   </h3>
-                  <p className="text-gray-600">{benefit.desc}</p>
+                  <p className="text-gray-600 text-sm sm:text-base">
+                    {benefit.desc}
+                  </p>
                 </div>
               </AnimatedCard>
             ))}
@@ -543,10 +566,10 @@ const GEOnexLanding = () => {
       </section>
 
       {/* Comparison Table */}
-      <section className="py-20">
+      <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-14 sm:mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
               See the
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 {" "}
@@ -557,20 +580,23 @@ const GEOnexLanding = () => {
 
           <AnimatedCard>
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="overflow-x-auto sm:scrollbar-thin">
+                <table className="w-full text-sm sm:text-base">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-4 text-left text-lg font-semibold text-gray-900">
+                      <th className="px-4 py-2 sm:px-6 sm:py-4 text-left text-base sm:text-lg font-semibold text-gray-900">
                         Feature
                       </th>
-                      <th className="px-6 py-4 text-center text-lg font-semibold text-gray-900">
+                      <th className="px-4 py-2 sm:px-6 sm:py-4 text-center text-base sm:text-lg font-semibold text-gray-900">
                         Total Station
                       </th>
-                      <th className="px-6 py-4 text-center text-lg font-semibold text-gray-900">
+                      <th
+                        className="px-4 py-2 sm:px-6 sm:py-4 text-center text-base sm:text-lg font-semibold text-gray-900 
+                      hidden sm:table-cell"
+                      >
                         Traditional GNSS
                       </th>
-                      <th className="px-6 py-4 text-center text-lg font-semibold bg-blue-50 text-blue-900">
+                      <th className="px-4 py-2 sm:px-6 sm:py-4 text-center text-base sm:text-lg font-semibold bg-blue-50 text-blue-900">
                         GEOnex
                       </th>
                     </tr>
@@ -618,10 +644,10 @@ const GEOnexLanding = () => {
                         key={index}
                         className="hover:bg-gray-50 transition-colors"
                       >
-                        <td className="px-6 py-4 font-medium text-gray-900">
+                        <td className="px-4 py-2 sm:px-6 sm:py-4 font-medium text-gray-900">
                           {row.feature}
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-4 py-2 sm:px-6 sm:py-4 text-center">
                           {row.total === "cross" ? (
                             <X
                               className="mx-auto w-6 h-6 text-red-500"
@@ -641,7 +667,7 @@ const GEOnexLanding = () => {
                             row.total
                           )}
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-4 py-2 sm:px-6 sm:py-4 text-center hidden sm:table-cell">
                           {row.gnss === "cross" ? (
                             <X
                               className="mx-auto w-6 h-6 text-red-500"
@@ -661,7 +687,7 @@ const GEOnexLanding = () => {
                             row.gnss
                           )}
                         </td>
-                        <td className="px-6 py-4 text-center bg-blue-50 font-semibold text-blue-900">
+                        <td className="px-4 py-2 sm:px-6 sm:py-4 text-center bg-blue-50 font-semibold text-blue-900">
                           {row.geonex === "cross" ? (
                             <X
                               className="mx-auto w-6 h-6 text-red-500"
@@ -727,23 +753,32 @@ const GEOnexLanding = () => {
 
       {/* CTA Section */}
       <section
-        className="py-20 bg-gradient-to-r from-blue-600 to-purple-600"
+        className="py-16 sm:py-20 bg-gradient-to-r from-blue-600 to-purple-600"
         id="contact"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-5xl font-bold text-white mb-6">
+          <h2
+            className="text-4xl sm:text-5xl mb-5 sm:mb-6
+           font-bold text-white"
+          >
             Ready to Transform
             <br />
             Your Surveying?
           </h2>
-          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+          <p
+            className="text-base sm:text-xl  
+          text-blue-100 
+          max-w-md sm:max-w-2xl mb-10 sm:mb-12
+          mx-auto"
+          >
             Join thousands of professionals who have already made the switch to
             GEOnex
           </p>
 
           <form
             onSubmit={handleWhatsAppRedirect}
-            className="max-w-2xl mx-auto mb-12 space-y-6 text-left"
+            className="max-w-md sm:max-w-2xl mx-auto 
+            mb-10 sm:mb-12 space-y-5 sm:space-y-6 text-left"
             noValidate
           >
             <div>
@@ -810,21 +845,20 @@ const GEOnexLanding = () => {
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* ---------- SUBMIT BUTTON ---------- */}
+            <div className="flex justify-center">
               <button
                 type="submit"
-                onClick={handleWhatsAppRedirect}
-                className="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 flex items-center justify-center"
+                nClick={handleWhatsAppRedirect}
+                className="w-full sm:w-[320px] 
+          bg-transparent border-2 border-white text-white
+                     px-6 sm:px-8 py-3 sm:py-2
+                     rounded-full text-lg font-semibold
+                     hover:bg-white hover:text-blue-600  transition-all duration-200 
+                     transform hover:scale-105 flex items-center justify-center"
               >
-                Schedule a Demo
-                <ArrowRight className="inline ml-2" size={20} />
-              </button>
-              <button
-                type="submit"
-                onClick={handleWhatsAppRedirect}
-                className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200 transform hover:scale-105"
-              >
-                Contact Sales
+                Send Inquiry
+                <ArrowRight size={20} className="ml-2" />
               </button>
             </div>
           </form>
@@ -832,18 +866,20 @@ const GEOnexLanding = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-10 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">GEOnex</h3>
-              <p className="text-gray-400">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4">GEOnex</h3>
+              <p className="text-gray-400 text-sm sm:text-base">
                 Revolutionary surveying technology for the modern professional.
               </p>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Products</h4>
-              <ul className="space-y-2 text-gray-400">
+              <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                Products
+              </h4>
+              <ul className="space-y-1.5 sm:space-y-2 text-gray-400">
                 <li>
                   <a
                     href="#products"
@@ -892,21 +928,26 @@ const GEOnexLanding = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-semibold mb-4">Connect</h4>
+              <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                Connect
+              </h4>
               <div className="flex space-x-4">
-                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
+                <div className="w-9 h-9 sm:w-10 sm:h-10  bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
                   <span className="text-sm">Li</span>
                 </div>
-                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
+                <div className="w-9 h-9 sm:w-10 sm:h-10  bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
                   <span className="text-sm">Tw</span>
                 </div>
-                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
+                <div className="w-9 h-9 sm:w-10 sm:h-10  bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 cursor-pointer transition-colors">
                   <span className="text-sm">Fb</span>
                 </div>
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <div
+            className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400
+          text-xs sm:text-sm"
+          >
             <p>&copy; 2025 GEOnex. All rights reserved.</p>
           </div>
         </div>
