@@ -172,6 +172,34 @@ void publishData(String deviceId, String status, float latitude, float longitude
     }
 }
 
+void publishStatus(String status, int battery, int wifi)
+
+{
+    if (!mqttConnected())
+    {
+        Serial.println("[RETRYING]  MQTT not connected. Attempting to reconnect...");
+        connectMQTT();
+    }
+
+    JsonDocument jsonDoc;
+    jsonDoc["status"] = status;
+    jsonDoc["battery"] = battery;
+    jsonDoc["wifi"] = wifi;
+
+    char jsonBuffer[256];
+    serializeJson(jsonDoc, jsonBuffer);
+
+    if (client.publish(MQTT_TOPIC_DATA_UTILS, jsonBuffer))
+    {
+        Serial.println("[INFO]  Status Data published successfully");
+        handleMQTTLED();
+    }
+    else
+    {
+        Serial.println("[FAILED]    Failed to publish Status Data");
+    }
+}
+
 void mockPublishGPSData()
 {
     float baseLatitude = 37.7749;
