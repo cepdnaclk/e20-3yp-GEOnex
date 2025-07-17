@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/', createDevice);
 router.get('/:id', getDeviceById);
+
 router.put('/:id', updateDevice);
 router.put('/status/:deviceCode', updateByDeviceCode);
 router.get('/:deviceCode/check', checkDeviceInUse);
