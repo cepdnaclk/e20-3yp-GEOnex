@@ -249,7 +249,7 @@ const PointRecorded = ({
 
   useEffect(() => {
     if (points) {
-      setPointName(`P ${points.length + 1}`);
+      setPointName(`P${points.length + 1}`);
     }
   }, [points]);
 

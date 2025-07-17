@@ -16,7 +16,7 @@ const RecentProjects = () => {
 
   const recentProjects = [...projects]
     .sort((a, b) => new Date(b.Last_Modified) - new Date(a.Last_Modified))
-    .slice(0, 4);
+    .slice(0, 5);
 
   return (
     <div className="bg-white dark:bg-gray-800 dark:text-gray-100 p-4 rounded-lg">
