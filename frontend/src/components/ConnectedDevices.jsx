@@ -379,7 +379,7 @@ export default function ConnectedDevices() {
             ) : (
               devices.map((device) => (
                 <div
-                  onClick={() => navigate(`/devices/${device._id}`)}
+                  // onClick={() => navigate(`/devices/${device._id}`)}
                   key={device._id}
                   className="flex flex-nowrap items-center justify-between 
                   bg-white p-3 rounded-lg shadow-sm border border-gray-100 min-w-[700px]
