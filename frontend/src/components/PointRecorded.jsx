@@ -3,46 +3,46 @@ import { Context } from "../context/Context";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-class KalmanFilter {
-  constructor(processNoise = 0.0001, measurementNoise = 0.01, estimateError = 1, initialValue = 0) {
-    this.q = Number(processNoise);
-    this.r = Number(measurementNoise);
-    this.p = Number(estimateError);
-    this.x = Number(initialValue);
-  }
+// class KalmanFilter {
+//   constructor(processNoise = 0.00001, measurementNoise = 0.01, estimateError = 1, initialValue = 0) {
+//     this.q = Number(processNoise);
+//     this.r = Number(measurementNoise);
+//     this.p = Number(estimateError);
+//     this.x = Number(initialValue);
+//   }
 
-  update(measurement) {
-    // Convert to number and validate
-    const numMeasurement = Number(measurement);
-    if (isNaN(numMeasurement)) {
-      console.warn('Invalid measurement received:', measurement);
-      return this.x; // Return current estimate for invalid input
-    }
+//   update(measurement) {
+//     // Convert to number and validate
+//     const numMeasurement = Number(measurement);
+//     if (isNaN(numMeasurement)) {
+//       console.warn('Invalid measurement received:', measurement);
+//       return this.x; // Return current estimate for invalid input
+//     }
 
-    this.p = this.p + this.q;
-    const k = this.p / (this.p + this.r);
+//     this.p = this.p + this.q;
+//     const k = this.p / (this.p + this.r);
 
-    if (isNaN(k)) {
-      console.warn('Kalman gain is NaN, returning current estimate');
-      return this.x;
-    }
+//     if (isNaN(k)) {
+//       console.warn('Kalman gain is NaN, returning current estimate');
+//       return this.x;
+//     }
 
-    this.x = this.x + k * (numMeasurement - this.x);
-    this.p = (1 - k) * this.p;
+//     this.x = this.x + k * (numMeasurement - this.x);
+//     this.p = (1 - k) * this.p;
 
-    return this.x;
-  }
+//     return this.x;
+//   }
 
-  // Helper method to check filter state
-  getState() {
-    return {
-      estimate: this.x,
-      errorCovariance: this.p,
-      processNoise: this.q,
-      measurementNoise: this.r
-    };
-  }
-}
+//   // Helper method to check filter state
+//   getState() {
+//     return {
+//       estimate: this.x,
+//       errorCovariance: this.p,
+//       processNoise: this.q,
+//       measurementNoise: this.r
+//     };
+//   }
+// }
 
 
 const PointRecorded = ({
@@ -85,8 +85,8 @@ const PointRecorded = ({
 
 
 
-  const latFilter = useRef(null);
-  const lngFilter = useRef(null);
+  // const latFilter = useRef(null);
+  // const lngFilter = useRef(null);
 
 
   useEffect(() => {
@@ -94,14 +94,14 @@ const PointRecorded = ({
   }, [projectId]);
 
 
-  useEffect(() => {
-    if (project?.baseLatitude && project?.baseLongitude) {
-      if (!isNaN(project.baseLatitude) && !isNaN(project.baseLongitude)) {
-          latFilter.current = new KalmanFilter(0.0001, 0.0005, 1, project.baseLatitude);
-          lngFilter.current = new KalmanFilter(0.0001, 0.0005, 1, project.baseLongitude);
-}
-    }
-  }, [project?.baseLatitude, project?.baseLongitude]);
+//   useEffect(() => {
+//     if (project?.baseLatitude && project?.baseLongitude) {
+//       if (!isNaN(project.baseLatitude) && !isNaN(project.baseLongitude)) {
+//           latFilter.current = new KalmanFilter(0.0001, 0.0005, 1, project.baseLatitude);
+//           lngFilter.current = new KalmanFilter(0.0001, 0.0005, 1, project.baseLongitude);
+// }
+//     }
+//   }, [project?.baseLatitude, project?.baseLongitude]);
 
 
   useEffect(() => {
@@ -148,9 +148,9 @@ const PointRecorded = ({
       typeof baseMatchData.latitude === "number" &&
       typeof baseMatchData.longitude === "number"
     ) {
-      if (minDelta > 5000) {
+      if (minDelta > 2500) {
         clientDevice.accuracy = "Low";
-      } else if (minDelta > 2000) {
+      } else if (minDelta > 1000) {
         clientDevice.accuracy = "Medium";
       } else {
         clientDevice.accuracy = "High";
@@ -163,18 +163,17 @@ const PointRecorded = ({
       const correctedLng = clientMatchData.longitude + deltaLng;
 
       if (
-          latFilter.current &&
-          lngFilter.current &&
           typeof correctedLat === "number" &&
           typeof correctedLng === "number" &&
           !isNaN(correctedLat) &&
           !isNaN(correctedLng)
         ) {
 
+          // const smoothLat = (latFilter.current.update(correctedLat));
+          // const smoothLng = lngFilter.current.update(correctedLng);
 
-          
-          const smoothLat = (latFilter.current.update(correctedLat));
-          const smoothLng = lngFilter.current.update(correctedLng);
+          const smoothLat = correctedLat;
+          const smoothLng = correctedLng;
 
           setCorrectedLatitude(smoothLat);
           setCorrectedLongitude(smoothLng);
