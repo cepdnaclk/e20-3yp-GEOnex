@@ -147,6 +147,21 @@ const ProjectDetails = () => {
           {/* Control */}
           <SurveyControlSection />
 
+          <SectionsOverview />
+
+          {/* assigned Configs */}
+        </div>
+
+        <div className="flex flex-col gap-3 lg:w-96  ">
+          {/* Overview Section (Right) */}
+
+          {/* /* assigned survayers */}
+
+          <ProjectOverview />
+          <PositioningMode />
+          
+        </div>
+        <div className="flex flex-col gap-3 lg:w-96">
           {/* Actions */}
           <div className="h-max bg-white dark:bg-gray-800 p-5 rounded-lg flex flex-col gap-3 overflow-auto">
             <h2 className="text-base md:text-lg font-semibold pb-2 border-b">
@@ -180,7 +195,6 @@ const ProjectDetails = () => {
               className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
               bg-[rgba(232,232,232,1)]  hover:bg-[rgba(200,200,200,1)] 
             dark:bg-gray-700 dark:hover:bg-gray-600"
-              
               onClick={() => {
                 navigate(`/projects/takenpoints/${projectId}`);
               }}
@@ -203,7 +217,6 @@ const ProjectDetails = () => {
               className="p-3 rounded-lg
               bg-[rgba(232,232,232,1)]
             dark:bg-gray-700"
-              
             >
               <div className="flex items-center gap-3 mb-2">
                 <img
@@ -304,31 +317,9 @@ const ProjectDetails = () => {
               </div>
             </div>
           </div>
-
-          {/* assigned Configs */}
         </div>
-
-        <div className="flex flex-col gap-4 lg:w-96  ">
-          {/* Overview Section (Right) */}
-
-          {/* /* assigned survayers */}
-
-          <ProjectOverview />
-          <PositioningMode />
-          <SectionsOverview/>
-
-      
-        </div>
-
       </div>
-
-      {/* <div className="flex flex-col gap-4 max-w-2xl">
-        <RemoteRoverEnable />
-        </div> */}
-
-
-      </div>
-    
+    </div>
   );
 };
 
