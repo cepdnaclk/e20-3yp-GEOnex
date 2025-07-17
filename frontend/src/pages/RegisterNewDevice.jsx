@@ -47,8 +47,7 @@ const RegisterNewDevice = () => {
 
     try {
       // Register the device
-      const response = await axios.post(`${backendUrl}/api/devices/`, {
-        DeviceCode: deviceId,
+      const response = await axios.post(`${backendUrl}/api/devices/${deviceId} `, {
         Name: deviceName,
         Type: deviceType,
         Registered_User_Id: userId,

@@ -4,7 +4,7 @@ const {createDevice, getDeviceById, updateDevice, checkDeviceInUse, updateByDevi
 const {createAlert} = require('../controllers/alertController');
 const router = express.Router();
 
-router.post('/', createDevice);
+router.post('/:deviceCode', createDevice);
 router.get('/:id', getDeviceById);
 
 router.put('/:id', updateDevice);

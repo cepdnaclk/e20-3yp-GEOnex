@@ -4,8 +4,10 @@ const {ObjectId} = require('mongodb');
 
 
 const createDevice = async (req, res) => {
+    const DeviceCode = req.params.deviceCode; 
+
     try {
-        const { DeviceCode, Name, Type, Registered_User_Id } = req.body;
+        const {  Name, Type, Registered_User_Id } = req.body;
 
         // Check if a device with the same name and user ID already exists
         const existingDevice = await Device.findOne({ Name, Registered_User_Id });
