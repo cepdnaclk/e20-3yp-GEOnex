@@ -76,7 +76,7 @@ const EmailVerify = () => {
       if (data.success) {
         toast.success(data.message);
         setIsLoggedin(true);
-        getUserData();
+        await getUserData();
         navigate("/dashboard");
       } else {
         toast.error(data.message);
