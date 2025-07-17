@@ -97,7 +97,7 @@ export default function MapDeviceData() {
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
               Device Map
             </h1>
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <div
                 className={`w-2 h-2 rounded-full ${
                   connectionStatus === "connected"
@@ -118,7 +118,7 @@ export default function MapDeviceData() {
               <span className="text-xs md:text-sm lg:text-base text-gray-500 dark:text-gray-400">
                 Base: {baseConnectionStatus}
               </span>
-            </div>
+            </div> */}
           </div>
 
           {error && (
