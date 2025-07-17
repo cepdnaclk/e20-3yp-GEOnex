@@ -339,6 +339,7 @@ const GEOnexLanding = () => {
               </a>
 
               <button
+                onClick={() => window.open('https://youtu.be/pTAoMztIZOw', '_blank')}
                 className="bg-white/80 backdrop-blur-sm text-gray-900
                      px-7 sm:px-8 py-4 rounded-full
                      text-base sm:text-lg font-semibold
