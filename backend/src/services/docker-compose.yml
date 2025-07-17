@@ -161,10 +161,7 @@ services:
       - ./geonex.conf:/etc/nginx/conf.d/default.conf:ro
       - /etc/letsencrypt/live/api.geonex.site:/etc/letsencrypt/live/api.geonex.site:ro
       - /etc/letsencrypt/archive/api.geonex.site:/etc/letsencrypt/archive/api.geonex.site:ro
-    expose:
-    - "443"
-    - "80"
-
+   
     depends_on:
       - auth-service
       - device-service
