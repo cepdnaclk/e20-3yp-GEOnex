@@ -551,7 +551,7 @@ const GEOnexLanding = () => {
                     })}
                   </div>
                   <h3
-                    className="text-xl font-bold text-gray-900 
+                    className=" font-bold text-gray-900 
                   text-lg sm:text-xl mb-1"
                   >
                     {benefit.title}
