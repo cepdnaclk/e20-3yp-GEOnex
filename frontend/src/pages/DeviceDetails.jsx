@@ -4,7 +4,6 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import PageTopic from "../components/PageTopic";
-import { assets } from "../assets/assets";
 import { useContext } from "react";
 import { Context } from "../context/Context";
 
@@ -235,7 +234,7 @@ const DeviceDetails = () => {
           >
             <img
               className="w-6 h-6 md:w-8 md:h-8"
-              src={assets.bin}
+              src="/assets/bin.png"
               alt="delete"
             />
             <div>

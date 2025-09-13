@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../context/Context";
-import { assets } from "../assets/assets";
 import { toast } from "react-toastify";
 
 const ConfirmDiscard = ({ projectId }) => {
@@ -50,7 +49,7 @@ const ConfirmDiscard = ({ projectId }) => {
 
         {/* Displayed Point Name */}
         <div className="mt-3 font-bold text-lg md:text-xl flex items-center justify-center gap-2">
-          <img src={assets.device} alt="" className="w-5 h-5" />
+          <img src="/assets/device.png" alt="" className="w-5 h-5" />
           <span className="text-black">
             {points.length > 0 ? points[points.length - 1].Name : "No Point"}
           </span>

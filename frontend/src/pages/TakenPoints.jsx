@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../context/Context";
-import { assets } from "../assets/assets";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -102,7 +101,7 @@ const TakenPoints = () => {
                 >
                   <img
                     className="w-5 h-5 md:w-9 md:h-9 invert-0 dark:invert dark:brightness-0"
-                    src={assets.refresh}
+                    src="/assets/refresh.png"
                     alt="refresh"
                   />
                 </button>

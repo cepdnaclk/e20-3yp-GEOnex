@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { assets } from "../assets/assets";
 import { Context } from "../context/Context";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -177,7 +176,7 @@ const ProjectDetails = () => {
             >
               <img
                 className="w-6 h-6 md:w-8 md:h-8"
-                src={assets.map}
+                src="/assets/squares.png"
                 alt="View on Map"
               />
               <div>
@@ -201,7 +200,7 @@ const ProjectDetails = () => {
             >
               <img
                 className="w-6 h-6 md:w-8 md:h-8"
-                src={assets.points}
+                src="/assets/points.png"
                 alt="Points"
               />
               <div>
@@ -221,7 +220,7 @@ const ProjectDetails = () => {
               <div className="flex items-center gap-3 mb-2">
                 <img
                   className="w-6 h-6 md:w-8 md:h-8"
-                  src={assets.export_data}
+                  src="/assets/file_export.png"
                   alt="Export Data"
                 />
                 <div>
@@ -304,7 +303,7 @@ const ProjectDetails = () => {
             >
               <img
                 className="w-6 h-6 md:w-8 md:h-8"
-                src={assets.bin}
+                src="/assets/bin.png"
                 alt="delete"
               />
               <div>

@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect }  from "react";
-import { assets } from "../assets/assets";
 import { Context } from "../context/Context";
 import MapSection from "../components/MapSection";
 import axios from "axios";

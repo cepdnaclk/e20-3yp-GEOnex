@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { assets } from "../assets/assets";
 
 const PageTopic = ({ topic, intro, right = null }) => {
   const navigate = useNavigate();
@@ -39,13 +38,13 @@ const PageTopic = ({ topic, intro, right = null }) => {
                              focus:outline-none focus:ring dark:bg-gray-700"
           onClick={() => window.dispatchEvent(new Event("openSidebar"))}
         >
-          <img src={assets.hamburger_icon} alt="" className="w-5 h-5" />
+          <img src="/assets/hamburger.png" alt="" className="w-5 h-5" />
         </button>
 
         <button className="text-xl" onClick={() => navigate(-1)}>
           <img
             className="w-5 h-5 md:w-8 md:h-8 dark:invert dark:brightness-0"
-            src={assets.arrow}
+            src="/assests/left-arrow.png"
             alt="goback"
           />
         </button>

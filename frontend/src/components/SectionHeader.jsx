@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { assets } from "../assets/assets";
 
 /**
  * Re-usable page header for top-level sections.
@@ -47,7 +46,7 @@ export default function SectionHeader({ title, subtitle, right = null }) {
                        focus:outline-none focus:ring dark:bg-gray-700"
           onClick={() => window.dispatchEvent(new Event("openSidebar"))}
         >
-          <img src={assets.hamburger_icon} alt="" className="w-5 h-5" />
+          <img src="/assets/hamburger.png" alt="" className="w-5 h-5" />
         </button>
 
         {/* titles */}

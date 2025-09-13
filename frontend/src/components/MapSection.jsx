@@ -9,7 +9,6 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { assets } from "../assets/assets";
 import PointRecorded from "./PointRecorded";
 import ConfirmDiscard from "./ConfirmDiscard";
 import { Context } from "../context/Context";
@@ -344,7 +343,7 @@ const MapSection = () => {
             navigate(`/projects/takenpoints/${projectId}`);
           }}
         >
-          <img src={assets.filter} alt="Button 1" className="w-6 h-6" />
+          <img src="/assets/filter.png" alt="Button 1" className="w-6 h-6" />
         </button>
 
         {/* Button 2 */}
@@ -352,7 +351,7 @@ const MapSection = () => {
           className="bg-orange-500 p-3 md:p-3 rounded-full shadow-md w-12 h-12 flex items-center "
           onClick={() => setShowConfirmDiscard(true)}
         >
-          <img src={assets.reverse} alt="Button 2" className="w-6 h-6" />
+          <img src="/assets/reverse.png" alt="Button 2" className="w-6 h-6" />
         </button>
 
         {/* Button 3 */}
@@ -368,13 +367,13 @@ const MapSection = () => {
         >
           {saving ? (
             <img
-              src={assets.spinner}
+              src="/assets/spinner.png"
               alt="saving"
               className="w-8 h-8 animate-spin"
             />
           ) : (
             <img
-              src={assets.add_location}
+              src="/assets/add_location.png"
               alt="add point"
               className="w-8 h-8 md:w-8 md:h-8"
               draggable="false"

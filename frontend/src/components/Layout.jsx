@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import { Outlet, useLocation } from "react-router-dom";
-import { assets } from "../assets/assets";
 
 /* A wrapper that owns the “sidebar-open” state */
 export default function Layout() {

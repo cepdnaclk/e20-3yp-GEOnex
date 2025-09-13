@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { assets } from "../assets/assets";
 import { Context } from "../context/Context";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -89,10 +88,10 @@ const Navbar = ({ mobileOpen = false, onClose = () => {} }) => {
         {/* Navigation links with indicators and hover effects */}
         <nav className="flex flex-col gap-2 mt-2">
           {[
-            { to: "/dashboard", icon: assets.home, label: "Home" },
-            { to: "/devices", icon: assets.devices, label: "Devices" },
-            { to: "/projects", icon: assets.projects, label: "Projects" },
-            { to: "/settings", icon: assets.settings, label: "Settings" },
+            { to: "/dashboard", icon: "/assets/home.png", label: "Home" }, 
+            { to: "/devices", icon: "/assets/location.png", label: "Devices" },
+            { to: "/projects", icon: "/assets/map.png", label: "Projects" },
+            { to: "/settings", icon: "/assets/setting.png", label: "Settings" },
           ].map(({ to, icon, label }) => (
             <NavLink
               key={to}

@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { assets } from "../assets/assets";
 import axios from "axios";
 import { toast } from "react-toastify";
 

@@ -1,5 +1,4 @@
 import React, { useContext, useMemo, useEffect } from "react";
-import { assets } from "../assets/assets";
 import RecentProjects from "../components/RecentProjects";
 import { Context } from "../context/Context";
 import DashboardNotifications from "../components/DashboardNotifications";
@@ -115,7 +114,7 @@ const Dashboard = () => {
           className="col-span-1 bg-white rounded-lg flex gap-2 p-2 truncate 
         justify-start items-center dark:bg-gray-700"
         >
-          <img className="w-16 h-16 " src={assets.base} alt="Base" />
+          <img className="w-16 h-16 " src="/assets/base.png" alt="Base" />
           <div style={{ lineHeight: "0.8" }}>
             {!base ? (
               <div className="flex flex-col gap-1 animate-pulse">

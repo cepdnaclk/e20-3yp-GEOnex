@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "../context/Context";
 import dayjs from "dayjs";
-import { assets } from "../assets/assets";
 import axios from "axios";
 import { toast } from "react-toastify";
 import SectionHeader from "../components/SectionHeader";
@@ -115,7 +114,7 @@ const Projects = () => {
                               {project.Status}
                             </span>
                             <img
-                              src={assets.bin}
+                              src="/assets/bin.png"
                               alt="Delete Project"
                               className="w-3 h-3 dark:invert    
                                       sm:w-4 sm:h-4 
