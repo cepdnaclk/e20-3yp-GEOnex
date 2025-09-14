@@ -47,4 +47,6 @@ const pointSchema = new mongoose.Schema({
     
 }, { timestamps: true });
 
-module.exports = mongoose.model('Point', pointSchema);
+
+const Point = mongoose.models.Point || mongoose.model("Point", pointSchema);
+module.exports = Point;
