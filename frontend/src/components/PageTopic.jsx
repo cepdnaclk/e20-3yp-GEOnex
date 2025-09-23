@@ -43,10 +43,10 @@ const PageTopic = ({ topic, intro, right = null }) => {
 
         <button className="text-xl" onClick={() => navigate(-1)}>
           <img
-            className="w-5 h-5 md:w-8 md:h-8 dark:invert dark:brightness-0"
-            src="/assests/left-arrow.png"
-            alt="goback"
-          />
+                  className="w-6 h-6 md:w-8 md:h-8"
+                  src="/assets/left-arrow.png"
+                  alt="Go back"
+                />
         </button>
 
         {/* titles */}

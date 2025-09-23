@@ -220,7 +220,7 @@ const ProjectDetails = () => {
               <div className="flex items-center gap-3 mb-2">
                 <img
                   className="w-6 h-6 md:w-8 md:h-8"
-                  src="/assets/file_export.png"
+                  src="/assets/file-export.png"
                   alt="Export Data"
                 />
                 <div>
