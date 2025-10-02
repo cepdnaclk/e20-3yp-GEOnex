@@ -14,8 +14,11 @@
 #include "pin_manager.h"
 #include "base_average.h"
 #include "wifi_portal.h"
+#include "BaseLoRa.h"
 
 WiFiPortal wifi("GeoNex-Base", "12345678", BUTTON_RESET_WIFI);
+
+BaseLoRa baseLoRa;
 
 void setup()
 {
@@ -34,14 +37,17 @@ void setup()
   // Initialize Battery monitor
   initBatteryMonitor();
 
+  // Initialize LoRa
+  baseLoRa.begin();
+
   Serial.println("[INFO]  ESP32 Setup complete");
 
   // Base Calibration
-  FIXEDData fix = computePrecisePosition();
-  if (fix.isValid)
-  {
-    publishBaseFix(fix.latitude, fix.longitude);
-  }
+  // FIXEDData fix = computePrecisePosition();
+  // if (fix.isValid)
+  // {
+  //   publishBaseFix(fix.latitude, fix.longitude);
+  // }
 }
 
 void loop()
@@ -55,7 +61,7 @@ void loop()
   String time;
 
 
-  if (gpsInfo.isValid && gpsInfo.satellites > 6 && gpsInfo.latitude > 7 && gpsInfo.longitude > 80)  // Check if GPS data is valid and has enough satellites
+  if (gpsInfo.isValid && gpsInfo.satellites > 3 && gpsInfo.latitude > 6 && gpsInfo.longitude > 80)  // Check if GPS data is valid and has enough satellites
   {
     lat = gpsInfo.latitude;
     lon = gpsInfo.longitude;
@@ -64,16 +70,20 @@ void loop()
 
     // Print GPS data for testing
     Serial.printf("[Test]  Raw GPS: Lat: %.6f, Lon: %.6f, Satellites: %d, Time: %s\n", lat, lon, satellites, time.c_str());
+
   }
   // Removed the eslse block to avoid setting invalid data
-  // else
-  // {
-  //   lat = NAN;
-  //   lon = NAN;
-  //   satellites = -1;
-  //   time = "";
-  //   Serial.println("[Test]  No valid GPS data received.");
-  // }
+  else
+  {
+    lat = NAN;
+    lon = NAN;
+    satellites = -1;
+    time = "";
+    Serial.println("[Test]  No valid GPS data received.");
+  }
+
+  // Send data via LoRa
+  baseLoRa.sendData(lat, lon, satellites, time);
 
   // /* Publish data to MQTT  */
   // //publishGPSData(lat, lon, satellites, time);
