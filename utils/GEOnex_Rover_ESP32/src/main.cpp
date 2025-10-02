@@ -17,6 +17,7 @@
 #include "gps_correction.h"
 #include "gnss_config.h"
 #include "wifi_portal.h"
+#include "LoRa_manager.h"
 
 IMUManager mpu(SDA, SCL);
 
@@ -24,6 +25,8 @@ IMUManager mpu(SDA, SCL);
 GNSSConfig gnss;
 
 WiFiPortal wifi("GeoNex-Setup", "12345678", BUTTON_RESET_WIFI);
+
+RoverLoRa roverLoRa;
 
 int count = 0;
 
@@ -57,11 +60,15 @@ void setup()
   // Set known fixed base location manually
   // Comment this line to use the auto base fixed location
   //setManualBaseFixed(6.1042425, 80.222473);
+  roverLoRa.begin();
 }
 
 void loop()
 {
   GPSData gpsInfo = processGPS();  // Process GPS Data
+
+  // Receive data via LoRa
+  roverLoRa.receiveData();
 
   mpu.update(); // Update MPU data test
 

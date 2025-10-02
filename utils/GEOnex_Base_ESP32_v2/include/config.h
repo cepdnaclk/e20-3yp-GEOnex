@@ -19,8 +19,11 @@
 // #define WIFI_SSID "Malinga' internet"
 // #define WIFI_PASS "tgfb6053"
 
-#define WIFI_SSID "Lord of the Ping"
-#define WIFI_PASS "GS200123"
+// #define WIFI_SSID "Lord of the Ping"
+// #define WIFI_PASS "GS200123"
+
+#define WIFI_SSID "UoP_Dev"
+#define WIFI_PASS "ZSjMSQ6mdB"
 
 // MQTT Broker
 #define MQTT_HOST "a1qulasp0wzg24-ats.iot.eu-north-1.amazonaws.com"

@@ -50,8 +50,8 @@
 #define LED_GPS 18   // GPS RTK Fix Indicator (ON when fix, blinks in float mode)
 
 // BUTTON Pins
-#define BUTTON_RESET_WIFI 13 // Reset WiFi
-#define BUTTON_SEND_GPS 14   // Manually Send GPS Data
+#define BUTTON_RESET_WIFI 32 // Reset WiFi
+#define BUTTON_SEND_GPS 33   // Manually Send GPS Data
 
 // MPU9250 Pins
 #define SDA 21 
@@ -96,6 +96,3 @@
 #define UTCOFFSETMINS 30
 
 #endif // CONFIG_H
-
-
-
