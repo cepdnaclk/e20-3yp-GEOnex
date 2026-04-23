@@ -3,15 +3,15 @@
 
 struct GpsPosition
 {
-    float lat;
-    float lon;
+    double lat;
+    double lon;
     bool valid;
 };
 
-void setManualBaseFixed(float lat, float lon);
-void updateBaseFixed(float lat, float lon);
-void updateBaseLive(float lat, float lon, String timestamp);
-void updateRoverLive(float lat, float lon, String timestramp);
+void setManualBaseFixed(double lat, double lon);
+void updateBaseFixed(double lat, double lon);
+void updateBaseLive(double lat, double lon, String timestamp);
+void updateRoverLive(double lat, double lon, String timestramp);
 GpsPosition getCorrectedRoverPosition();
 
 #endif

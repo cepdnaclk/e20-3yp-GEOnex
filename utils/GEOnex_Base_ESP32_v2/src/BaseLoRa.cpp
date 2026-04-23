@@ -15,7 +15,7 @@ void BaseLoRa::begin()
     Serial.println("LoRa Base Station Ready");
 }
 
-void BaseLoRa::sendData(float latitude, float longitude, int satellites, String timestamp)
+void BaseLoRa::sendData(double latitude, double longitude, int satellites, String timestamp)
 {
     JsonDocument jsonDoc; // Dynamic allocation
     jsonDoc["latitude"] = latitude;

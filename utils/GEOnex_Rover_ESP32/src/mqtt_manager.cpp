@@ -46,7 +46,7 @@ void connectMQTT()
     client.setServer(MQTT_HOST, MQTT_PORT);
 
     // ✅ Set the MQTT message callback here
-    client.setCallback(mqttCallback);
+    //client.setCallback(mqttCallback);
     
     Serial.println("[PROCESS]   Connecting to AWS IoT...");
 
@@ -135,8 +135,8 @@ void publish_wifi_strength()
     }
 }
 
-void publishData(String deviceId, String status, float latitude, float longitude, int satellites, 
-                String time, float colat, float colon, int battery, int wifi )
+void publishData(String deviceId, String status, double latitude, double longitude, int satellites,
+                 String time, float colat, float colon, int battery, int wifi)
 
 {
     if (!mqttConnected())

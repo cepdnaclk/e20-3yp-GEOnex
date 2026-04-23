@@ -17,7 +17,7 @@ unsigned long basetimestamp = 0;
 unsigned long rovertimestamp = 0;
 
 // Function to set a manual base fixed location
-void setManualBaseFixed(float lat, float lon)
+void setManualBaseFixed(double lat, double lon)
 {
     baseFixedLat = lat;
     baseFixedLon = lon;
@@ -27,7 +27,7 @@ void setManualBaseFixed(float lat, float lon)
 
 // Function to update the base fixed position
 // This function will only set the base fixed position if it hasn't been set before
-void updateBaseFixed(float lat, float lon)
+void updateBaseFixed(double lat, double lon)
 {
     if (!hasBaseFixed)
     {
@@ -38,7 +38,7 @@ void updateBaseFixed(float lat, float lon)
     }
 }
 
-void updateBaseLive(float lat, float lon, String timestamp)
+void updateBaseLive(double lat, double lon, String timestamp)
 {
     baseLiveLat = lat;
     baseLiveLon = lon;
@@ -50,7 +50,7 @@ void updateBaseLive(float lat, float lon, String timestamp)
     Serial.println(basetimestamp);
 }
 
-void updateRoverLive(float lat, float lon, String timestamp)
+void updateRoverLive(double lat, double lon, String timestamp)
 {
     roverLiveLat = lat;
     roverLiveLon = lon;
@@ -72,16 +72,16 @@ GpsPosition getCorrectedRoverPosition()
     {
         long timeDiff = abs((long)(rovertimestamp - basetimestamp));
 
-        if (timeDiff <= 2000)
+        if (timeDiff <= 1000)
         { // ≤ 500 ms allowed
-            float deltaLat = baseLiveLat - baseFixedLat;
-            float deltaLon = baseLiveLon - baseFixedLon;
+            double deltaLat = baseLiveLat - baseFixedLat;
+            double deltaLon = baseLiveLon - baseFixedLon;
 
             result.lat = roverLiveLat - deltaLat;
             result.lon = roverLiveLon - deltaLon;
             result.valid = true;
 
-            Serial.print("[CORRECTED] Lat: Lon");
+            Serial.print("[CORRECTED] Lat: Lon ");
             Serial.print(result.lat, 8);
             Serial.print(", ");
             Serial.println(result.lon, 8);

@@ -1,4 +1,5 @@
 #include "LoRa_manager.h"
+#include "gps_correction.h"
 
 void RoverLoRa::begin()
 {
@@ -33,20 +34,21 @@ void RoverLoRa::receiveData()
 
         if (!error)
         {
-            float latitude = jsonDoc["latitude"];
-            float longitude = jsonDoc["longitude"];
+            double latitude = jsonDoc["latitude"];
+            double longitude = jsonDoc["longitude"];
             int satellites = jsonDoc["satellites"];
             const char *timestamp = jsonDoc["timestamp"];
 
-            Serial.println("Received Base Data:");
-            Serial.print("Lat: ");
-            Serial.print(latitude, 8);
-            Serial.print("Lon: ");
-            Serial.print(longitude, 8);
-            Serial.print("Satellites: ");
-            Serial.print(satellites);
-            Serial.print("Time: ");
-            Serial.println(timestamp);
+            // Serial.println("Received Base Data:");
+            // Serial.print("Lat: ");
+            // Serial.print(latitude, 8);
+            // Serial.print("Lon: ");
+            // Serial.print(longitude, 8);
+            // Serial.print("Satellites: ");
+            // Serial.print(satellites);
+            // Serial.print("Time: ");
+            // Serial.println(timestamp);
+            updateBaseLive(latitude, longitude, String(timestamp)); // ✅ Feed live base
         }
         else
         {

@@ -18,7 +18,7 @@ class BaseLoRa
 {
 public:
     void begin();
-    void sendData(float latitude, float longitude, int satellites, String timestamp);
+    void sendData(double latitude, double longitude, int satellites, String timestamp);
 
 private:
     SPIClass spiLoRa = SPIClass(HSPI);
