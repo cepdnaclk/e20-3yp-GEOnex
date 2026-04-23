@@ -19,6 +19,5 @@ const projectSchema = new mongoose.Schema({
   baseLongitude: { type: Number, default: null },
 });
 
-
-  const Project = mongoose.model("Project", projectSchema);
-  module.exports = Project;
+const Project = mongoose.models.Project || mongoose.model("Project", projectSchema);
+module.exports = Project;
