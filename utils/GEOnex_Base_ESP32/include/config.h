@@ -23,7 +23,7 @@
 #define WIFI_PASS "GS200123"
 
 // MQTT Broker
-#define MQTT_HOST "a1qulasp0wzg24-ats.iot.eu-north-1.amazonaws.com"
+#define MQTT_HOST "a299p99bfq7e8r-ats.iot.ap-south-1.amazonaws.com"
 #define MQTT_PORT 8883
 #define DEVICE_ID "rover1234"
 
